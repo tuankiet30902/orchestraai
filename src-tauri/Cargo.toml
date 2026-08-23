@@ -1,0 +1,57 @@
+[package]
+name = "orchestraai"
+version = "0.1.0"
+description = "Conduct your AI coding orchestra — split terminals, per-agent git worktrees, live web previews, and an Orchestra Pit where agents collaborate"
+authors = ["kiet"]
+license = "GPL-3.0-only"
+homepage = "https://orchestraai.dev"
+repository = "https://github.com/tuankiet30902/orchestraai"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+# The `_lib` suffix may seem redundant but it is necessary
+# to make the lib name unique and wouldn't conflict with the bin name.
+# This seems to be only an issue on Windows, see https://github.com/rust-lang/cargo/issues/8519
+name = "orchestraai_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = ["tray-icon", "unstable"] }
+tauri-plugin-single-instance = "2"
+tauri-plugin-dialog = "2"
+tauri-plugin-clipboard-manager = "2"
+portable-pty = "0.8"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+url = "2"
+tauri-plugin-opener = "2"
+tauri-plugin-updater = "2"
+tauri-plugin-process = "2"
+tauri-plugin-notification = "2"
+rmcp = { version = "2.1", features = ["server", "transport-streamable-http-server"] }
+# Both already in the tree via tauri-plugin-updater — direct deps for analytics.
+reqwest = { version = "0.13", default-features = false, features = ["rustls", "json"] }
+uuid = { version = "1", features = ["v4"] }
+axum = "0.8"
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "net", "signal", "process", "time"] }
+toml_edit = "0.22"
+
+[target.'cfg(windows)'.dependencies]
+# Job Objects so killing a terminal tears down the shell's whole process tree
+# (children/grandchildren) instead of just the shell itself.
+windows-sys = { version = "0.59", features = [
+  "Win32_Foundation",
+  "Win32_Security",
+  "Win32_System_JobObjects",
+  "Win32_System_Registry",
+  "Win32_System_Threading",
+] }
+
+[dev-dependencies]
+tempfile = "3"
+

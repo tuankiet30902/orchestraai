@@ -1,0 +1,335 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* -------------------------------------------------------------
+     NEUTRAL DARK MODE BASE (Standard True Dark / Neutral Black)
+     Zero color cast on darks: clean #09090b canvas, #0e0e11 bg, #141417 card
+     ------------------------------------------------------------- */
+  :root,
+  .dark,
+  [data-theme='orchestra-amber'],
+  [data-theme='orchestra-dark'] {
+    --background: 240 5% 6%;          /* #0e0e11 - crisp neutral dark */
+    --canvas: 240 6% 4%;              /* #09090b - deepest clean black canvas */
+    --foreground: 0 0% 98%;           /* #fafafa - crisp high contrast white text */
+    --card: 240 4% 9%;                /* #141417 - clean elevated card surface */
+    --card-foreground: 0 0% 95%;
+    --popover: 240 4% 12%;            /* #1c1c20 - elevated menus */
+    --popover-foreground: 0 0% 98%;
+    --primary: 38 95% 53%;            /* #f59e0b - radiant amber */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 240 4% 14%;          /* #222226 */
+    --secondary-foreground: 0 0% 90%;
+    --muted: 240 4% 12%;              /* #1c1c20 */
+    --muted-foreground: 240 4% 65%;   /* #a1a1aa - true neutral gray */
+    --accent: 240 4% 16%;             /* #27272b - neutral hover */
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 240 4% 15%;             /* #242428 - razor-clean border */
+    --pane-border: 240 4% 18%;        /* #2c2c31 */
+    --input: 240 4% 14%;
+    --ring: 38 95% 53%;
+    --conduct: 38 95% 53%;
+    --activity: 45 93% 47%;
+    --radius: 0.5rem;
+
+    /* Scrollbar */
+    --sb-size: 8px;
+    --sb-radius: 6px;
+    --sb-thumb: 0 0% 100%;
+    --sb-thumb-rest: 0;
+    --sb-thumb-hover: 0.20;
+    --sb-thumb-active: 0.40;
+  }
+
+  /* VS Code Modern Dark (Electric Blue Accent) */
+  [data-theme='vscode-dark'] {
+    --background: 240 5% 6%;
+    --canvas: 240 6% 4%;
+    --foreground: 0 0% 98%;
+    --card: 240 4% 9%;
+    --card-foreground: 0 0% 95%;
+    --popover: 240 4% 12%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 217 91% 60%;           /* #3b82f6 - VS Code Blue */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 240 4% 14%;
+    --secondary-foreground: 0 0% 90%;
+    --muted: 240 4% 12%;
+    --muted-foreground: 240 4% 65%;
+    --accent: 240 4% 16%;
+    --accent-foreground: 0 0% 98%;
+    --border: 240 4% 15%;
+    --pane-border: 240 4% 18%;
+    --input: 240 4% 14%;
+    --ring: 217 91% 60%;
+    --conduct: 217 91% 60%;
+    --activity: 45 93% 47%;
+  }
+
+  /* Tokyo Night (Cyan Accent) */
+  [data-theme='tokyo-night'] {
+    --background: 240 5% 6%;
+    --canvas: 240 6% 4%;
+    --foreground: 0 0% 98%;
+    --card: 240 4% 9%;
+    --card-foreground: 0 0% 95%;
+    --popover: 240 4% 12%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 190 95% 50%;           /* #06b6d4 - Cyan / Teal */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 240 4% 14%;
+    --secondary-foreground: 0 0% 90%;
+    --muted: 240 4% 12%;
+    --muted-foreground: 240 4% 65%;
+    --accent: 240 4% 16%;
+    --accent-foreground: 0 0% 98%;
+    --border: 240 4% 15%;
+    --pane-border: 240 4% 18%;
+    --input: 240 4% 14%;
+    --ring: 190 95% 50%;
+    --conduct: 190 95% 50%;
+    --activity: 45 93% 47%;
+  }
+
+  /* Emerald Dark (Green Accent) */
+  [data-theme='emerald-dark'] {
+    --background: 240 5% 6%;
+    --canvas: 240 6% 4%;
+    --foreground: 0 0% 98%;
+    --card: 240 4% 9%;
+    --card-foreground: 0 0% 95%;
+    --popover: 240 4% 12%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 158 64% 52%;           /* #10b981 - Emerald */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 240 4% 14%;
+    --secondary-foreground: 0 0% 90%;
+    --muted: 240 4% 12%;
+    --muted-foreground: 240 4% 65%;
+    --accent: 240 4% 16%;
+    --accent-foreground: 0 0% 98%;
+    --border: 240 4% 15%;
+    --pane-border: 240 4% 18%;
+    --input: 240 4% 14%;
+    --ring: 158 64% 52%;
+    --conduct: 158 64% 52%;
+    --activity: 45 93% 47%;
+  }
+
+  /* Violet Dark (Purple Accent) */
+  [data-theme='violet-dark'] {
+    --background: 240 5% 6%;
+    --canvas: 240 6% 4%;
+    --foreground: 0 0% 98%;
+    --card: 240 4% 9%;
+    --card-foreground: 0 0% 95%;
+    --popover: 240 4% 12%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 262 83% 58%;           /* #8b5cf6 - Violet */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 240 4% 14%;
+    --secondary-foreground: 0 0% 90%;
+    --muted: 240 4% 12%;
+    --muted-foreground: 240 4% 65%;
+    --accent: 240 4% 16%;
+    --accent-foreground: 0 0% 98%;
+    --border: 240 4% 15%;
+    --pane-border: 240 4% 18%;
+    --input: 240 4% 14%;
+    --ring: 262 83% 58%;
+    --conduct: 262 83% 58%;
+    --activity: 45 93% 47%;
+  }
+
+  /* Rose Dark (Pink Accent) */
+  [data-theme='rose-dark'] {
+    --background: 240 5% 6%;
+    --canvas: 240 6% 4%;
+    --foreground: 0 0% 98%;
+    --card: 240 4% 9%;
+    --card-foreground: 0 0% 95%;
+    --popover: 240 4% 12%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 346 77% 55%;           /* #f43f5e - Rose */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 240 4% 14%;
+    --secondary-foreground: 0 0% 90%;
+    --muted: 240 4% 12%;
+    --muted-foreground: 240 4% 65%;
+    --accent: 240 4% 16%;
+    --accent-foreground: 0 0% 98%;
+    --border: 240 4% 15%;
+    --pane-border: 240 4% 18%;
+    --input: 240 4% 14%;
+    --ring: 346 77% 55%;
+    --conduct: 346 77% 55%;
+    --activity: 45 93% 47%;
+  }
+
+  /* -------------------------------------------------------------
+     NEUTRAL LIGHT MODE BASE
+     Zero muddy cast on lights: pure #ffffff canvas, #f9fafb bg, #ffffff card
+     ------------------------------------------------------------- */
+  .light,
+  [data-theme='orchestra-light'] {
+    --background: 240 5% 97%;         /* #f4f4f6 */
+    --canvas: 0 0% 100%;              /* #ffffff */
+    --foreground: 240 6% 10%;         /* #18181b */
+    --card: 0 0% 100%;                /* #ffffff */
+    --card-foreground: 240 6% 10%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 6% 10%;
+    --primary: 38 95% 50%;            /* amber-500 */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 240 5% 92%;
+    --secondary-foreground: 240 6% 15%;
+    --muted: 240 5% 94%;
+    --muted-foreground: 240 4% 45%;
+    --accent: 240 5% 91%;
+    --accent-foreground: 240 6% 10%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 240 6% 88%;             /* #e2e2e6 */
+    --pane-border: 240 6% 82%;
+    --input: 240 6% 90%;
+    --ring: 38 95% 50%;
+    --conduct: 38 95% 50%;
+    --activity: 45 93% 47%;
+    --radius: 0.5rem;
+
+    /* Scrollbar */
+    --sb-thumb: 240 6% 20%;
+    --sb-thumb-rest: 0;
+    --sb-thumb-hover: 0.20;
+    --sb-thumb-active: 0.40;
+  }
+
+  /* VS Code Modern Light (Blue Accent) */
+  [data-theme='vscode-light'] {
+    --background: 240 5% 97%;
+    --canvas: 0 0% 100%;
+    --foreground: 240 6% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 6% 10%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 6% 10%;
+    --primary: 217 91% 55%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 240 5% 92%;
+    --secondary-foreground: 240 6% 15%;
+    --muted: 240 5% 94%;
+    --muted-foreground: 240 4% 45%;
+    --accent: 240 5% 91%;
+    --accent-foreground: 240 6% 10%;
+    --border: 240 6% 88%;
+    --pane-border: 240 6% 82%;
+    --input: 240 6% 90%;
+    --ring: 217 91% 55%;
+    --conduct: 217 91% 55%;
+    --activity: 45 93% 47%;
+  }
+
+  /* Emerald Light (Green Accent) */
+  [data-theme='emerald-light'] {
+    --background: 240 5% 97%;
+    --canvas: 0 0% 100%;
+    --foreground: 240 6% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 6% 10%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 6% 10%;
+    --primary: 158 64% 42%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 240 5% 92%;
+    --secondary-foreground: 240 6% 15%;
+    --muted: 240 5% 94%;
+    --muted-foreground: 240 4% 45%;
+    --accent: 240 5% 91%;
+    --accent-foreground: 240 6% 10%;
+    --border: 240 6% 88%;
+    --pane-border: 240 6% 82%;
+    --input: 240 6% 90%;
+    --ring: 158 64% 42%;
+    --conduct: 158 64% 42%;
+    --activity: 45 93% 47%;
+  }
+
+  /* Violet Light (Purple Accent) */
+  [data-theme='violet-light'] {
+    --background: 240 5% 97%;
+    --canvas: 0 0% 100%;
+    --foreground: 240 6% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 6% 10%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 6% 10%;
+    --primary: 262 83% 54%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 240 5% 92%;
+    --secondary-foreground: 240 6% 15%;
+    --muted: 240 5% 94%;
+    --muted-foreground: 240 4% 45%;
+    --accent: 240 5% 91%;
+    --accent-foreground: 240 6% 10%;
+    --border: 240 6% 88%;
+    --pane-border: 240 6% 82%;
+    --input: 240 6% 90%;
+    --ring: 262 83% 54%;
+    --conduct: 262 83% 54%;
+    --activity: 45 93% 47%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    margin: 0;
+    overflow: hidden;
+    font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+@layer base {
+  ::-webkit-scrollbar {
+    width: var(--sb-size);
+    height: var(--sb-size);
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border-radius: var(--sb-radius);
+    min-height: 32px;
+    background: hsl(var(--sb-thumb) / var(--sb-thumb-rest));
+  }
+
+  [data-scrolling]::-webkit-scrollbar-thumb,
+  :hover::-webkit-scrollbar-thumb {
+    background: hsl(var(--sb-thumb) / var(--sb-thumb-hover));
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--sb-thumb) / var(--sb-thumb-active));
+  }
+}
