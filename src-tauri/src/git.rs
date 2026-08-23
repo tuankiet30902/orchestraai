@@ -39,6 +39,7 @@ pub struct WorktreeInfo {
 pub struct ChangedFile {
     pub path: String,
     pub status: String, // "M", "A", "D", "R", "?"
+    pub staged: bool,
     pub added: u32,
     pub removed: u32,
 }
@@ -162,28 +163,41 @@ pub fn parse_changed_files(status_out: &str, numstat_out: &str) -> Vec<ChangedFi
         }
         let xy = &line[..2];
         let path = line[3..].trim().to_string();
-
-        let status = if xy == "??" {
-            "?".to_string()
-        } else {
-            // X (index) takes priority over Y (working-tree); a file appears at most once per path.
-            let ch = if !xy.starts_with(' ') {
-                xy.chars().next().unwrap_or(' ')
-            } else {
-                xy.chars().nth(1).unwrap_or(' ')
-            };
-            ch.to_string()
-        };
-
-        // Renames are emitted as "new-path\told-path"; take the new path only.
         let display_path = path.split('\t').next().unwrap_or(&path).to_string();
         let (added, removed) = counts.get(&display_path).copied().unwrap_or((0, 0));
-        files.push(ChangedFile {
-            path: display_path,
-            status,
-            added,
-            removed,
-        });
+
+        if xy == "??" {
+            files.push(ChangedFile {
+                path: display_path,
+                status: "?".to_string(),
+                staged: false,
+                added,
+                removed,
+            });
+        } else {
+            let x = xy.chars().next().unwrap_or(' ');
+            let y = xy.chars().nth(1).unwrap_or(' ');
+
+            if x != ' ' && x != '?' {
+                files.push(ChangedFile {
+                    path: display_path.clone(),
+                    status: x.to_string(),
+                    staged: true,
+                    added,
+                    removed,
+                });
+            }
+
+            if y != ' ' && y != '?' {
+                files.push(ChangedFile {
+                    path: display_path,
+                    status: y.to_string(),
+                    staged: false,
+                    added,
+                    removed,
+                });
+            }
+        }
     }
     files
 }
@@ -1070,6 +1084,7 @@ detached
 
         let auth = result.iter().find(|f| f.path == "src/auth.ts").unwrap();
         assert_eq!(auth.status, "M");
+        assert_eq!(auth.staged, false);
         assert_eq!(auth.added, 4);
         assert_eq!(auth.removed, 1);
 
@@ -1078,10 +1093,12 @@ detached
             .find(|f| f.path == "src/hooks/useAuth.ts")
             .unwrap();
         assert_eq!(hook.status, "A");
+        assert_eq!(hook.staged, true);
         assert_eq!(hook.added, 18);
 
         let env = result.iter().find(|f| f.path == ".env.local").unwrap();
         assert_eq!(env.status, "?");
+        assert_eq!(env.staged, false);
         assert_eq!(env.added, 0);
     }
 
@@ -1127,6 +1144,7 @@ detached
         // Only the new (destination) path should be stored
         assert_eq!(result[0].path, "src/new-name.ts");
         assert_eq!(result[0].status, "R");
+        assert_eq!(result[0].staged, true);
         // Line counts should be associated with the new path
         assert_eq!(result[0].added, 2);
         assert_eq!(result[0].removed, 1);

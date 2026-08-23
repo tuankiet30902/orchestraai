@@ -10,6 +10,7 @@ export interface WorktreeInfo {
 export interface ChangedFile {
   path: string
   status: 'M' | 'A' | 'D' | 'R' | '?' | string
+  staged: boolean
   added: number
   removed: number
 }

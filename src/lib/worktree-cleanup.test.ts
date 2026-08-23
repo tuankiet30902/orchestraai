@@ -7,7 +7,7 @@ import {
 } from './worktree-cleanup'
 import type { ChangedFile } from '@/tauri/git'
 
-const file = (path: string): ChangedFile => ({ path, status: 'M', added: 1, removed: 0 })
+const file = (path: string): ChangedFile => ({ path, status: 'M', staged: false, added: 1, removed: 0 })
 
 describe('classifyWorktree', () => {
   it('treats a worktree with only the generated .mcp.json as clean', () => {

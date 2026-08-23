@@ -1,3 +1,4 @@
+// src/components/Git/GitPanel.tsx
 import { useState, useEffect, useMemo, type ReactElement } from 'react'
 import {
   GitBranch,
@@ -12,13 +13,23 @@ import {
   ArrowUp,
   ArrowDown,
   Check,
-  FolderGit2
+  FolderGit2,
+  List,
+  FolderTree,
+  FileCode,
+  FileText,
+  FileJson,
+  File,
+  MoreHorizontal,
+  ExternalLink,
+  CloudSync
 } from 'lucide-react'
 import { useAppStore, selectActiveWorkspace } from '@/store/app-store'
 import { collectLeaves, findLeaf } from '@/lib/layout-tree'
 import { useGitStore } from '@/store/git-store'
 import {
   stageFile,
+  unstageFile,
   stageAll,
   unstageAll,
   commitChanges,
@@ -30,19 +41,42 @@ import {
   listBranches,
   type BranchInfo
 } from '@/tauri/git'
+import { revealInFileManager } from '@/tauri/links'
 import { Button } from '@/components/ui/button'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu'
 import { InlineDiff } from './InlineDiff'
 import { VisualDiffViewer } from './VisualDiffViewer'
 import { MergeBranchDialog } from './MergeBranchDialog'
 import { CommitHistoryList } from './CommitHistoryList'
 import { cn } from '@/lib/utils'
 
+// File icon helper based on file extension (VS Code style)
+function getFileIcon(path: string): ReactElement {
+  const ext = path.split('.').pop()?.toLowerCase()
+  if (['ts', 'tsx', 'js', 'jsx', 'rs', 'py', 'go', 'c', 'cpp', 'java'].includes(ext ?? '')) {
+    return <FileCode className="h-3.5 w-3.5 text-sky-400 shrink-0" />
+  }
+  if (['json', 'yaml', 'yml', 'toml'].includes(ext ?? '')) {
+    return <FileJson className="h-3.5 w-3.5 text-amber-400 shrink-0" />
+  }
+  if (['md', 'txt', 'doc'].includes(ext ?? '')) {
+    return <FileText className="h-3.5 w-3.5 text-emerald-400 shrink-0" />
+  }
+  return <File className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+}
+
 const STATUS_MAP: Record<string, { label: string; className: string }> = {
   M: { label: 'M', className: 'text-amber-400 font-bold' },
   A: { label: 'A', className: 'text-emerald-400 font-bold' },
   D: { label: 'D', className: 'text-rose-400 font-bold' },
-  R: { label: 'R', className: 'text-blue-400 font-bold' },
-  '?': { label: 'U', className: 'text-muted-foreground font-bold' }
+  R: { label: 'R', className: 'text-sky-400 font-bold' },
+  '?': { label: 'U', className: 'text-emerald-400 font-bold' }
 }
 
 export function GitPanel(): ReactElement {
@@ -63,8 +97,10 @@ export function GitPanel(): ReactElement {
   const [committing, setCommitting] = useState(false)
   const [syncing, setSyncing] = useState(false)
   const [feedback, setFeedback] = useState<string | null>(null)
+  const [viewMode, setViewMode] = useState<'list' | 'tree'>('list')
 
   // Collapsible sections
+  const [stagedOpen, setStagedOpen] = useState(true)
   const [changesOpen, setChangesOpen] = useState(true)
   const [worktreesOpen, setWorktreesOpen] = useState(true)
   const [historyOpen, setHistoryOpen] = useState(false)
@@ -85,6 +121,10 @@ export function GitPanel(): ReactElement {
         if (l.worktreeBranch && l.agentId) map[l.worktreeBranch] = l.agentId
     return map
   }, [workspaces])
+
+  // Partition into Staged vs Unstaged changes
+  const stagedFiles = useMemo(() => changedFiles.filter((f) => f.staged), [changedFiles])
+  const unstagedFiles = useMemo(() => changedFiles.filter((f) => !f.staged), [changedFiles])
 
   // Subscribe to CWD changes
   useEffect(() => {
@@ -119,20 +159,42 @@ export function GitPanel(): ReactElement {
     setTimeout(() => setFeedback(null), 2500)
   }
 
-  const handleCommit = async () => {
+  const handleCommit = async (andPush = false) => {
     if (!commitMessage.trim() || !selectedWorktree || committing) return
     setCommitting(true)
     try {
-      // Stage all changes before commit if not staged
-      await stageAll(selectedWorktree)
+      // If no files are staged, stage all first (like VS Code prompt)
+      if (stagedFiles.length === 0 && unstagedFiles.length > 0) {
+        await stageAll(selectedWorktree)
+      }
       await commitChanges(selectedWorktree, commitMessage.trim())
       setCommitMessage('')
-      showFeedback('Committed successfully')
+      if (andPush) {
+        await gitPush(selectedWorktree)
+        showFeedback('Committed & Pushed successfully')
+      } else {
+        showFeedback('Committed successfully')
+      }
       refresh()
     } catch (err) {
       showFeedback(`Error: ${String(err)}`)
     } finally {
       setCommitting(false)
+    }
+  }
+
+  const handleSync = async () => {
+    if (!selectedWorktree || syncing) return
+    setSyncing(true)
+    try {
+      await gitPull(selectedWorktree)
+      await gitPush(selectedWorktree)
+      showFeedback('Synchronized with remote')
+      refresh()
+    } catch (err) {
+      showFeedback(`Sync failed: ${String(err)}`)
+    } finally {
+      setSyncing(false)
     }
   }
 
@@ -178,7 +240,7 @@ export function GitPanel(): ReactElement {
 
   const handleDiscardAll = async () => {
     if (!selectedWorktree) return
-    if (!confirm('Discard all uncommitted changes in this worktree?')) return
+    if (!confirm('Discard all uncommitted changes in this working tree?')) return
     await discardAll(selectedWorktree)
     refresh()
   }
@@ -187,6 +249,13 @@ export function GitPanel(): ReactElement {
     e.stopPropagation()
     if (!selectedWorktree) return
     await stageFile(selectedWorktree, file)
+    refresh()
+  }
+
+  const handleUnstageFile = async (file: string, e: React.MouseEvent) => {
+    e.stopPropagation()
+    if (!selectedWorktree) return
+    await unstageFile(selectedWorktree, file)
     refresh()
   }
 
@@ -209,10 +278,17 @@ export function GitPanel(): ReactElement {
     }
   }
 
+  const handleOpenFile = (filePath: string, e: React.MouseEvent) => {
+    e.stopPropagation()
+    if (!selectedWorktree) return
+    const fullPath = `${selectedWorktree}/${filePath}`
+    void revealInFileManager(fullPath)
+  }
+
   if (loading && worktrees.length === 0) {
     return (
       <div className="flex h-full items-center justify-center p-4 text-xs text-muted-foreground">
-        Loading git status…
+        Loading git repository…
       </div>
     )
   }
@@ -228,47 +304,31 @@ export function GitPanel(): ReactElement {
   }
 
   const currentBranch = commitInfo?.branch || 'main'
+  const ahead = commitInfo?.ahead ?? 0
+  const behind = commitInfo?.behind ?? 0
 
   return (
-    <div className="flex h-full w-full flex-col overflow-hidden bg-card text-foreground font-sans select-none">
-      {/* Top Source Control Header & Action Bar */}
-      <div className="flex items-center justify-between border-b border-border bg-muted/30 px-3 py-2 shrink-0">
-        <div className="flex items-center gap-1.5 min-w-0">
-          <GitBranch className="h-3.5 w-3.5 text-foreground shrink-0" />
-          <span className="font-mono text-xs font-bold text-foreground truncate">
-            {currentBranch}
+    <div className="flex h-full w-full flex-col overflow-hidden bg-card text-foreground font-sans select-none text-xs">
+      {/* Top Source Control Header & Actions (VS Code Style) */}
+      <div className="flex items-center justify-between border-b border-border bg-muted/40 px-3 py-2 shrink-0">
+        <div className="flex items-center gap-2 min-w-0">
+          <span className="font-semibold uppercase tracking-wider text-[11px] text-muted-foreground truncate">
+            Source Control
           </span>
-          {commitInfo?.ahead !== undefined && commitInfo.ahead !== null && commitInfo.ahead > 0 && (
-            <span className="flex items-center text-[10px] font-mono text-emerald-400 font-bold" title={`${commitInfo.ahead} commits ahead`}>
-              <ArrowUp className="h-2.5 w-2.5" />{commitInfo.ahead}
-            </span>
-          )}
-          {commitInfo?.behind !== undefined && commitInfo.behind !== null && commitInfo.behind > 0 && (
-            <span className="flex items-center text-[10px] font-mono text-amber-400 font-bold" title={`${commitInfo.behind} commits behind`}>
-              <ArrowDown className="h-2.5 w-2.5" />{commitInfo.behind}
-            </span>
-          )}
         </div>
 
         <div className="flex items-center gap-0.5 shrink-0">
+          {/* Tree / List View Toggle */}
           <button
             type="button"
-            onClick={handlePull}
-            disabled={syncing}
-            title="Pull from remote (Git Pull)"
+            onClick={() => setViewMode(viewMode === 'list' ? 'tree' : 'list')}
+            title={viewMode === 'list' ? 'View as Tree' : 'View as List'}
             className="flex h-6 w-6 items-center justify-center rounded text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
           >
-            <ArrowDown className="h-3.5 w-3.5" />
+            {viewMode === 'list' ? <FolderTree className="h-3.5 w-3.5" /> : <List className="h-3.5 w-3.5" />}
           </button>
-          <button
-            type="button"
-            onClick={handlePush}
-            disabled={syncing}
-            title="Push to remote (Git Push)"
-            className="flex h-6 w-6 items-center justify-center rounded text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
-          >
-            <ArrowUp className="h-3.5 w-3.5" />
-          </button>
+
+          {/* Refresh */}
           <button
             type="button"
             onClick={refresh}
@@ -277,49 +337,224 @@ export function GitPanel(): ReactElement {
           >
             <RotateCw className="h-3.5 w-3.5" />
           </button>
+
+          {/* More Actions Menu */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button
+                type="button"
+                title="More Actions…"
+                className="flex h-6 w-6 items-center justify-center rounded text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+              >
+                <MoreHorizontal className="h-3.5 w-3.5" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48 text-xs font-sans">
+              <DropdownMenuItem onClick={handlePull}>
+                <ArrowDown className="h-3.5 w-3.5 mr-2" />
+                <span>Pull from Remote</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={handlePush}>
+                <ArrowUp className="h-3.5 w-3.5 mr-2" />
+                <span>Push to Remote</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={handleSync}>
+                <CloudSync className="h-3.5 w-3.5 mr-2" />
+                <span>Sync Changes</span>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={handleStageAll}>
+                <Plus className="h-3.5 w-3.5 mr-2" />
+                <span>Stage All Changes</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={handleUnstageAll}>
+                <Minus className="h-3.5 w-3.5 mr-2" />
+                <span>Unstage All Changes</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={handleDiscardAll} className="text-destructive focus:text-destructive">
+                <Undo2 className="h-3.5 w-3.5 mr-2" />
+                <span>Discard All Changes</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
 
       {/* Feedback Banner */}
       {feedback && (
-        <div className="bg-muted/90 border-b border-border px-3 py-1.5 text-[11px] text-foreground font-mono transition-all">
+        <div className="bg-muted border-b border-border px-3 py-1 text-[11px] text-foreground font-mono transition-all">
           {feedback}
         </div>
       )}
 
-      {/* Commit Composer (VS Code / Cursor style) */}
+      {/* Commit Box & Split Button (VS Code Standard) */}
       <div className="p-3 border-b border-border bg-background space-y-2 shrink-0">
-        <textarea
-          rows={2}
-          value={commitMessage}
-          onChange={(e) => setCommitMessage(e.target.value)}
-          onKeyDown={(e) => {
-            if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
-              e.preventDefault()
-              void handleCommit()
-            }
-          }}
-          placeholder="Commit message (⌘Enter to commit)..."
-          className="w-full rounded border border-border bg-card p-2 text-xs text-foreground placeholder:text-muted-foreground focus:outline-hidden focus:ring-1 focus:ring-foreground resize-none font-sans"
-        />
+        <div className="relative">
+          <textarea
+            rows={2}
+            value={commitMessage}
+            onChange={(e) => setCommitMessage(e.target.value)}
+            onKeyDown={(e) => {
+              if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+                e.preventDefault()
+                void handleCommit(false)
+              }
+            }}
+            placeholder={`Message (⌘Enter to commit on "${currentBranch}")`}
+            className="w-full rounded border border-border bg-card p-2 text-xs text-foreground placeholder:text-muted-foreground focus:outline-hidden focus:ring-1 focus:ring-foreground resize-none font-sans"
+          />
+        </div>
 
-        <div className="flex items-center justify-between gap-2">
+        {/* Primary Commit Button with Dropdown Action */}
+        <div className="flex items-center gap-1">
           <Button
             type="button"
             size="sm"
             disabled={!commitMessage.trim() || committing}
-            onClick={() => void handleCommit()}
-            className="h-7 w-full text-xs bg-foreground text-background hover:bg-foreground/90 font-semibold gap-1.5 justify-center shadow-xs"
+            onClick={() => void handleCommit(false)}
+            className="h-7 flex-1 text-xs bg-foreground text-background hover:bg-foreground/90 font-semibold gap-1.5 justify-center shadow-xs"
           >
             <Check className="h-3.5 w-3.5" />
-            <span>{committing ? 'Committing…' : 'Commit Changes'}</span>
+            <span>{committing ? 'Committing…' : 'Commit'}</span>
           </Button>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-7 px-1.5 text-muted-foreground hover:text-foreground"
+              >
+                <ChevronDown className="h-3.5 w-3.5" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-44 text-xs font-sans">
+              <DropdownMenuItem onClick={() => void handleCommit(true)} disabled={!commitMessage.trim() || committing}>
+                <Check className="h-3.5 w-3.5 mr-2" />
+                <span>Commit & Push</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={handleSync} disabled={syncing}>
+                <CloudSync className="h-3.5 w-3.5 mr-2" />
+                <span>Sync ({behind}↓ {ahead}↑)</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
 
-      {/* Scrollable Accordion Sections */}
-      <div className="flex-1 overflow-y-auto divide-y divide-border/40">
-        {/* 1. CHANGES SECTION */}
+      {/* Scrollable Git Sections */}
+      <div className="flex-1 overflow-y-auto divide-y divide-border/30">
+        {/* 1. STAGED CHANGES SECTION (Only shown when staged files exist) */}
+        {stagedFiles.length > 0 && (
+          <div>
+            <div
+              onClick={() => setStagedOpen(!stagedOpen)}
+              className="flex items-center justify-between px-3 py-1.5 bg-muted/20 hover:bg-muted/40 cursor-pointer transition-colors"
+            >
+              <div className="flex items-center gap-1.5 text-xs font-semibold text-foreground">
+                {stagedOpen ? <ChevronDown className="h-3.5 w-3.5" /> : <ChevronRight className="h-3.5 w-3.5" />}
+                <span>STAGED CHANGES</span>
+                <span className="rounded-full bg-emerald-500/20 text-emerald-400 px-1.5 py-0.2 text-[10px] font-mono font-bold">
+                  {stagedFiles.length}
+                </span>
+              </div>
+
+              <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
+                <button
+                  type="button"
+                  onClick={handleUnstageAll}
+                  title="Unstage All Changes"
+                  className="rounded p-0.5 text-muted-foreground hover:text-foreground hover:bg-muted"
+                >
+                  <Minus className="h-3 w-3" />
+                </button>
+              </div>
+            </div>
+
+            {stagedOpen && (
+              <div className="divide-y divide-border/20">
+                {stagedFiles.map((file) => {
+                  const isExpanded = expandedFiles.has(file.path)
+                  const diff = fileDiffs.get(file.path) ?? ''
+                  const parts = file.path.split('/')
+                  const basename = parts.pop() ?? file.path
+                  const dir = parts.join('/')
+                  const statusInfo = STATUS_MAP[file.status] ?? { label: file.status, className: 'text-muted-foreground' }
+
+                  return (
+                    <div key={`staged-${file.path}`} className="border-b border-border/20">
+                      <div
+                        onClick={() => toggleFileExpand(file.path)}
+                        className="group flex cursor-pointer items-center gap-1.5 px-3 py-1.5 hover:bg-muted/30 transition-colors text-xs"
+                      >
+                        <span className="text-[10px] text-muted-foreground/60 w-3">
+                          {isExpanded ? '▼' : '▶'}
+                        </span>
+                        {getFileIcon(file.path)}
+                        <span className="font-mono text-foreground font-medium truncate" title={file.path}>
+                          {basename}
+                        </span>
+                        {dir && (
+                          <span className="text-[10px] text-muted-foreground/60 truncate max-w-[120px]" title={dir}>
+                            {dir}
+                          </span>
+                        )}
+
+                        <span className="flex-1" />
+
+                        {(file.added > 0 || file.removed > 0) && (
+                          <span className="shrink-0 font-mono text-[10px] mr-1">
+                            {file.added > 0 && <span className="text-emerald-400">+{file.added}</span>}
+                            {file.added > 0 && file.removed > 0 && <span className="text-muted-foreground"> </span>}
+                            {file.removed > 0 && <span className="text-rose-400">-{file.removed}</span>}
+                          </span>
+                        )}
+
+                        <span className={`font-mono text-[10px] mr-1 ${statusInfo.className}`}>
+                          {statusInfo.label}
+                        </span>
+
+                        <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <button
+                            type="button"
+                            onClick={(e) => handleUnstageFile(file.path, e)}
+                            title="Unstage File"
+                            className="rounded p-0.5 text-muted-foreground hover:text-foreground hover:bg-muted"
+                          >
+                            <Minus className="h-3 w-3" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              setFullDiff({ path: file.path, diff })
+                            }}
+                            title="Open Visual Diff"
+                            className="rounded p-0.5 text-muted-foreground hover:text-foreground hover:bg-muted"
+                          >
+                            <Maximize2 className="h-3 w-3" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={(e) => handleOpenFile(file.path, e)}
+                            title="Reveal File in Explorer"
+                            className="rounded p-0.5 text-muted-foreground hover:text-foreground hover:bg-muted"
+                          >
+                            <ExternalLink className="h-3 w-3" />
+                          </button>
+                        </div>
+                      </div>
+
+                      {isExpanded && <InlineDiff raw={diff} />}
+                    </div>
+                  )
+                })}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* 2. CHANGES SECTION (Unstaged Working Tree) */}
         <div>
           <div
             onClick={() => setChangesOpen(!changesOpen)}
@@ -329,11 +564,11 @@ export function GitPanel(): ReactElement {
               {changesOpen ? <ChevronDown className="h-3.5 w-3.5" /> : <ChevronRight className="h-3.5 w-3.5" />}
               <span>CHANGES</span>
               <span className="rounded-full bg-muted px-1.5 py-0.2 text-[10px] font-mono text-muted-foreground">
-                {changedFiles.length}
+                {unstagedFiles.length}
               </span>
             </div>
 
-            {changedFiles.length > 0 && (
+            {unstagedFiles.length > 0 && (
               <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
                 <button
                   type="button"
@@ -342,14 +577,6 @@ export function GitPanel(): ReactElement {
                   className="rounded p-0.5 text-muted-foreground hover:text-foreground hover:bg-muted"
                 >
                   <Plus className="h-3 w-3" />
-                </button>
-                <button
-                  type="button"
-                  onClick={handleUnstageAll}
-                  title="Unstage All Changes"
-                  className="rounded p-0.5 text-muted-foreground hover:text-foreground hover:bg-muted"
-                >
-                  <Minus className="h-3 w-3" />
                 </button>
                 <button
                   type="button"
@@ -365,42 +592,53 @@ export function GitPanel(): ReactElement {
 
           {changesOpen && (
             <div className="divide-y divide-border/20">
-              {changedFiles.length === 0 ? (
+              {unstagedFiles.length === 0 ? (
                 <div className="py-4 text-center text-xs text-muted-foreground italic">
-                  No changes detected in working tree
+                  No changes in working directory
                 </div>
               ) : (
-                changedFiles.map((file) => {
+                unstagedFiles.map((file) => {
                   const isExpanded = expandedFiles.has(file.path)
                   const diff = fileDiffs.get(file.path) ?? ''
-                  const basename = file.path.split(/[/\\]/).pop() ?? file.path
+                  const parts = file.path.split('/')
+                  const basename = parts.pop() ?? file.path
+                  const dir = parts.join('/')
                   const statusInfo = STATUS_MAP[file.status] ?? { label: file.status, className: 'text-muted-foreground' }
 
                   return (
-                    <div key={file.path} className="border-b border-border/20">
+                    <div key={`unstaged-${file.path}`} className="border-b border-border/20">
                       <div
                         onClick={() => toggleFileExpand(file.path)}
-                        className="group flex cursor-pointer items-center gap-2 px-3 py-1.5 hover:bg-muted/30 transition-colors text-xs"
+                        className="group flex cursor-pointer items-center gap-1.5 px-3 py-1.5 hover:bg-muted/30 transition-colors text-xs"
                       >
                         <span className="text-[10px] text-muted-foreground/60 w-3">
                           {isExpanded ? '▼' : '▶'}
                         </span>
-                        <span className={`font-mono text-[10px] ${statusInfo.className}`}>
-                          {statusInfo.label}
-                        </span>
-                        <span className="min-w-0 flex-1 truncate font-mono text-foreground" title={file.path}>
+                        {getFileIcon(file.path)}
+                        <span className="font-mono text-foreground font-medium truncate" title={file.path}>
                           {basename}
                         </span>
+                        {dir && (
+                          <span className="text-[10px] text-muted-foreground/60 truncate max-w-[120px]" title={dir}>
+                            {dir}
+                          </span>
+                        )}
+
+                        <span className="flex-1" />
 
                         {(file.added > 0 || file.removed > 0) && (
-                          <span className="shrink-0 font-mono text-[10px]">
+                          <span className="shrink-0 font-mono text-[10px] mr-1">
                             {file.added > 0 && <span className="text-emerald-400">+{file.added}</span>}
                             {file.added > 0 && file.removed > 0 && <span className="text-muted-foreground"> </span>}
                             {file.removed > 0 && <span className="text-rose-400">-{file.removed}</span>}
                           </span>
                         )}
 
-                        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <span className={`font-mono text-[10px] mr-1 ${statusInfo.className}`}>
+                          {statusInfo.label}
+                        </span>
+
+                        <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
                           <button
                             type="button"
                             onClick={(e) => handleStageFile(file.path, e)}
@@ -428,6 +666,14 @@ export function GitPanel(): ReactElement {
                           >
                             <Maximize2 className="h-3 w-3" />
                           </button>
+                          <button
+                            type="button"
+                            onClick={(e) => handleOpenFile(file.path, e)}
+                            title="Reveal File in Explorer"
+                            className="rounded p-0.5 text-muted-foreground hover:text-foreground hover:bg-muted"
+                          >
+                            <ExternalLink className="h-3 w-3" />
+                          </button>
                         </div>
                       </div>
 
@@ -440,7 +686,7 @@ export function GitPanel(): ReactElement {
           )}
         </div>
 
-        {/* 2. AGENT WORKTREES SECTION */}
+        {/* 3. AGENT WORKTREES SECTION */}
         <div>
           <div
             onClick={() => setWorktreesOpen(!worktreesOpen)}
@@ -515,7 +761,7 @@ export function GitPanel(): ReactElement {
           )}
         </div>
 
-        {/* 3. BRANCHES SECTION */}
+        {/* 4. BRANCHES SECTION */}
         <div>
           <div
             onClick={() => setBranchesOpen(!branchesOpen)}
@@ -553,7 +799,7 @@ export function GitPanel(): ReactElement {
           )}
         </div>
 
-        {/* 4. COMMIT HISTORY SECTION */}
+        {/* 5. COMMIT HISTORY SECTION */}
         <div>
           <div
             onClick={() => setHistoryOpen(!historyOpen)}
@@ -569,7 +815,26 @@ export function GitPanel(): ReactElement {
         </div>
       </div>
 
-      {/* Modals */}
+      {/* Status Bar at Bottom of Git Panel (Branch & Sync) */}
+      <div className="flex items-center justify-between border-t border-border bg-muted/30 px-3 py-1.5 text-[11px] font-mono text-muted-foreground shrink-0">
+        <div className="flex items-center gap-1.5 truncate">
+          <GitBranch className="h-3 w-3 text-foreground" />
+          <span className="truncate text-foreground font-medium">{currentBranch}</span>
+        </div>
+
+        <button
+          type="button"
+          onClick={handleSync}
+          disabled={syncing}
+          title="Synchronize Changes"
+          className="flex items-center gap-1 hover:text-foreground transition-colors"
+        >
+          <CloudSync className={cn('h-3 w-3', syncing && 'animate-spin')} />
+          <span>{syncing ? 'Syncing…' : `${behind}↓ ${ahead}↑`}</span>
+        </button>
+      </div>
+
+      {/* Full Visual Diff Modal */}
       {fullDiff && (
         <VisualDiffViewer
           open={Boolean(fullDiff)}
@@ -579,6 +844,7 @@ export function GitPanel(): ReactElement {
         />
       )}
 
+      {/* Merge Modal */}
       {mergeTarget && (
         <MergeBranchDialog
           open={Boolean(mergeTarget)}
