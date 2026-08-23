@@ -52,6 +52,9 @@ import { WorkspaceTabs } from '@/components/WorkspaceTabs/WorkspaceTabs'
 import { TerminateConfirmModal } from '@/components/ConfirmModal/TerminateConfirmModal'
 import { SnapshotManagerModal } from '@/components/Snapshot/SnapshotManagerModal'
 import { MissionControlModal } from '@/components/MissionControl/MissionControlModal'
+import { CommandPaletteModal } from '@/components/CommandPalette/CommandPaletteModal'
+import { StatusBar } from '@/components/StatusBar/StatusBar'
+import { useCommandPaletteStore } from '@/store/command-palette-store'
 import { useActivityBarStore } from '@/store/activity-bar-store'
 import { useBrowserStore } from '@/store/browser-store'
 import { useUpdaterStore } from '@/store/updater-store'
@@ -337,6 +340,13 @@ export default function App(): ReactElement {
           useTerminalSearchStore.getState().open(terminalId)
           return
         }
+      }
+
+      // Command Palette: Cmd+K / Cmd+P (or Ctrl+K / Ctrl+P)
+      if ((e.metaKey || e.ctrlKey) && (e.key.toLowerCase() === 'k' || e.key.toLowerCase() === 'p')) {
+        e.preventDefault()
+        useCommandPaletteStore.getState().toggle()
+        return
       }
 
       // Application Zoom shortcuts: Cmd+= / Cmd+- / Cmd+0 (or Ctrl)
@@ -763,6 +773,10 @@ export default function App(): ReactElement {
           </main>
         </div>
 
+        <StatusBar
+          onOpenMissionControl={() => setMissionControlOpen(true)}
+        />
+
         <DragOverlay>
           {draggingLeaf ? <PaneDragGhost leaf={draggingLeaf} /> : null}
         </DragOverlay>
@@ -775,6 +789,16 @@ export default function App(): ReactElement {
             initialCategory={settingsTab}
           />
         )}
+
+        <CommandPaletteModal
+          onOpenSettings={(c) => {
+            setSettingsTab((c as CategoryId) || 'appearance')
+            setSettingsOpen(true)
+          }}
+          onOpenSnapshots={() => setSnapshotModalOpen(true)}
+          onOpenMissionControl={() => setMissionControlOpen(true)}
+          onNewWorkspace={() => setNewWorkspaceModalOpen(true)}
+        />
 
         <NewWorkspaceModal
           open={newWorkspaceModalOpen}

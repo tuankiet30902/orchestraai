@@ -17,7 +17,7 @@ import { useGitStore } from '@/store/git-store'
 import { minimize, toggleMaximize, closeWindow, onMaximizedChanged } from '@/tauri/window'
 import { isMacPlatform } from '@/lib/platform'
 import { needsTrafficLightInset } from '@/lib/titlebar-chrome'
-import { HeaderRecentSearch } from './HeaderRecentSearch'
+import { useCommandPaletteStore } from '@/store/command-palette-store'
 
 const isMac = isMacPlatform()
 const navbarHint = isMac ? '⌘B' : 'Ctrl+B'
@@ -41,6 +41,7 @@ export function TitleBar({ fullscreen }: TitleBarProps): ReactElement {
   const activeWorkspaceName = activeWorkspace?.name
 
   const onHome = useAppStore((s) => s.welcomeFocused || s.workspaces.length === 0)
+  const openCommandPalette = useCommandPaletteStore((s) => s.open)
 
   useEffect(() => {
     if (isMac) return
@@ -60,12 +61,17 @@ export function TitleBar({ fullscreen }: TitleBarProps): ReactElement {
     >
       {/* Left: Brand / Logo */}
       <div className="flex items-center gap-2 shrink-0">
-        <div className="flex items-center gap-2 pl-1">
+        <button
+          type="button"
+          onClick={() => openCommandPalette()}
+          className="flex items-center gap-2 pl-1 hover:opacity-80 transition-opacity cursor-pointer"
+          title="Open Command Palette (⌘K)"
+        >
           <Logo className="h-5 w-5 shrink-0 rounded-md" />
           <span className="hidden sm:inline text-xs font-bold text-foreground tracking-tight">
             OrchestraAI
           </span>
-        </div>
+        </button>
       </div>
 
       {/* Center: Command Center & Quick Search Bar */}
@@ -73,21 +79,23 @@ export function TitleBar({ fullscreen }: TitleBarProps): ReactElement {
         data-tauri-drag-region
         className="flex min-w-0 flex-1 items-center justify-center px-4"
       >
-        {onHome ? (
-          <HeaderRecentSearch />
-        ) : (
-          <div className="flex items-center gap-2">
-            <div className="flex h-7 max-w-[340px] min-w-0 items-center gap-2 rounded-md border border-border bg-background/90 px-3 text-xs text-muted-foreground shadow-2xs hover:border-foreground/30 hover:text-foreground transition-all cursor-default">
-              <Search className="h-3.5 w-3.5 shrink-0 opacity-60" />
-              <span className="truncate font-medium text-foreground">
-                {activeWorkspaceName ?? 'Orchestra Workspace'}
-              </span>
-              <kbd className="hidden md:inline-flex items-center rounded border border-border bg-muted/60 px-1.5 font-mono text-[9px] text-muted-foreground font-semibold">
-                ⌘K
-              </kbd>
-            </div>
+        <button
+          type="button"
+          data-tauri-drag-region="false"
+          onClick={() => openCommandPalette()}
+          className="flex h-7 w-full max-w-[360px] min-w-0 items-center justify-between gap-2 rounded-lg border border-border bg-background/90 px-3 text-xs text-muted-foreground shadow-2xs hover:border-amber-500/40 hover:bg-card hover:text-foreground transition-all cursor-pointer"
+          title="Open Command Palette (⌘K / ⌘P)"
+        >
+          <div className="flex items-center gap-2 truncate">
+            <Search className="h-3.5 w-3.5 shrink-0 text-amber-500/70" />
+            <span className="truncate font-medium text-foreground">
+              {onHome ? 'Search commands, workspaces…' : activeWorkspaceName ?? 'Orchestra Workspace'}
+            </span>
           </div>
-        )}
+          <kbd className="hidden md:inline-flex items-center rounded border border-border bg-muted/70 px-1.5 font-mono text-[9px] text-muted-foreground font-semibold">
+            ⌘K
+          </kbd>
+        </button>
       </div>
 
       {/* Right: Sidebar & Panel Open/Close Toggle Icons */}
