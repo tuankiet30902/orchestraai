@@ -7,6 +7,7 @@ interface ActivityBarState {
   activeTab: ActivityTab
   sidebarOpen: boolean
   sidebarWidth: number
+  lastSavedWidth: number
 }
 
 interface ActivityBarActions {
@@ -21,6 +22,7 @@ export const useActivityBarStore = create<ActivityBarState & ActivityBarActions>
   activeTab: 'explorer',
   sidebarOpen: true,
   sidebarWidth: 260,
+  lastSavedWidth: 260,
 
   setActiveTab: (tab) => {
     set({ activeTab: tab, sidebarOpen: true })
@@ -35,9 +37,34 @@ export const useActivityBarStore = create<ActivityBarState & ActivityBarActions>
     }
   },
 
-  setSidebarOpen: (open) => set({ sidebarOpen: open }),
+  setSidebarOpen: (open) => {
+    const { lastSavedWidth } = get()
+    set({
+      sidebarOpen: open,
+      sidebarWidth: open ? lastSavedWidth : 0
+    })
+  },
 
-  toggleSidebar: () => set((s) => ({ sidebarOpen: !s.sidebarOpen })),
+  toggleSidebar: () => {
+    const { sidebarOpen, lastSavedWidth } = get()
+    const nextOpen = !sidebarOpen
+    set({
+      sidebarOpen: nextOpen,
+      sidebarWidth: nextOpen ? lastSavedWidth : 0
+    })
+  },
 
-  setSidebarWidth: (width) => set({ sidebarWidth: Math.max(180, Math.min(600, width)) })
+  setSidebarWidth: (width) => {
+    if (width < 100) {
+      // Snapped to collapse
+      set({ sidebarOpen: false })
+    } else {
+      const clamped = Math.max(160, Math.min(600, width))
+      set({
+        sidebarWidth: clamped,
+        lastSavedWidth: clamped,
+        sidebarOpen: true
+      })
+    }
+  }
 }))

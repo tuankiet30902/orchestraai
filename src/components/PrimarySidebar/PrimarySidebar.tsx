@@ -6,7 +6,6 @@ import {
   GitGraph,
   Sparkles,
   Plus,
-  PanelLeftClose,
   RotateCw
 } from 'lucide-react'
 import { useActivityBarStore, type ActivityTab } from '@/store/activity-bar-store'
@@ -27,7 +26,7 @@ const PANEL_CONFIG: Record<ActivityTab, { title: string; icon: typeof LayoutGrid
 export function PrimarySidebar({ onNewWorkspace }: { onNewWorkspace: () => void }): ReactElement | null {
   const activeTab = useActivityBarStore((s) => s.activeTab)
   const sidebarOpen = useActivityBarStore((s) => s.sidebarOpen)
-  const toggleSidebar = useActivityBarStore((s) => s.toggleSidebar)
+  const setSidebarOpen = useActivityBarStore((s) => s.setSidebarOpen)
   const sidebarWidth = useActivityBarStore((s) => s.sidebarWidth)
   const setSidebarWidth = useActivityBarStore((s) => s.setSidebarWidth)
   const [isResizing, setIsResizing] = useState(false)
@@ -35,20 +34,20 @@ export function PrimarySidebar({ onNewWorkspace }: { onNewWorkspace: () => void 
 
   const refreshGit = useGitStore((s) => s.refresh)
 
-  if (!sidebarOpen) return null
-
-  const config = PANEL_CONFIG[activeTab]
-  const Icon = config.icon
-
   const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>): void => {
     e.preventDefault()
     setIsResizing(true)
     const startX = e.clientX
-    const startWidth = sidebarWidth
+    const startWidth = sidebarOpen ? sidebarWidth : 0
 
     const onPointerMove = (moveEvent: PointerEvent): void => {
       const delta = moveEvent.clientX - startX
-      setSidebarWidth(startWidth + delta)
+      const targetWidth = startWidth + delta
+      if (targetWidth < 100) {
+        setSidebarOpen(false)
+      } else {
+        setSidebarWidth(targetWidth)
+      }
     }
 
     const onPointerUp = (): void => {
@@ -61,28 +60,47 @@ export function PrimarySidebar({ onNewWorkspace }: { onNewWorkspace: () => void 
     window.addEventListener('pointerup', onPointerUp)
   }
 
+  // When closed, render a draggable edge strip to drag-open
+  if (!sidebarOpen) {
+    return (
+      <div
+        role="separator"
+        aria-orientation="vertical"
+        onPointerDown={handlePointerDown}
+        onDoubleClick={() => setSidebarOpen(true)}
+        title="Drag right to open sidebar (or double-click to open)"
+        className="group relative h-full w-1 cursor-col-resize select-none shrink-0 z-30 hover:bg-foreground/30 transition-colors"
+      >
+        <div className="h-full w-[1px] bg-border" />
+      </div>
+    )
+  }
+
+  const config = PANEL_CONFIG[activeTab]
+  const Icon = config.icon
+
   return (
     <div
       ref={sidebarRef}
       style={{ width: `${sidebarWidth}px` }}
       className="relative flex h-full flex-col border-r border-border bg-card select-none shrink-0 overflow-hidden"
     >
-      {/* Sidebar Header */}
-      <div className="flex h-9 shrink-0 items-center justify-between border-b border-border bg-muted/20 px-3">
-        <div className="flex items-center gap-2 min-w-0">
+      {/* Sidebar Header (No close button: drag edge or double-click to close) */}
+      <div className="flex h-8 shrink-0 items-center justify-between border-b border-border bg-muted/20 px-2.5">
+        <div className="flex items-center gap-1.5 min-w-0">
           <Icon className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
-          <span className="text-xs font-semibold text-foreground tracking-tight truncate">
+          <span className="text-[11px] font-semibold text-foreground tracking-tight truncate">
             {config.title}
           </span>
         </div>
 
-        <div className="flex items-center gap-1 shrink-0">
+        <div className="flex items-center gap-0.5 shrink-0">
           {activeTab === 'explorer' && (
             <button
               type="button"
               onClick={onNewWorkspace}
               title="New Workspace"
-              className="flex h-6 w-6 items-center justify-center rounded text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+              className="flex h-5 w-5 items-center justify-center rounded text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
             >
               <Plus className="h-3.5 w-3.5" />
             </button>
@@ -93,20 +111,11 @@ export function PrimarySidebar({ onNewWorkspace }: { onNewWorkspace: () => void 
               type="button"
               onClick={refreshGit}
               title="Refresh Git status"
-              className="flex h-6 w-6 items-center justify-center rounded text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+              className="flex h-5 w-5 items-center justify-center rounded text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
             >
-              <RotateCw className="h-3.5 w-3.5" />
+              <RotateCw className="h-3 w-3" />
             </button>
           )}
-
-          <button
-            type="button"
-            onClick={toggleSidebar}
-            title="Collapse Sidebar (⌘B)"
-            className="flex h-6 w-6 items-center justify-center rounded text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
-          >
-            <PanelLeftClose className="h-3.5 w-3.5" />
-          </button>
         </div>
       </div>
 
@@ -118,13 +127,13 @@ export function PrimarySidebar({ onNewWorkspace }: { onNewWorkspace: () => void 
         {activeTab === 'pit' && <OrchestraPitPanel />}
       </div>
 
-      {/* Resize handle on the right edge */}
+      {/* Resize handle on the right edge: Drag left to collapse, double-click to toggle */}
       <div
         role="separator"
         aria-orientation="vertical"
         onPointerDown={handlePointerDown}
-        onDoubleClick={() => setSidebarWidth(260)}
-        title="Drag to resize sidebar (double click to reset)"
+        onDoubleClick={() => setSidebarOpen(false)}
+        title="Drag to resize / drag left to close (double-click to close)"
         className="group absolute top-0 right-0 bottom-0 w-1.5 cursor-col-resize z-30 flex items-center justify-end"
       >
         <div
