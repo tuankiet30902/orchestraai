@@ -18,30 +18,30 @@ function CommitRow({ commit }: { commit: GitCommitLog }): ReactElement {
   }
 
   return (
-    <div className="border-b border-border/40 p-2 hover:bg-accent/30 transition-colors space-y-1">
+    <div className="border-b border-border/20 px-2 py-1.5 hover:bg-muted/30 transition-colors space-y-0.5 text-[11px] font-sans">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-1.5 min-w-0 flex-1">
-          <GitCommit className="h-3.5 w-3.5 text-primary shrink-0" />
+          <GitCommit className="h-3 w-3 text-muted-foreground shrink-0" />
           <button
             type="button"
             onClick={handleCopyHash}
             title="Click to copy full commit hash"
-            className="font-mono text-[10px] text-muted-foreground hover:text-foreground bg-muted/60 px-1 py-0.5 rounded shrink-0 cursor-pointer"
+            className="font-mono text-[9.5px] text-muted-foreground hover:text-foreground bg-muted/70 px-1 py-0.2 rounded shrink-0 cursor-pointer"
           >
             {commit.shortHash}
           </button>
-          <span className="text-[10px] text-muted-foreground truncate flex items-center gap-1">
-            <User className="h-2.5 w-2.5 shrink-0 opacity-70" />
+          <span className="text-[10px] text-muted-foreground/70 truncate flex items-center gap-1">
+            <User className="h-2.5 w-2.5 shrink-0 opacity-60" />
             <span className="truncate">{commit.authorName}</span>
           </span>
         </div>
 
-        <span className="text-[10px] text-muted-foreground/60 font-mono shrink-0">
+        <span className="text-[9.5px] text-muted-foreground/50 font-mono shrink-0">
           {formatTimeAgo(commit.timestamp)}
         </span>
       </div>
 
-      <p className="text-xs font-mono text-foreground leading-snug break-words pl-5">
+      <p className="text-[11px] font-sans text-foreground leading-snug break-words pl-4.5">
         {commit.message}
       </p>
     </div>

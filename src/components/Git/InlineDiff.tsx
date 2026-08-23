@@ -32,7 +32,7 @@ export function InlineDiff({ raw }: InlineDiffProps): ReactElement {
   }
 
   return (
-    <div className="overflow-x-auto border-l-2 border-[#4ec994] bg-canvas py-1 font-mono text-xs">
+    <div className="overflow-x-auto border-l-2 border-border/80 bg-canvas py-1 font-mono text-[10.5px] leading-snug">
       {lines.map((line, i) => {
         if (line.type === 'hunk') {
           // Hunk header spans the full width — no gutter cells.
