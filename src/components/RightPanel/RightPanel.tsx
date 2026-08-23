@@ -56,7 +56,7 @@ export function RightPanel(): ReactElement {
                 : 'text-muted-foreground hover:text-foreground',
             ].join(' ')}
           >
-            <CheckSquare className="h-4 w-4 shrink-0 text-amber-500" />
+            <CheckSquare className="h-4 w-4 shrink-0" />
             <span>Tasks</span>
           </button>
           <button

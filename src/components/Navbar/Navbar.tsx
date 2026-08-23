@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type ReactElement } from 'react'
 import {
+  CheckSquare,
   ChevronDown,
   ChevronRight,
   Folder,
@@ -217,7 +218,7 @@ export function Navbar({ onNewWorkspace }: NavbarProps): ReactElement {
             <DragOverlay>
               {draggingWorkspace ? (
                 <div aria-hidden className="flex items-center gap-1.5 rounded-md bg-accent px-2.5 py-1.5 text-xs text-accent-foreground shadow-lg">
-                  <Folder className="h-3.5 w-3.5 text-primary" />
+                  <Folder className="h-3.5 w-3.5 text-muted-foreground" />
                   <span className="flex-1 truncate">{draggingWorkspace.name}</span>
                   <span className="text-[10px] tabular-nums text-muted-foreground font-mono">
                     {collectLeaves(draggingWorkspace.layout).length} panes
@@ -227,15 +228,29 @@ export function Navbar({ onNewWorkspace }: NavbarProps): ReactElement {
             </DragOverlay>
           </DndContext>
 
-          <Button
-            variant="ghost"
-            size="sm"
-            className="mt-2 w-full justify-start text-xs text-muted-foreground"
-            onClick={onNewWorkspace}
-          >
-            <Plus className="h-3.5 w-3.5 mr-1" />
-            New workspace
-          </Button>
+          <div className="mt-2 space-y-1">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="w-full justify-start text-xs text-muted-foreground hover:text-foreground"
+              onClick={onNewWorkspace}
+            >
+              <Plus className="h-3.5 w-3.5 mr-1" />
+              New workspace
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="w-full justify-start text-xs text-muted-foreground hover:text-foreground"
+              onClick={() => {
+                useGitStore.getState().setMode('tasks')
+                useGitStore.getState().setPanelOpen(true)
+              }}
+            >
+              <CheckSquare className="h-3.5 w-3.5 mr-1" />
+              Tasks & Kanban
+            </Button>
+          </div>
         </div>
 
         {/* Footer update button if present */}
@@ -361,9 +376,9 @@ function WorkspaceTreeNode({
 
         {/* Folder Icon */}
         {expanded ? (
-          <FolderOpen className="h-3.5 w-3.5 shrink-0 text-primary" />
+          <FolderOpen className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
         ) : (
-          <Folder className="h-3.5 w-3.5 shrink-0 text-primary/80" />
+          <Folder className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
         )}
 
         {/* Workspace Name */}
@@ -400,7 +415,7 @@ function WorkspaceTreeNode({
                 useGitStore.getState().setPanelOpen(true)
               }}
             >
-              <MessagesSquare className="h-3.5 w-3.5 mr-1 text-primary" />
+              <MessagesSquare className="h-3.5 w-3.5 mr-1" />
               Add to Team Pit
             </DropdownMenuItem>
             <DropdownMenuItem

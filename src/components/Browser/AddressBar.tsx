@@ -95,7 +95,7 @@ export function AddressBar({ terminalId, preview }: AddressBarProps): ReactEleme
               title="Inspect & Annotate Element (Send to Agent)"
               onClick={() => setInspectOpen(!inspectOpen)}
               className={`rounded p-1 transition-colors ${
-                inspectOpen ? 'bg-primary text-primary-foreground' : 'hover:bg-muted text-primary'
+                inspectOpen ? 'bg-muted text-foreground font-semibold' : 'hover:bg-muted text-muted-foreground hover:text-foreground'
               }`}
             >
               <Crosshair aria-hidden className="h-3.5 w-3.5" />

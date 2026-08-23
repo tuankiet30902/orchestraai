@@ -5,18 +5,18 @@ import { useMissionControlStore, type EventCategory, type EventSeverity } from '
 import { Button } from '@/components/ui/button'
 
 const SEVERITY_ICON: Record<EventSeverity, ReactElement> = {
-  info: <Info className="h-3.5 w-3.5 text-blue-400" />,
-  success: <CheckCircle className="h-3.5 w-3.5 text-emerald-400" />,
-  warning: <AlertTriangle className="h-3.5 w-3.5 text-amber-400" />,
-  error: <AlertCircle className="h-3.5 w-3.5 text-rose-400" />
+  info: <Info className="h-3.5 w-3.5 text-muted-foreground" />,
+  success: <CheckCircle className="h-3.5 w-3.5 text-foreground" />,
+  warning: <AlertTriangle className="h-3.5 w-3.5 text-foreground" />,
+  error: <AlertCircle className="h-3.5 w-3.5 text-muted-foreground" />
 }
 
 const CATEGORY_ICON: Record<EventCategory, ReactElement> = {
-  agent: <Terminal className="h-3 w-3 text-amber-400" />,
-  git: <GitBranch className="h-3 w-3 text-emerald-400" />,
-  task: <CheckSquare className="h-3 w-3 text-blue-400" />,
-  pit: <MessagesSquare className="h-3 w-3 text-purple-400" />,
-  token: <Cpu className="h-3 w-3 text-amber-400" />,
+  agent: <Terminal className="h-3 w-3 text-muted-foreground" />,
+  git: <GitBranch className="h-3 w-3 text-muted-foreground" />,
+  task: <CheckSquare className="h-3 w-3 text-muted-foreground" />,
+  pit: <MessagesSquare className="h-3 w-3 text-muted-foreground" />,
+  token: <Cpu className="h-3 w-3 text-muted-foreground" />,
   system: <Activity className="h-3 w-3 text-muted-foreground" />
 }
 
@@ -61,7 +61,7 @@ export function MissionControlModal({
         {/* Header */}
         <div className="flex items-center justify-between border-b border-border bg-muted/30 px-5 py-3.5 shrink-0">
           <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 border border-primary/20 text-primary">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-muted border border-border text-foreground">
               <Activity className="h-5 w-5" />
             </div>
             <div>

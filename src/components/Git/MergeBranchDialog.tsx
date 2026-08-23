@@ -66,7 +66,7 @@ export function MergeBranchDialog({
 
         {/* Header */}
         <div className="flex items-center gap-3">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 border border-primary/20 text-primary">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-muted border border-border text-foreground">
             <GitMerge className="h-5 w-5" />
           </div>
           <div>

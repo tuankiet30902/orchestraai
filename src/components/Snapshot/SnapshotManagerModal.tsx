@@ -182,7 +182,7 @@ export function SnapshotManagerModal({
         {/* Header */}
         <div className="flex items-center justify-between border-b border-border bg-muted/30 px-5 py-3.5 shrink-0">
           <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 border border-primary/20 text-primary">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-muted border border-border text-foreground">
               <Bookmark className="h-5 w-5" />
             </div>
             <div>
@@ -204,7 +204,7 @@ export function SnapshotManagerModal({
             <Button
               size="sm"
               onClick={() => setShowSaveForm(!showSaveForm)}
-              className="h-8 text-xs bg-primary text-primary-foreground font-semibold gap-1"
+              className="h-8 text-xs bg-foreground text-background hover:bg-foreground/90 font-semibold gap-1"
             >
               <Plus className="h-3.5 w-3.5" />
               <span>Save Current</span>
@@ -307,7 +307,7 @@ export function SnapshotManagerModal({
                   <Button
                     size="sm"
                     onClick={() => handleRestore(snap)}
-                    className="h-7 text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-medium gap-1"
+                    className="h-7 text-xs bg-foreground text-background hover:bg-foreground/90 font-medium gap-1"
                   >
                     <Play className="h-3 w-3 fill-current" />
                     <span>Restore</span>
