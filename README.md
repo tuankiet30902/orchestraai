@@ -48,4 +48,3 @@ Bug reports and questions welcome in [issues](https://github.com/tuankiet30902/o
 ---
 
 <sub>Built on [Tauri](https://tauri.app), [xterm.js](https://xtermjs.org) and [portable-pty](https://github.com/wez/wezterm/tree/main/pty).</sub>
-# orchestraai
