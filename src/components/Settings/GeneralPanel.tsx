@@ -2,6 +2,7 @@
 import { useEffect, useState, type ReactElement } from 'react'
 import { RefreshCw, ShieldAlert, Terminal, Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { Switch } from '@/components/ui/switch'
 import { useSettingsConfigStore } from '@/store/settings-config-store'
 import { useUpdaterStore } from '@/store/updater-store'
 import { getAppVersion } from '@/tauri/app'
@@ -21,25 +22,11 @@ function ToggleRow({ label, description, checked, onChange }: ToggleRowProps): R
         <div className="text-sm font-medium text-foreground">{label}</div>
         {description && <div className="text-xs text-muted-foreground mt-0.5">{description}</div>}
       </div>
-      <button
-        type="button"
-        role="switch"
-        aria-checked={checked}
+      <Switch
+        checked={checked}
+        onCheckedChange={onChange}
         aria-label={label}
-        onClick={() => onChange(!checked)}
-        className={cn(
-          'relative h-5 w-9 shrink-0 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:ring-offset-background cursor-pointer',
-          checked ? 'bg-foreground' : 'bg-muted'
-        )}
-      >
-        <span
-          aria-hidden
-          className={cn(
-            'absolute top-0.5 h-4 w-4 rounded-full bg-background shadow transition-transform',
-            checked ? 'translate-x-4' : 'translate-x-0.5'
-          )}
-        />
-      </button>
+      />
     </div>
   )
 }

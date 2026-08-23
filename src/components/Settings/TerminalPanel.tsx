@@ -18,6 +18,7 @@ import { useStatuslineStore } from '@/store/statusline-store'
 import { useSettingsConfigStore } from '@/store/settings-config-store'
 import { listAvailableShells, type AvailableShell } from '@/tauri/shell'
 import { Button } from '@/components/ui/button'
+import { Switch } from '@/components/ui/switch'
 import { cn } from '@/lib/utils'
 
 /** The Terminal & Shell settings category */
@@ -134,25 +135,11 @@ function StatusLineSettings(): ReactElement {
             Automatically injects statusline hook into <span className="font-mono text-foreground">~/.claude/settings.json</span>.
           </span>
         </div>
-        <button
-          type="button"
-          role="switch"
-          aria-checked={enabled}
+        <Switch
+          checked={enabled}
+          onCheckedChange={(v) => void setEnabled(v)}
           aria-label="Toggle Claude Code status line"
-          onClick={() => void setEnabled(!enabled)}
-          className={cn(
-            'relative h-5 w-9 shrink-0 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:ring-offset-background cursor-pointer',
-            enabled ? 'bg-foreground' : 'bg-muted'
-          )}
-        >
-          <span
-            aria-hidden
-            className={cn(
-              'absolute top-0.5 h-4 w-4 rounded-full bg-background shadow transition-transform',
-              enabled ? 'translate-x-4' : 'translate-x-0.5'
-            )}
-          />
-        </button>
+        />
       </div>
     </section>
   )
@@ -199,25 +186,11 @@ function TerminalBehaviorSettings(): ReactElement {
           <span className="text-xs font-medium text-foreground">Cursor Blinking</span>
           <span className="block text-[11px] text-muted-foreground">Smoothly pulse cursor in focused terminal panes</span>
         </div>
-        <button
-          type="button"
-          role="switch"
-          aria-checked={terminal.cursorBlink}
+        <Switch
+          checked={terminal.cursorBlink}
+          onCheckedChange={(v) => updateTerminal({ cursorBlink: v })}
           aria-label="Cursor Blinking"
-          onClick={() => updateTerminal({ cursorBlink: !terminal.cursorBlink })}
-          className={cn(
-            'relative h-5 w-9 shrink-0 rounded-full transition-colors focus-visible:outline-none cursor-pointer',
-            terminal.cursorBlink ? 'bg-foreground' : 'bg-muted'
-          )}
-        >
-          <span
-            aria-hidden
-            className={cn(
-              'absolute top-0.5 h-4 w-4 rounded-full bg-background shadow transition-transform',
-              terminal.cursorBlink ? 'translate-x-4' : 'translate-x-0.5'
-            )}
-          />
-        </button>
+        />
       </div>
 
       {/* Scrollback Limit */}
@@ -245,25 +218,11 @@ function TerminalBehaviorSettings(): ReactElement {
           <span className="text-xs font-medium text-foreground">Copy on Selection</span>
           <span className="block text-[11px] text-muted-foreground">Automatically copy highlighted terminal text to system clipboard</span>
         </div>
-        <button
-          type="button"
-          role="switch"
-          aria-checked={terminal.copyOnSelect}
+        <Switch
+          checked={terminal.copyOnSelect}
+          onCheckedChange={(v) => updateTerminal({ copyOnSelect: v })}
           aria-label="Copy on Selection"
-          onClick={() => updateTerminal({ copyOnSelect: !terminal.copyOnSelect })}
-          className={cn(
-            'relative h-5 w-9 shrink-0 rounded-full transition-colors focus-visible:outline-none cursor-pointer',
-            terminal.copyOnSelect ? 'bg-foreground' : 'bg-muted'
-          )}
-        >
-          <span
-            aria-hidden
-            className={cn(
-              'absolute top-0.5 h-4 w-4 rounded-full bg-background shadow transition-transform',
-              terminal.copyOnSelect ? 'translate-x-4' : 'translate-x-0.5'
-            )}
-          />
-        </button>
+        />
       </div>
     </section>
   )
