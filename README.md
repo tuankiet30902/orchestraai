@@ -187,13 +187,41 @@ OrchestraAI works out of the box with any terminal-based agent or command-line u
 
 ## Download & Installation
 
-Pre-compiled binary releases for **macOS**, **Windows**, and **Linux** are available on the [GitHub Releases](https://github.com/tuankiet30902/orchestraai/releases) page:
+### One-Line Terminal Install
 
-| Platform | Architecture | Installer Format |
+Install OrchestraAI instantly with a single command in your terminal:
+
+**macOS & Linux**:
+```bash
+curl -fsSL https://raw.githubusercontent.com/tuankiet30902/orchestraai/main/install.sh | bash
+```
+
+**Windows (PowerShell as Administrator)**:
+```powershell
+irm https://raw.githubusercontent.com/tuankiet30902/orchestraai/main/install.ps1 | iex
+```
+
+---
+
+### Package Managers
+
+| Package Manager | Platform | Command |
 | :--- | :--- | :--- |
-| **macOS** | Universal *(Apple Silicon M1-M4 & Intel)* | `.dmg` (Signed Universal Binary) |
-| **Windows** | x64 / ARM64 | `.exe` (NSIS Installer) / `.msi` |
-| **Linux** | x86_64 | `.deb` (Debian/Ubuntu) / `.AppImage` |
+| **Homebrew Cask** | macOS | `brew install --cask orchestraai` |
+| **WinGet** | Windows | `winget install OrchestraAI` |
+
+---
+
+### Direct Download Packages
+
+Pre-compiled binary releases for **macOS**, **Windows**, and **Linux** are published on [GitHub Releases](https://github.com/tuankiet30902/orchestraai/releases):
+
+| Operating System | Architecture | Package Format | Direct Download |
+| :--- | :--- | :--- | :--- |
+| 🍏 **macOS** | Universal *(Apple Silicon M1-M4 & Intel)* | `.dmg` | [Download `OrchestraAI.dmg`](https://github.com/tuankiet30902/orchestraai/releases/latest/download/OrchestraAI.dmg) |
+| 🪟 **Windows** | x64 / ARM64 | `.exe` / `.msi` | [Download `OrchestraAI-setup.exe`](https://github.com/tuankiet30902/orchestraai/releases/latest/download/OrchestraAI-setup.exe) |
+| 🐧 **Linux** | x86_64 | `.AppImage` | [Download `OrchestraAI.AppImage`](https://github.com/tuankiet30902/orchestraai/releases/latest/download/OrchestraAI.AppImage) |
+| 🐧 **Linux** | x86_64 | `.deb` (Debian / Ubuntu) | [Download `OrchestraAI.deb`](https://github.com/tuankiet30902/orchestraai/releases/latest/download/OrchestraAI.deb) |
 
 ---
 
