@@ -19,7 +19,7 @@ Current state that shapes the design:
 
 - `tauri.conf.json` has `plugins: {}`, no `createUpdaterArtifacts`, and
   `bundle.targets: "all"`.
-- Version `0.1.0` is duplicated in `package.json`, `src-tauri/Cargo.toml`
+- Version `0.1.1` is duplicated in `package.json`, `src-tauri/Cargo.toml`
   (+ `Cargo.lock`), and `src-tauri/tauri.conf.json`.
 - `.github/workflows/ci.yml` runs tests only; the repo is public, so
   `https://github.com/duongducnguyen/swarmterm/releases/latest/download/latest.json`

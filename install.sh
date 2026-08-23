@@ -22,8 +22,8 @@ echo "==> Fetching latest release information..."
 RELEASE_JSON="$(curl -fsSL "https://api.github.com/repos/${REPO}/releases/latest" 2>/dev/null || true)"
 
 if [ -z "$RELEASE_JSON" ] || echo "$RELEASE_JSON" | grep -q "Not Found"; then
-  echo "    Release API initializing... using v0.1.0"
-  TAG="v0.1.0"
+  echo "    Release API initializing... using v0.1.1"
+  TAG="v0.1.1"
 else
   TAG="$(echo "$RELEASE_JSON" | grep '"tag_name":' | head -1 | sed -E 's/.*"([^"]+)".*/\1/')"
 fi

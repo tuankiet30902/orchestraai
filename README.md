@@ -83,20 +83,20 @@ Run in your terminal:
 ```bash
 curl -fsSL https://raw.githubusercontent.com/tuankiet30902/orchestraai/main/install.sh | bash
 ```
-> Or download the standalone disk image: [**Orchestron_0.1.0_universal.dmg**](https://github.com/tuankiet30902/orchestraai/releases/download/v0.1.0/Orchestron_0.1.0_universal.dmg)
+> Or download the standalone disk image: [**Orchestron_0.1.1_universal.dmg**](https://github.com/tuankiet30902/orchestraai/releases/download/v0.1.1/Orchestron_0.1.1_universal.dmg)
 
 ### 🪟 Windows (Windows 10 / 11 64-bit)
 Run in PowerShell (Run as Administrator or standard user):
 ```powershell
 irm https://raw.githubusercontent.com/tuankiet30902/orchestraai/main/install.ps1 | iex
 ```
-> Or download the installer: [**Orchestron_0.1.0_x64-setup.exe**](https://github.com/tuankiet30902/orchestraai/releases/download/v0.1.0/Orchestron_0.1.0_x64-setup.exe) · [**Enterprise MSI**](https://github.com/tuankiet30902/orchestraai/releases/download/v0.1.0/Orchestron_0.1.0_x64_en-US.msi)
+> Or download the installer: [**Orchestron_0.1.1_x64-setup.exe**](https://github.com/tuankiet30902/orchestraai/releases/download/v0.1.1/Orchestron_0.1.1_x64-setup.exe) · [**Enterprise MSI**](https://github.com/tuankiet30902/orchestraai/releases/download/v0.1.1/Orchestron_0.1.1_x64_en-US.msi)
 
 ### 🐧 Linux (Ubuntu, Debian, Fedora, Arch, RHEL)
 ```bash
 curl -fsSL https://raw.githubusercontent.com/tuankiet30902/orchestraai/main/install.sh | bash
 ```
-> Direct packages: [**Universal .AppImage**](https://github.com/tuankiet30902/orchestraai/releases/download/v0.1.0/Orchestron_0.1.0_amd64.AppImage) · [**Debian / Ubuntu (.deb)**](https://github.com/tuankiet30902/orchestraai/releases/download/v0.1.0/Orchestron_0.1.0_amd64.deb) · [**Fedora / RHEL (.rpm)**](https://github.com/tuankiet30902/orchestraai/releases/download/v0.1.0/Orchestron-0.1.0-1.x86_64.rpm)
+> Direct packages: [**Universal .AppImage**](https://github.com/tuankiet30902/orchestraai/releases/download/v0.1.1/Orchestron_0.1.1_amd64.AppImage) · [**Debian / Ubuntu (.deb)**](https://github.com/tuankiet30902/orchestraai/releases/download/v0.1.1/Orchestron_0.1.1_amd64.deb) · [**Fedora / RHEL (.rpm)**](https://github.com/tuankiet30902/orchestraai/releases/download/v0.1.1/Orchestron-0.1.1-1.x86_64.rpm)
 
 ---
 

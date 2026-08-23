@@ -1,7 +1,7 @@
 {
   "name": "orchestron",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Conduct your AI coding orchestra — split terminals, per-agent git worktrees, live web previews, and an Orchestra Pit where agents collaborate",
   "license": "GPL-3.0-only",
   "homepage": "https://orchestron.dev",

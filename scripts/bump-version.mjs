@@ -23,7 +23,7 @@ const versions = [
   JSON.parse(read('package.json')).version,
   JSON.parse(read('src-tauri/tauri.conf.json')).version,
   read('src-tauri/Cargo.toml').match(/^version\s*=\s*"([^"]+)"/m)[1],
-  read('src-tauri/Cargo.lock').match(/name = "swarmterm"\nversion = "([^"]+)"/)[1]
+  read('src-tauri/Cargo.lock').match(/name = "orchestron"\nversion = "([^"]+)"/)[1]
 ]
 if (versions.some((v) => v !== version)) {
   console.error(`bump: files disagree after write: ${versions.join(', ')}`)

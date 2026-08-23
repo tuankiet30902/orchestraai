@@ -10,7 +10,8 @@ cd "$REPO_ROOT"
 APP_PATH="src-tauri/target/release/bundle/macos/Orchestron.app"
 ICON_PATH="src-tauri/icons/icon.icns"
 OUTPUT_DIR="src-tauri/target/release/bundle/dmg"
-OUTPUT_DMG="$OUTPUT_DIR/Orchestron_0.1.0_universal.dmg"
+VERSION="$(node -p "require('./package.json').version")"
+OUTPUT_DMG="$OUTPUT_DIR/Orchestron_${VERSION}_universal.dmg"
 TEMP_DMG="$OUTPUT_DIR/temp.dmg"
 VOL_NAME="Orchestron"
 
@@ -49,10 +50,15 @@ echo "==> Converting to compressed read-only DMG (UDZO)..."
 hdiutil convert "$TEMP_DMG" -format UDZO -imagekey zlib-level=9 -o "$OUTPUT_DMG"
 rm -f "$TEMP_DMG"
 
-# Also create standard named symlink/copies
+# Also create standard named copies in Desktop and Landing public/downloads
+LANDING_DL="/Users/kiet/Documents/Heimer/orchestraai-landing/public/downloads"
+mkdir -p "$LANDING_DL"
+
 cp "$OUTPUT_DMG" "$OUTPUT_DIR/Orchestron.dmg"
 cp "$OUTPUT_DMG" "/Users/kiet/Desktop/Orchestron.dmg"
-cp "$OUTPUT_DMG" "/Users/kiet/Documents/Heimer/orchestron-landing/assets/downloads/Orchestron.dmg" 2>/dev/null || true
+cp "$OUTPUT_DMG" "$LANDING_DL/Orchestron_${VERSION}_universal.dmg"
+cp "$OUTPUT_DMG" "$LANDING_DL/Orchestron_0.1.1_universal.dmg"
+cp "$OUTPUT_DMG" "$LANDING_DL/Orchestron.dmg"
 
 echo "==> Setting custom file icon on DMG using Swift..."
 swift - <<EOF 2>/dev/null || true

@@ -204,7 +204,7 @@ describe('buildManifest', () => {
   })
 
   it('prefers the setup.exe matching the version when several exist', () => {
-    const stale = 'Swarmterm_0.1.0_x64-setup.exe'
+    const stale = 'Swarmterm_0.1.1_x64-setup.exe'
     const { manifest } = buildManifest({
       ...base,
       assetNames: [stale, `${stale}.sig`, WIN, `${WIN}.sig`],
@@ -310,7 +310,7 @@ import { bumpCargoLock, bumpCargoToml, bumpJson } from './bump-lib.mjs'
 
 describe('bumpCargoToml', () => {
   it('rewrites only the [package] version', () => {
-    const toml = '[package]\nname = "swarmterm"\nversion = "0.1.0"\n\n[dependencies]\nserde = { version = "1" }\n'
+    const toml = '[package]\nname = "swarmterm"\nversion = "0.1.1"\n\n[dependencies]\nserde = { version = "1" }\n'
     const out = bumpCargoToml(toml, '0.2.0')
     expect(out).toContain('version = "0.2.0"')
     expect(out).toContain('serde = { version = "1" }')
@@ -319,7 +319,7 @@ describe('bumpCargoToml', () => {
 
 describe('bumpCargoLock', () => {
   it('rewrites only the swarmterm package block', () => {
-    const lock = '[[package]]\nname = "serde"\nversion = "1.0.0"\n\n[[package]]\nname = "swarmterm"\nversion = "0.1.0"\n'
+    const lock = '[[package]]\nname = "serde"\nversion = "1.0.0"\n\n[[package]]\nname = "swarmterm"\nversion = "0.1.1"\n'
     const out = bumpCargoLock(lock, '0.2.0')
     expect(out).toContain('name = "serde"\nversion = "1.0.0"')
     expect(out).toContain('name = "swarmterm"\nversion = "0.2.0"')
@@ -328,7 +328,7 @@ describe('bumpCargoLock', () => {
 
 describe('bumpJson', () => {
   it('rewrites the top-level version preserving 2-space format', () => {
-    const out = bumpJson('{\n  "name": "x",\n  "version": "0.1.0"\n}\n', '0.2.0')
+    const out = bumpJson('{\n  "name": "x",\n  "version": "0.1.1"\n}\n', '0.2.0')
     expect(out).toBe('{\n  "name": "x",\n  "version": "0.2.0"\n}\n')
   })
 })
@@ -513,8 +513,8 @@ In `package.json` `scripts`:
 - [ ] **Step 8: Sanity-run the failure paths**
 
 - `npm run bump -- not-a-version` → usage error, exit 1.
-- `npm run bump -- 0.1.0` → "all four files at 0.1.0", `git status` clean (no-op rewrite).
-- `npm run release:publish` with no `v0.1.0` tag → dies with the tag hint.
+- `npm run bump -- 0.1.1` → "all four files at 0.1.1", `git status` clean (no-op rewrite).
+- `npm run release:publish` with no `v0.1.1` tag → dies with the tag hint.
 
 - [ ] **Step 9: Commit**
 
@@ -1227,14 +1227,14 @@ Expected: signed `.app` AND `Swarmterm.app.tar.gz` + `.sig` beside it (this vali
 - [ ] **Step 3: Publish dry-run against a throwaway draft**
 
 ```bash
-git tag v0.1.0                       # current version; local only
+git tag v0.1.1                       # current version; local only
 npm run release:publish              # uploads smoke artifacts, builds latest.json (mac keys only)
-gh release view v0.1.0 --json assets --jq '.assets[].name'   # expect .app.tar.gz, .sig, latest.json
+gh release view v0.1.1 --json assets --jq '.assets[].name'   # expect .app.tar.gz, .sig, latest.json
 npm run release:publish -- --publish # MUST refuse: windows-x86_64 missing
-gh release download v0.1.0 --pattern latest.json --output - | head -30  # eyeball keys/sig/urls
+gh release download v0.1.1 --pattern latest.json --output - | head -30  # eyeball keys/sig/urls
 # teardown — draft was never public:
-gh release delete v0.1.0 --yes
-git tag -d v0.1.0
+gh release delete v0.1.1 --yes
+git tag -d v0.1.1
 ```
 
 - [ ] **Step 4: Update memory + report**
