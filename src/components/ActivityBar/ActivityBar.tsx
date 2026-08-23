@@ -7,7 +7,7 @@ import {
   Sparkles,
   Activity,
   Archive,
-  Settings2
+  Settings
 } from 'lucide-react'
 import { useActivityBarStore, type ActivityTab } from '@/store/activity-bar-store'
 import { useGitStore } from '@/store/git-store'
@@ -141,7 +141,7 @@ export function ActivityBar({
           onClick={onOpenSettings}
           className="flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/30 transition-all"
         >
-          <Settings2 className="h-5 w-5" />
+          <Settings className="h-5 w-5" />
         </button>
       </div>
     </aside>

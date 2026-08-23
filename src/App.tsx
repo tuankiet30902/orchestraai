@@ -12,6 +12,7 @@ import {
   selectFocusedTerminalId,
   type Workspace as WorkspaceModel
 } from '@/store/app-store'
+import { useAppearanceStore } from '@/store/appearance-store'
 import { useNavbarVisibilityStore } from '@/store/navbar-visibility-store'
 import { useStatuslineStore } from '@/store/statusline-store'
 import { useAgentStateStore } from '@/store/agent-state-store'
@@ -345,9 +346,44 @@ export default function App(): ReactElement {
           return
         }
       }
+
+      // Application Zoom shortcuts: Cmd+= / Cmd+- / Cmd+0 (or Ctrl)
+      if (e.metaKey || e.ctrlKey) {
+        if (e.key === '=' || e.key === '+') {
+          e.preventDefault()
+          useAppearanceStore.getState().zoomIn()
+          return
+        }
+        if (e.key === '-' || e.key === '_') {
+          e.preventDefault()
+          useAppearanceStore.getState().zoomOut()
+          return
+        }
+        if (e.key === '0') {
+          e.preventDefault()
+          useAppearanceStore.getState().resetZoom()
+          return
+        }
+      }
     }
+
+    const onWheel = (e: WheelEvent): void => {
+      if (e.ctrlKey || e.metaKey) {
+        e.preventDefault()
+        if (e.deltaY < 0) {
+          useAppearanceStore.getState().zoomIn()
+        } else if (e.deltaY > 0) {
+          useAppearanceStore.getState().zoomOut()
+        }
+      }
+    }
+
     window.addEventListener('keydown', onKeyDown, { capture: true })
-    return () => window.removeEventListener('keydown', onKeyDown, { capture: true })
+    window.addEventListener('wheel', onWheel, { passive: false })
+    return () => {
+      window.removeEventListener('keydown', onKeyDown, { capture: true })
+      window.removeEventListener('wheel', onWheel)
+    }
   }, [])
 
   // --- keyboard focus belongs to the terminal -----------------------------

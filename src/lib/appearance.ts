@@ -1,5 +1,5 @@
 /**
- * appearance.ts — Color mode (dark/light/system) and clean neutral theme management.
+ * appearance.ts — Color mode, themes, and application-wide zoom scaling.
  */
 
 export type ColorMode = 'dark' | 'light' | 'system'
@@ -18,9 +18,14 @@ export type Style =
 
 export const DEFAULT_MODE: ColorMode = 'dark'
 export const DEFAULT_STYLE: Style = 'orchestra-amber'
+export const DEFAULT_ZOOM = 1.0
+export const MIN_ZOOM = 0.6
+export const MAX_ZOOM = 2.0
+export const ZOOM_STEP = 0.1
 
 export const APPEARANCE_STORAGE_KEY = 'cc-appearance-style'
 export const COLOR_MODE_STORAGE_KEY = 'orchestraai-color-mode'
+export const ZOOM_STORAGE_KEY = 'orchestraai-zoom-level'
 
 export interface AppearanceStorage {
   getItem: (key: string) => string | null
@@ -71,6 +76,18 @@ export function storeColorMode(storage: AppearanceStorage, mode: ColorMode): voi
   storage.setItem(COLOR_MODE_STORAGE_KEY, mode)
 }
 
+export function readStoredZoom(storage: AppearanceStorage): number {
+  const raw = storage.getItem(ZOOM_STORAGE_KEY)
+  if (!raw) return DEFAULT_ZOOM
+  const parsed = parseFloat(raw)
+  if (isNaN(parsed) || parsed < MIN_ZOOM || parsed > MAX_ZOOM) return DEFAULT_ZOOM
+  return Math.round(parsed * 100) / 100
+}
+
+export function storeZoom(storage: AppearanceStorage, zoom: number): void {
+  storage.setItem(ZOOM_STORAGE_KEY, String(Math.round(zoom * 100) / 100))
+}
+
 /** Check if the effective appearance is dark. */
 export function isEffectiveDark(mode: ColorMode, style: Style): boolean {
   if (mode === 'light') return false
@@ -82,12 +99,29 @@ export function isEffectiveDark(mode: ColorMode, style: Style): boolean {
   return !LIGHT_STYLES.includes(style)
 }
 
+/** Apply application-wide zoom scaling. */
+export function applyZoomToDOM(zoom: number): void {
+  if (typeof document === 'undefined') return
+  const rounded = Math.round(zoom * 100) / 100
+  // WebKit / Chromium native CSS zoom
+  const root = document.documentElement as HTMLElement & { style: CSSStyleDeclaration & { zoom?: string } }
+  root.style.zoom = String(rounded)
+  root.style.setProperty('--app-zoom', String(rounded))
+
+  // Dispatch window resize so responsive containers & xterm fit gracefully
+  if (typeof window !== 'undefined') {
+    requestAnimationFrame(() => {
+      window.dispatchEvent(new Event('resize'))
+    })
+  }
+}
+
 /** Apply clean attributes and classes to document element. */
-export function applyAppearanceToDOM(mode: ColorMode, style: Style): void {
+export function applyAppearanceToDOM(mode: ColorMode, style: Style, zoom: number = DEFAULT_ZOOM): void {
   if (typeof document === 'undefined') return
   const isDark = isEffectiveDark(mode, style)
   const root = document.documentElement
-  
+
   if (isDark) {
     root.classList.add('dark')
     root.classList.remove('light')
@@ -98,4 +132,5 @@ export function applyAppearanceToDOM(mode: ColorMode, style: Style): void {
 
   root.setAttribute('data-theme', style)
   root.setAttribute('data-color-mode', mode)
+  applyZoomToDOM(zoom)
 }

@@ -7,7 +7,7 @@ import {
   PanelLeft,
   PanelRight,
   Radio,
-  Settings2,
+  Settings,
   Square,
   Copy,
   X,
@@ -200,7 +200,7 @@ export function TitleBar({ fullscreen, settingsOpen, onToggleSettings }: TitleBa
               settingsOpen ? 'bg-muted text-foreground' : 'text-muted-foreground hover:text-foreground'
             )}
           >
-            <Settings2 className="h-4 w-4" />
+            <Settings className="h-4 w-4" />
           </button>
         )}
 
