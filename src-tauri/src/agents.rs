@@ -186,6 +186,16 @@ mod tests {
     fn list_agents_covers_all_ai_agents_in_template_order() {
         let ids: Vec<String> = list_agents().into_iter().map(|a| a.id).collect();
         // Availability depends on the host machine; only the catalog is asserted.
-        assert_eq!(ids, vec!["claude-code", "codex", "opencode", "antigravity", "grok", "deepseek"]);
+        assert_eq!(
+            ids,
+            vec![
+                "claude-code",
+                "codex",
+                "opencode",
+                "antigravity",
+                "grok",
+                "deepseek"
+            ]
+        );
     }
 }

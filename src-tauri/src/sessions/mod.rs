@@ -4,10 +4,10 @@
 //! never to an error the renderer must handle (roadmap doctrine: a display-
 //! only surface may collapse `error` into `absent`).
 
+pub mod antigravity;
 pub mod claude;
 pub mod codex;
 pub mod opencode;
-pub mod antigravity;
 
 use serde::Serialize;
 use std::io::Read;

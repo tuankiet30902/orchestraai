@@ -304,10 +304,7 @@ pub async fn git_get_commit_history(
 }
 
 #[tauri::command]
-pub async fn git_revert_commit(
-    worktree_path: String,
-    commit_hash: String,
-) -> Result<(), String> {
+pub async fn git_revert_commit(worktree_path: String, commit_hash: String) -> Result<(), String> {
     tauri::async_runtime::spawn_blocking(move || {
         crate::git::revert_commit(std::path::Path::new(&worktree_path), &commit_hash)
     })
@@ -641,12 +638,10 @@ pub fn fs_read_dir(path: String, show_hidden: Option<bool>) -> Result<Vec<FileEn
     }
 
     // Sort: directories first, then alphabetically case-insensitive
-    entries.sort_by(|a, b| {
-        match (a.is_dir, b.is_dir) {
-            (true, false) => std::cmp::Ordering::Less,
-            (false, true) => std::cmp::Ordering::Greater,
-            _ => a.name.to_lowercase().cmp(&b.name.to_lowercase()),
-        }
+    entries.sort_by(|a, b| match (a.is_dir, b.is_dir) {
+        (true, false) => std::cmp::Ordering::Less,
+        (false, true) => std::cmp::Ordering::Greater,
+        _ => a.name.to_lowercase().cmp(&b.name.to_lowercase()),
     });
 
     Ok(entries)

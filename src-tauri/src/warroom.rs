@@ -309,7 +309,10 @@ impl WarRoom {
                          war_room.list_peers for connection status."
                     ));
                 }
-                if mode == MessageMode::Execute && target.agent_id.is_none() && from_id != MODERATOR_ID {
+                if mode == MessageMode::Execute
+                    && target.agent_id.is_none()
+                    && from_id != MODERATOR_ID
+                {
                     return Err(if t == MODERATOR_ID {
                         "mode \"execute\" cannot target the Moderator — that seat is the human \
                          user driving Orchestron, not a terminal. Use mode \"probe\" to ask them."
@@ -334,7 +337,10 @@ impl WarRoom {
                     .map(|(k, _)| k.clone())
                     .collect();
                 if others.is_empty() {
-                    return Err("no other members in the Orchestra Pit yet — add terminal panes first".into());
+                    return Err(
+                        "no other members in the Orchestra Pit yet — add terminal panes first"
+                            .into(),
+                    );
                 }
                 others
             }

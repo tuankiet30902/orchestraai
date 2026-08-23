@@ -225,7 +225,10 @@ mod tests {
         let out = merge_mcp_config(None).unwrap();
         let v = parse(&out);
         assert_eq!(v["mcpServers"]["orchestron"]["type"], "http");
-        assert_eq!(v["mcpServers"]["orchestron"]["url"], "${ORCHESTRON_MCP_URL}");
+        assert_eq!(
+            v["mcpServers"]["orchestron"]["url"],
+            "${ORCHESTRON_MCP_URL}"
+        );
     }
 
     #[test]

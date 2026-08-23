@@ -136,7 +136,8 @@ impl ServerHandler for OrchestronMcpServer {
         ServerInfo::new(ServerCapabilities::builder().enable_tools().build())
             .with_protocol_version(ProtocolVersion::LATEST)
             .with_server_info(
-                Implementation::new("orchestron", env!("CARGO_PKG_VERSION")).with_title("Orchestron"),
+                Implementation::new("orchestron", env!("CARGO_PKG_VERSION"))
+                    .with_title("Orchestron"),
             )
             // The delegation guidance below is what makes agents reach for
             // worktree.spawn unprompted — MCP clients (Claude Code et al.)

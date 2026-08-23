@@ -718,12 +718,13 @@ pub fn merge_branch_into(
         .map_err(|e| format!("git checkout {target} failed: {e}"))?;
     if !co.status.success() {
         if target == "main" {
-            let co_master = git_command()
-                .args(["-C", p, "checkout", "master"])
-                .output();
+            let co_master = git_command().args(["-C", p, "checkout", "master"]).output();
             if let Ok(m) = co_master {
                 if !m.status.success() {
-                    return Err(format!("failed to checkout base branch: {}", String::from_utf8_lossy(&co.stderr).trim()));
+                    return Err(format!(
+                        "failed to checkout base branch: {}",
+                        String::from_utf8_lossy(&co.stderr).trim()
+                    ));
                 }
             }
         } else {
@@ -733,7 +734,15 @@ pub fn merge_branch_into(
 
     // Merge
     let merge_out = git_command()
-        .args(["-C", p, "merge", "--no-ff", "-m", &format!("Merge branch '{source_branch}'"), source_branch])
+        .args([
+            "-C",
+            p,
+            "merge",
+            "--no-ff",
+            "-m",
+            &format!("Merge branch '{source_branch}'"),
+            source_branch,
+        ])
         .output()
         .map_err(|e| format!("git merge failed: {e}"))?;
 
@@ -747,10 +756,19 @@ pub fn merge_branch_into(
         let status = git_command()
             .args(["-C", p, "diff", "--name-only", "--diff-filter=U"])
             .output()
-            .map(|o| String::from_utf8_lossy(&o.stdout).lines().map(|s| s.to_string()).collect())
+            .map(|o| {
+                String::from_utf8_lossy(&o.stdout)
+                    .lines()
+                    .map(|s| s.to_string())
+                    .collect()
+            })
             .unwrap_or_default();
-        let stderr = String::from_utf8_lossy(&merge_out.stderr).trim().to_string();
-        let stdout = String::from_utf8_lossy(&merge_out.stdout).trim().to_string();
+        let stderr = String::from_utf8_lossy(&merge_out.stderr)
+            .trim()
+            .to_string();
+        let stdout = String::from_utf8_lossy(&merge_out.stdout)
+            .trim()
+            .to_string();
         Ok(MergeOutcome {
             success: false,
             message: if !stderr.is_empty() { stderr } else { stdout },
@@ -774,7 +792,13 @@ pub fn list_branches(repo_cwd: &Path) -> Result<Vec<BranchInfo>, String> {
         .to_str()
         .ok_or_else(|| format!("non-UTF-8 path: {}", repo_cwd.display()))?;
     let out = git_command()
-        .args(["-C", p, "for-each-ref", "--format=%(refname:short)|%(HEAD)|%(objectname:short)|%(upstream:short)", "refs/heads"])
+        .args([
+            "-C",
+            p,
+            "for-each-ref",
+            "--format=%(refname:short)|%(HEAD)|%(objectname:short)|%(upstream:short)",
+            "refs/heads",
+        ])
         .output()
         .map_err(|e| format!("git for-each-ref failed: {e}"))?;
     if !out.status.success() {
@@ -788,7 +812,10 @@ pub fn list_branches(repo_cwd: &Path) -> Result<Vec<BranchInfo>, String> {
             let name = parts[0].to_string();
             let is_current = parts[1] == "*";
             let head_sha = parts[2].to_string();
-            let upstream = parts.get(3).filter(|s| !s.is_empty()).map(|s| s.to_string());
+            let upstream = parts
+                .get(3)
+                .filter(|s| !s.is_empty())
+                .map(|s| s.to_string());
             branches.push(BranchInfo {
                 name,
                 is_current,
@@ -832,13 +859,23 @@ pub struct GitCommitLog {
     pub message: String,
 }
 
-pub fn get_commit_history(worktree_path: &Path, max_count: Option<u32>) -> Result<Vec<GitCommitLog>, String> {
+pub fn get_commit_history(
+    worktree_path: &Path,
+    max_count: Option<u32>,
+) -> Result<Vec<GitCommitLog>, String> {
     let p = worktree_path
         .to_str()
         .ok_or_else(|| format!("non-UTF-8 path: {}", worktree_path.display()))?;
     let count_str = max_count.unwrap_or(30).to_string();
     let out = git_command()
-        .args(["-C", p, "log", "-n", &count_str, "--pretty=format:%H|%h|%an|%ae|%at|%s"])
+        .args([
+            "-C",
+            p,
+            "log",
+            "-n",
+            &count_str,
+            "--pretty=format:%H|%h|%an|%ae|%at|%s",
+        ])
         .output()
         .map_err(|e| format!("git log failed: {e}"))?;
     if !out.status.success() {
@@ -919,9 +956,7 @@ pub fn discard_file(worktree_path: &Path, file: &str) -> Result<(), String> {
         .args(["-C", p, "checkout", "--", file])
         .output();
     // Try clean (for untracked files)
-    let _ = git_command()
-        .args(["-C", p, "clean", "-f", file])
-        .output();
+    let _ = git_command().args(["-C", p, "clean", "-f", file]).output();
     Ok(())
 }
 
@@ -929,12 +964,8 @@ pub fn discard_all(worktree_path: &Path) -> Result<(), String> {
     let p = worktree_path
         .to_str()
         .ok_or_else(|| format!("non-UTF-8 path: {}", worktree_path.display()))?;
-    let _ = git_command()
-        .args(["-C", p, "checkout", "."])
-        .output();
-    let _ = git_command()
-        .args(["-C", p, "clean", "-fd"])
-        .output();
+    let _ = git_command().args(["-C", p, "checkout", "."]).output();
+    let _ = git_command().args(["-C", p, "clean", "-fd"]).output();
     Ok(())
 }
 

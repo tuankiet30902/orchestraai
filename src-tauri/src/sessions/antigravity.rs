@@ -49,7 +49,10 @@ pub fn scan(brain_root: &Path, folder: &str) -> Vec<SessionEntry> {
         if !is_uuid(dirname) {
             continue;
         }
-        let transcript = path.join(".system_generated").join("logs").join("transcript.jsonl");
+        let transcript = path
+            .join(".system_generated")
+            .join("logs")
+            .join("transcript.jsonl");
         if !transcript.exists() {
             continue;
         }
