@@ -1,6 +1,6 @@
 // src/components/MissionControl/MissionControlModal.tsx
 import { type ReactElement } from 'react'
-import { Activity, X, Trash2, CheckCircle, AlertTriangle, Info, AlertCircle, GitBranch, CheckSquare, MessagesSquare, Cpu, Terminal } from 'lucide-react'
+import { Activity, X, Trash2, CheckCircle, AlertTriangle, Info, AlertCircle, GitBranch, MessagesSquare, Cpu, Terminal } from 'lucide-react'
 import { useMissionControlStore, type EventCategory, type EventSeverity } from '@/store/mission-control-store'
 import { Button } from '@/components/ui/button'
 
@@ -14,7 +14,6 @@ const SEVERITY_ICON: Record<EventSeverity, ReactElement> = {
 const CATEGORY_ICON: Record<EventCategory, ReactElement> = {
   agent: <Terminal className="h-3 w-3 text-muted-foreground" />,
   git: <GitBranch className="h-3 w-3 text-muted-foreground" />,
-  task: <CheckSquare className="h-3 w-3 text-muted-foreground" />,
   pit: <MessagesSquare className="h-3 w-3 text-muted-foreground" />,
   token: <Cpu className="h-3 w-3 text-muted-foreground" />,
   system: <Activity className="h-3 w-3 text-muted-foreground" />
@@ -24,7 +23,6 @@ const CATEGORY_PILLS: Array<{ id: EventCategory | 'all'; label: string }> = [
   { id: 'all', label: 'All Events' },
   { id: 'agent', label: 'Agents' },
   { id: 'git', label: 'Git & Worktrees' },
-  { id: 'task', label: 'Tasks' },
   { id: 'pit', label: 'Orchestra Pit' },
   { id: 'token', label: 'Tokens' }
 ]

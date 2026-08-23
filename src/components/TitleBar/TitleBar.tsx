@@ -2,7 +2,6 @@ import { useEffect, useState, type ReactElement, type ReactNode } from 'react'
 import {
   Activity,
   Bookmark,
-  CheckSquare,
   Copy,
   Minus,
   PanelLeftOpen,
@@ -23,7 +22,6 @@ import { needsTrafficLightInset } from '@/lib/titlebar-chrome'
 import { HeaderRecentSearch } from './HeaderRecentSearch'
 import { SnapshotManagerModal } from '@/components/Snapshot/SnapshotManagerModal'
 import { MissionControlModal } from '@/components/MissionControl/MissionControlModal'
-import { TaskBoardModal } from '@/components/TaskBoard/TaskBoardModal'
 
 // On macOS the OS draws native traffic lights over this header (titleBarStyle
 // Overlay — see tauri.macos.conf.json): hide the custom window buttons and
@@ -53,7 +51,6 @@ export function TitleBar({ fullscreen, settingsOpen, onToggleSettings }: TitleBa
   const [isMaximized, setIsMaximized] = useState(false)
   const [snapshotModalOpen, setSnapshotModalOpen] = useState(false)
   const [missionControlOpen, setMissionControlOpen] = useState(false)
-  const [taskModalOpen, setTaskModalOpen] = useState(false)
   const visible = useNavbarVisibilityStore((s) => s.visible)
   const toggleNavbar = useNavbarVisibilityStore((s) => s.toggle)
   const rightPanelOpen = useGitStore((s) => s.panelOpen)
@@ -171,18 +168,6 @@ export function TitleBar({ fullscreen, settingsOpen, onToggleSettings }: TitleBa
           )}
         </div>
 
-        {/* Interactive Task Board Toggle */}
-        <button
-          type="button"
-          data-tauri-drag-region="false"
-          aria-label="Interactive Task Board"
-          title="Interactive Task & Kanban Board"
-          onClick={() => setTaskModalOpen(true)}
-          className="flex h-7 w-7 items-center justify-center rounded-md transition-colors hover:bg-accent text-muted-foreground hover:text-foreground"
-        >
-          <CheckSquare className="h-4 w-4" />
-        </button>
-
         {/* Mission Control Timeline Toggle */}
         <button
           type="button"
@@ -224,11 +209,6 @@ export function TitleBar({ fullscreen, settingsOpen, onToggleSettings }: TitleBa
             <Settings className="h-4 w-4" />
           </button>
         )}
-
-        <TaskBoardModal
-          open={taskModalOpen}
-          onClose={() => setTaskModalOpen(false)}
-        />
 
         <SnapshotManagerModal
           open={snapshotModalOpen}

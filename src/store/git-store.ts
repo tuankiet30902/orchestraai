@@ -17,7 +17,7 @@ import {
 export type { WorktreeInfo, ChangedFile, CommitInfo, BranchInfo, GitCommitLog }
 
 export type GitSubTab = 'changes' | 'history' | 'branches'
-export type GitMode = 'files' | 'git' | 'orchestrapit' | 'browser' | 'warroom' | 'tasks'
+export type GitMode = 'files' | 'git' | 'orchestrapit' | 'browser' | 'warroom'
 
 interface GitStore {
   panelOpen: boolean
@@ -37,7 +37,7 @@ interface GitStore {
   loading: boolean
   error: string | null
 
-  setMode: (mode: 'files' | 'git' | 'orchestrapit' | 'browser' | 'warroom' | 'tasks') => void
+  setMode: (mode: GitMode) => void
   setGitSubTab: (tab: GitSubTab) => void
   setPanelOpen: (open: boolean) => void
   togglePanel: () => void

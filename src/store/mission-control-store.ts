@@ -2,7 +2,7 @@
 import { create } from 'zustand'
 
 export type EventSeverity = 'info' | 'success' | 'warning' | 'error'
-export type EventCategory = 'agent' | 'git' | 'task' | 'pit' | 'token' | 'system'
+export type EventCategory = 'agent' | 'git' | 'pit' | 'token' | 'system'
 
 export interface MissionEvent {
   id: string

@@ -1,11 +1,10 @@
 // src/components/RightPanel/RightPanel.tsx
 import type { ReactElement } from 'react'
-import { FolderTree, GitBranch, MessagesSquare, CheckSquare, RotateCw } from 'lucide-react'
+import { FolderTree, GitBranch, MessagesSquare, RotateCw } from 'lucide-react'
 import { useGitStore } from '@/store/git-store'
 import { FilesPanel } from '@/components/Files/FilesPanel'
 import { GitPanel } from '@/components/Git/GitPanel'
 import { OrchestraPitPanel } from '@/components/OrchestraPit/OrchestraPitPanel'
-import { TaskBoard } from '@/components/TaskBoard/TaskBoard'
 
 function RefreshButton(): ReactElement {
   const refresh = useGitStore((s) => s.refresh)
@@ -33,10 +32,6 @@ export function RightPanel(): ReactElement {
     setMode('git')
   }
 
-  function handleTasksTab(): void {
-    setMode('tasks')
-  }
-
   function handleOrchestraPitTab(): void {
     setMode('orchestrapit')
   }
@@ -47,18 +42,6 @@ export function RightPanel(): ReactElement {
       <div className="flex shrink-0 items-center justify-between border-b border-border bg-muted/30 pr-1.5 overflow-hidden">
         {/* Left: Tabs */}
         <div className="flex items-stretch overflow-x-auto no-scrollbar min-w-0 flex-1">
-          <button
-            onClick={handleTasksTab}
-            className={[
-              'flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 text-xs transition-colors font-medium whitespace-nowrap shrink-0',
-              mode === 'tasks'
-                ? 'border-b-2 border-foreground bg-background text-foreground'
-                : 'text-muted-foreground hover:text-foreground',
-            ].join(' ')}
-          >
-            <CheckSquare className="h-4 w-4 shrink-0" />
-            <span>Tasks</span>
-          </button>
           <button
             onClick={handleFilesTab}
             className={[
@@ -105,7 +88,6 @@ export function RightPanel(): ReactElement {
 
       {/* Mode content */}
       <div className="flex min-h-0 flex-1 overflow-hidden">
-        {mode === 'tasks' && <TaskBoard />}
         {(mode === 'files' || mode === 'browser') && <FilesPanel />}
         {mode === 'git' && <GitPanel />}
         {(mode === 'orchestrapit' || mode === 'warroom') && <OrchestraPitPanel />}
