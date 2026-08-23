@@ -28,7 +28,6 @@ A desktop engineering environment for conducting teams of autonomous AI coding a
 ## Table of Contents
 
 - [Overview](#overview)
-- [System Architecture](#system-architecture)
 - [Key Features](#key-features)
   - [1. Real Split Terminals & Process Sniffing](#1-real-split-terminals--process-sniffing)
   - [2. The Orchestra Pit (MCP Multi-Agent Collaboration)](#2-the-orchestra-pit-mcp-multi-agent-collaboration)
@@ -56,47 +55,7 @@ Modern agentic coding tools like **Claude Code**, **Google Antigravity**, **Open
 2. **File System Collisions**: Two agents working in the same working directory inevitably overwrite each other's work and create race conditions.
 3. **The Conductor Bottleneck**: Developers spend excessive time manually copy-pasting API contracts, design documents, and diffs between separate terminal windows.
 
-**OrchestraAI** is an open-source, native desktop studio engineered to solve these architectural challenges. It unifies terminal multiplexing, Git worktree isolation, live application previews, and inter-agent communication protocols into a single, cohesive developer cockpit.
-
----
-
-## System Architecture
-
-```mermaid
-flowchart TB
-    subgraph UI ["Frontend (React 19 + xterm.js)"]
-        SplitPanes["Split Terminal Panes"]
-        Pit["Orchestra Pit (Team Room)"]
-        Inspector["Live Web Browser & DOM Inspector"]
-        Sidebar["Workspace Tree & Git Panel"]
-    end
-
-    subgraph Core ["Tauri 2.0 Core (Rust)"]
-        PTY["PTY Manager (portable-pty)"]
-        MCP["MCP Server (JSON-RPC)"]
-        WorktreeMgr["Git Worktree Engine"]
-        ProcessDetector["Process & Title Sniffer"]
-    end
-
-    subgraph Agents ["AI Coding Agents & CLI"]
-        Claude["Claude Code"]
-        Antigravity["Antigravity CLI"]
-        Codex["OpenAI Codex"]
-        OpenCode["OpenCode / Other CLI"]
-    end
-
-    SplitPanes <--> PTY
-    PTY <--> Agents
-    Agents <--> MCP
-    MCP <--> Pit
-    WorktreeMgr <--> Sidebar
-    ProcessDetector --> SplitPanes
-    Inspector --> SplitPanes
-```
-
-- **Native Terminal Subsystem**: Built on `portable-pty` in Rust, managing raw pseudo-terminals with bidirectional ANSI stream rendering via `xterm.js`.
-- **Inter-Agent Communication (MCP)**: Every terminal pane is injected with `ORCHESTRAAI_MCP_URL` and `ORCHESTRAAI_SESSION` environment variables, enabling agents to query peers, exchange task updates, and broadcast status via JSON-RPC.
-- **Git Isolation Pipeline**: Automates `git worktree add` and `git worktree remove` workflows, ensuring every agent gets an independent branch without repository duplication.
+**OrchestraAI** is an open-source, native desktop studio engineered to solve these challenges. It unifies terminal multiplexing, Git worktree isolation, live application previews, and inter-agent communication protocols into a single, cohesive developer cockpit.
 
 ---
 
