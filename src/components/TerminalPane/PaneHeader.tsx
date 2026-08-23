@@ -321,7 +321,7 @@ export function PaneHeader(props: PaneHeaderProps): React.ReactElement {
                 : 'Add to broadcast group'
             }
             onClick={props.onToggleBroadcast}
-            className={cn(props.isBroadcastMember && 'text-foreground font-semibold')}
+            className={cn(props.isBroadcastMember ? 'text-amber-500 font-semibold' : 'text-muted-foreground')}
           >
             <Radio className="h-3.5 w-3.5" />
           </Button>

@@ -93,14 +93,14 @@ export function ActivityBar({
             >
               {/* Active Indicator Bar */}
               {isActive && (
-                <div className="absolute -left-1 top-2 bottom-2 w-0.75 rounded-r bg-foreground" />
+                <div className="absolute left-0 top-2.5 bottom-2.5 w-[3px] rounded-r bg-amber-500 shadow-xs shadow-amber-500/50" />
               )}
 
-              <Icon className="h-5 w-5 transition-transform group-hover:scale-105" />
+              <Icon className={cn('h-5 w-5 transition-transform group-hover:scale-105', isActive && 'text-amber-400')} />
 
               {/* Counter Badge */}
               {item.badge !== undefined && (
-                <span className="absolute bottom-1 right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-foreground px-1 text-[9.5px] font-bold font-mono text-background">
+                <span className="absolute bottom-1 right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-amber-500 px-1 text-[9.5px] font-bold font-mono text-zinc-950">
                   {item.badge}
                 </span>
               )}

@@ -41,7 +41,7 @@ export function StatusBar({
   const isDefaultZoom = Math.abs(zoom - 1.0) < 0.01
 
   return (
-    <footer className="flex h-6.5 shrink-0 items-center justify-between border-t border-border bg-card/90 px-3 text-[11px] font-sans text-muted-foreground select-none z-30 backdrop-blur-xs">
+    <footer className="flex h-7 shrink-0 items-center justify-between border-t border-border bg-card/95 px-3 text-[11px] font-sans text-muted-foreground select-none z-30 backdrop-blur-xs">
       {/* Left items */}
       <div className="flex items-center gap-3 min-w-0">
         {/* Orchestra Status & Agent Count */}
@@ -51,7 +51,7 @@ export function StatusBar({
             setActiveTab('explorer')
             setSidebarOpen(true)
           }}
-          className="flex items-center gap-1.5 hover:text-foreground transition-colors truncate"
+          className="flex items-center gap-1.5 hover:text-foreground transition-colors truncate cursor-pointer"
           title="Active Workspace & Live Terminals"
         >
           <Terminal className="h-3 w-3 text-amber-500 shrink-0" />
@@ -59,7 +59,7 @@ export function StatusBar({
             {activeWorkspace?.name ?? 'No Workspace'}
           </span>
           {agentCount > 0 && (
-            <span className="rounded bg-muted px-1.5 py-0.2 font-mono text-[10px] text-muted-foreground">
+            <span className="rounded bg-muted px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground">
               {agentCount} {agentCount === 1 ? 'pane' : 'panes'}
             </span>
           )}
@@ -81,11 +81,11 @@ export function StatusBar({
               setActiveTab('git')
               setSidebarOpen(true)
             }}
-            className="flex items-center gap-1 hover:text-foreground transition-colors font-mono text-[10px]"
+            className="flex items-center gap-1 hover:text-foreground transition-colors font-mono text-[10px] cursor-pointer"
             title="Git Worktree Isolation Active"
           >
             <GitBranch className="h-3 w-3 text-muted-foreground" />
-            <span>worktree isolated</span>
+            <span>worktrees</span>
           </button>
         )}
 
@@ -96,7 +96,7 @@ export function StatusBar({
             setActiveTab('pit')
             setSidebarOpen(true)
           }}
-          className="hidden sm:flex items-center gap-1.5 hover:text-foreground transition-colors"
+          className="hidden sm:flex items-center gap-1.5 hover:text-foreground transition-colors cursor-pointer"
           title="Orchestra Pit MCP Collaboration"
         >
           <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 shadow-xs shadow-emerald-500/50" />
@@ -118,7 +118,7 @@ export function StatusBar({
           <button
             type="button"
             onClick={resetZoom}
-            className="flex items-center gap-1 text-amber-400 hover:text-amber-300 transition-colors font-mono text-[10px]"
+            className="flex items-center gap-1 text-amber-500 hover:text-amber-400 transition-colors font-mono text-[10px] cursor-pointer font-medium"
             title="Click to reset zoom to 100%"
           >
             <RotateCcw className="h-2.5 w-2.5" />
@@ -130,7 +130,7 @@ export function StatusBar({
         <button
           type="button"
           onClick={onOpenMissionControl}
-          className="flex items-center gap-1 hover:text-foreground transition-colors"
+          className="flex items-center gap-1 hover:text-foreground transition-colors cursor-pointer"
           title="Open Mission Control Timeline"
         >
           <Activity className="h-3 w-3 text-muted-foreground" />
@@ -141,7 +141,7 @@ export function StatusBar({
         <button
           type="button"
           onClick={() => openCommandPalette()}
-          className="flex items-center gap-1 rounded bg-muted/60 hover:bg-muted px-1.5 py-0.5 text-[10px] text-foreground font-mono transition-colors"
+          className="flex items-center gap-1 rounded bg-muted hover:bg-muted/80 px-1.5 py-0.5 text-[10px] text-foreground font-mono transition-colors border border-border cursor-pointer"
           title="Command Palette (⌘K / ⌘P)"
         >
           <Search className="h-2.5 w-2.5 text-muted-foreground" />
