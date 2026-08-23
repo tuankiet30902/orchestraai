@@ -106,9 +106,7 @@ export function Welcome(): ReactElement {
     <div className="mx-auto flex h-full max-w-3xl flex-col justify-center px-6 py-10 font-sans select-none">
       {/* BRAND & INTRO */}
       <div className="mb-7 text-center">
-        <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-foreground/5 border border-border text-foreground shadow-xs">
-          <Logo className="h-8 w-8 text-foreground" />
-        </div>
+        <Logo className="mx-auto mb-3 h-14 w-14 rounded-2xl shadow-md" />
         <h1 className="text-2xl font-bold tracking-tight text-foreground">
           Orchestra<span className="text-muted-foreground font-medium">AI</span>
         </h1>

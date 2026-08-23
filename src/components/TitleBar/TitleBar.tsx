@@ -61,7 +61,7 @@ export function TitleBar({ fullscreen }: TitleBarProps): ReactElement {
       {/* Left: Brand / Logo */}
       <div className="flex items-center gap-2 shrink-0">
         <div className="flex items-center gap-2 pl-1">
-          <Logo className="h-4 w-4 shrink-0" />
+          <Logo className="h-5 w-5 shrink-0 rounded-md" />
           <span className="hidden sm:inline text-xs font-bold text-foreground tracking-tight">
             OrchestraAI
           </span>
