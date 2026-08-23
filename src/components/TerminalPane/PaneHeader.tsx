@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { Folder, Terminal as ShellIcon, Check, Columns2, Rows2, Radio, X, GitBranch } from 'lucide-react'
+import { FolderGit2, SquareTerminal as ShellIcon, Check, Columns2, Rows2, Radio, X, GitBranch } from 'lucide-react'
 import type { DraggableAttributes, DraggableSyntheticListeners } from '@dnd-kit/core'
 import { AgentIcon } from '@/components/AgentIcon'
 import { TokenBar } from '@/components/TokenBar/TokenBar'
@@ -235,7 +235,7 @@ export function PaneHeader(props: PaneHeaderProps): React.ReactElement {
               title={`Folder: ${resolvedCwd}`}
               aria-label={`Folder: ${resolvedCwd}`}
             >
-              <Folder className="h-3.5 w-3.5 shrink-0" />
+              <FolderGit2 className="h-3.5 w-3.5 shrink-0" />
               {level.showFolderPath && (
                 <span className="max-w-[8rem] truncate text-[11px]">{shortenPath(resolvedCwd)}</span>
               )}
@@ -243,7 +243,7 @@ export function PaneHeader(props: PaneHeaderProps): React.ReactElement {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuItem onSelect={props.onChoosePath}>
-              <Folder className="h-3.5 w-3.5" />
+              <FolderGit2 className="h-3.5 w-3.5" />
               <span>Choose folder…</span>
             </DropdownMenuItem>
             <DropdownMenuItem onSelect={props.onResetPath} disabled={!hasCwdOverride}>

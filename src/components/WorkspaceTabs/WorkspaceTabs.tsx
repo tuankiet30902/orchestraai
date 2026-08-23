@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type ReactElement } from 'react'
-import { Compass, Edit2, Folder, FolderOpen, MessagesSquare, Plus, X } from 'lucide-react'
+import { Compass, Edit2, FolderGit2 as Folder, FolderOpen, Sparkles as MessagesSquare, Plus, X } from 'lucide-react'
 import {
   DndContext,
   DragOverlay,

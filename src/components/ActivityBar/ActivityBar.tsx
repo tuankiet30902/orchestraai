@@ -1,13 +1,13 @@
 // src/components/ActivityBar/ActivityBar.tsx
 import { type ReactElement } from 'react'
 import {
-  Layers,
+  LayoutGrid,
   FolderTree,
-  GitBranch,
-  MessagesSquare,
+  GitGraph,
+  Sparkles,
   Activity,
-  Bookmark,
-  Settings
+  Archive,
+  Settings2
 } from 'lucide-react'
 import { useActivityBarStore, type ActivityTab } from '@/store/activity-bar-store'
 import { useGitStore } from '@/store/git-store'
@@ -23,7 +23,7 @@ interface ActivityItem {
   id: ActivityTab
   label: string
   shortcut: string
-  icon: typeof Layers
+  icon: typeof LayoutGrid
   badge?: number
 }
 
@@ -42,7 +42,7 @@ export function ActivityBar({
       id: 'explorer',
       label: 'Workspaces & Explorer',
       shortcut: '⌘⇧E',
-      icon: Layers
+      icon: LayoutGrid
     },
     {
       id: 'files',
@@ -54,14 +54,14 @@ export function ActivityBar({
       id: 'git',
       label: 'Source Control & Worktrees',
       shortcut: '⌘⇧G',
-      icon: GitBranch,
+      icon: GitGraph,
       badge: changedFiles > 0 ? changedFiles : undefined
     },
     {
       id: 'pit',
-      label: 'Orchestra Pit (Team Chat)',
+      label: 'Orchestra Pit (Team Collaboration)',
       shortcut: '⌘⇧P',
-      icon: MessagesSquare
+      icon: Sparkles
     }
   ]
 
@@ -98,9 +98,9 @@ export function ActivityBar({
 
               <Icon className="h-5 w-5 transition-transform group-hover:scale-105" />
 
-              {/* Badge Counter */}
+              {/* Counter Badge */}
               {item.badge !== undefined && (
-                <span className="absolute top-1.5 right-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-foreground px-1 font-mono text-[9px] font-bold text-background">
+                <span className="absolute bottom-1 right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-foreground px-1 text-[9.5px] font-bold font-mono text-background">
                   {item.badge}
                 </span>
               )}
@@ -109,39 +109,39 @@ export function ActivityBar({
         })}
       </div>
 
-      {/* Bottom Utility Items */}
-      <div className="flex w-full flex-col items-center gap-1.5 pt-2 border-t border-border/40">
+      {/* Bottom Modals & Settings Launcher Items */}
+      <div className="flex w-full flex-col items-center gap-1.5">
         {/* Mission Control Timeline */}
         <button
           type="button"
           title="Mission Control & Activity Timeline"
           aria-label="Mission Control"
           onClick={onOpenMissionControl}
-          className="group relative flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/30 transition-all"
+          className="flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/30 transition-all"
         >
-          <Activity className="h-5 w-5 transition-transform group-hover:scale-105" />
+          <Activity className="h-5 w-5" />
         </button>
 
-        {/* Snapshots & Presets */}
+        {/* Snapshots / Checkpoints */}
         <button
           type="button"
           title="Workspace Snapshots & Presets"
           aria-label="Snapshots"
           onClick={onOpenSnapshots}
-          className="group relative flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/30 transition-all"
+          className="flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/30 transition-all"
         >
-          <Bookmark className="h-5 w-5 transition-transform group-hover:scale-105" />
+          <Archive className="h-5 w-5" />
         </button>
 
-        {/* Settings */}
+        {/* Settings & Preferences */}
         <button
           type="button"
-          title="Settings (⌘,)"
+          title="Settings & Preferences (⌘,)"
           aria-label="Settings"
           onClick={onOpenSettings}
-          className="group relative flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/30 transition-all"
+          className="flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/30 transition-all"
         >
-          <Settings className="h-5 w-5 transition-transform group-hover:scale-105" />
+          <Settings2 className="h-5 w-5" />
         </button>
       </div>
     </aside>

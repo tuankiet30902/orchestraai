@@ -2,14 +2,14 @@ import { useEffect, useRef, useState, type ReactElement } from 'react'
 import {
   ChevronDown,
   ChevronRight,
-  Folder,
+  FolderGit2 as Folder,
   FolderOpen,
-  MessagesSquare,
+  Sparkles as MessagesSquare,
   MoreHorizontal,
   Pencil,
   Plus,
   SplitSquareHorizontal,
-  Terminal,
+  SquareTerminal as Terminal,
   X
 } from 'lucide-react'
 import {

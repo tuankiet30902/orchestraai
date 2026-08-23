@@ -2,12 +2,12 @@
 import { useEffect, useState, type ReactElement } from 'react'
 import {
   Activity,
-  Bookmark,
+  Archive,
   Minus,
   PanelLeft,
   PanelRight,
   Radio,
-  Settings,
+  Settings2,
   Square,
   Copy,
   X,
@@ -183,7 +183,7 @@ export function TitleBar({ fullscreen, settingsOpen, onToggleSettings }: TitleBa
           onClick={() => setSnapshotModalOpen(true)}
           className="flex h-7 w-7 items-center justify-center rounded-md transition-colors hover:bg-muted text-muted-foreground hover:text-foreground"
         >
-          <Bookmark className="h-4 w-4" />
+          <Archive className="h-4 w-4" />
         </button>
 
         {/* Settings Button */}
@@ -200,7 +200,7 @@ export function TitleBar({ fullscreen, settingsOpen, onToggleSettings }: TitleBa
               settingsOpen ? 'bg-muted text-foreground' : 'text-muted-foreground hover:text-foreground'
             )}
           >
-            <Settings className="h-4 w-4" />
+            <Settings2 className="h-4 w-4" />
           </button>
         )}
 

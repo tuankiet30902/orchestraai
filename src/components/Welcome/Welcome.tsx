@@ -1,14 +1,14 @@
 import { useEffect, useState, type ReactElement } from 'react'
 import {
   FolderOpen,
-  Plus,
-  Folder,
+  FolderGit2,
   X,
-  Terminal,
+  SquareTerminal,
   Sparkles,
   ArrowRight,
-  Sliders
+  SlidersHorizontal
 } from 'lucide-react'
+import { Logo } from '@/components/Logo'
 import { useAppStore } from '@/store/app-store'
 import { pickDirectory, getHomeDir } from '@/tauri/dialog'
 import { folderName } from '@/lib/recent-folders'
@@ -106,11 +106,11 @@ export function Welcome(): ReactElement {
     <div className="mx-auto flex h-full max-w-3xl flex-col justify-center px-6 py-10 font-sans select-none">
       {/* BRAND & INTRO */}
       <div className="mb-7 text-center">
-        <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 border border-primary/20 text-primary shadow-inner">
-          <Terminal className="h-7 w-7" />
+        <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-foreground/5 border border-border text-foreground shadow-xs">
+          <Logo className="h-8 w-8 text-foreground" />
         </div>
         <h1 className="text-2xl font-bold tracking-tight text-foreground">
-          Orchestra<span className="text-primary">AI</span>
+          Orchestra<span className="text-muted-foreground font-medium">AI</span>
         </h1>
         <p className="mt-1 text-xs sm:text-sm text-muted-foreground">
           AI Multi-Agent Collaborative Development Studio
@@ -123,10 +123,10 @@ export function Welcome(): ReactElement {
         <button
           type="button"
           onClick={() => void handleOpenFolder()}
-          className="group flex flex-col justify-between rounded-xl border border-border bg-card p-4 text-left transition-all hover:border-primary/60 hover:bg-accent/40 hover:shadow-md"
+          className="group flex flex-col justify-between rounded-xl border border-border bg-card p-4 text-left transition-all hover:border-foreground/30 hover:bg-muted/30 hover:shadow-md"
         >
           <div className="flex items-center justify-between">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-muted text-foreground">
               <FolderOpen className="h-4 w-4" />
             </div>
             <span className="font-mono text-[10px] text-muted-foreground group-hover:text-foreground">
@@ -134,7 +134,7 @@ export function Welcome(): ReactElement {
             </span>
           </div>
           <div className="mt-3.5">
-            <h2 className="text-xs font-bold text-foreground group-hover:text-primary transition-colors">
+            <h2 className="text-xs font-bold text-foreground group-hover:text-foreground transition-colors">
               Open Folder…
             </h2>
             <p className="mt-0.5 text-[11px] text-muted-foreground line-clamp-2 leading-relaxed">
@@ -147,18 +147,18 @@ export function Welcome(): ReactElement {
         <button
           type="button"
           onClick={() => void handleQuickTerminal()}
-          className="group flex flex-col justify-between rounded-xl border border-border bg-card p-4 text-left transition-all hover:border-primary/60 hover:bg-accent/40 hover:shadow-md"
+          className="group flex flex-col justify-between rounded-xl border border-border bg-card p-4 text-left transition-all hover:border-foreground/30 hover:bg-muted/30 hover:shadow-md"
         >
           <div className="flex items-center justify-between">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
-              <Terminal className="h-4 w-4" />
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-muted text-foreground">
+              <SquareTerminal className="h-4 w-4" />
             </div>
             <span className="font-mono text-[10px] text-muted-foreground group-hover:text-foreground">
               ⌘T
             </span>
           </div>
           <div className="mt-3.5">
-            <h2 className="text-xs font-bold text-foreground group-hover:text-primary transition-colors">
+            <h2 className="text-xs font-bold text-foreground group-hover:text-foreground transition-colors">
               Quick Terminal
             </h2>
             <p className="mt-0.5 text-[11px] text-muted-foreground line-clamp-2 leading-relaxed">
@@ -171,18 +171,18 @@ export function Welcome(): ReactElement {
         <button
           type="button"
           onClick={() => handleNewTeamWorkspace()}
-          className="group flex flex-col justify-between rounded-xl border border-border bg-card p-4 text-left transition-all hover:border-primary/60 hover:bg-accent/40 hover:shadow-md"
+          className="group flex flex-col justify-between rounded-xl border border-border bg-card p-4 text-left transition-all hover:border-foreground/30 hover:bg-muted/30 hover:shadow-md"
         >
           <div className="flex items-center justify-between">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
-              <Plus className="h-4 w-4" />
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-muted text-foreground">
+              <Sparkles className="h-4 w-4" />
             </div>
             <span className="font-mono text-[10px] text-muted-foreground group-hover:text-foreground">
               ⌘N
             </span>
           </div>
           <div className="mt-3.5">
-            <h2 className="text-xs font-bold text-foreground group-hover:text-primary transition-colors">
+            <h2 className="text-xs font-bold text-foreground group-hover:text-foreground transition-colors">
               Team Workspace…
             </h2>
             <p className="mt-0.5 text-[11px] text-muted-foreground line-clamp-2 leading-relaxed">
@@ -227,9 +227,9 @@ export function Welcome(): ReactElement {
                 className="group flex cursor-pointer items-center justify-between rounded-lg border border-border/60 bg-card/60 px-3 py-2 transition-all hover:border-border hover:bg-accent/50"
               >
                 <div className="flex min-w-0 items-center gap-2.5">
-                  <Folder className="h-4 w-4 text-primary shrink-0" />
+                  <FolderGit2 className="h-4 w-4 text-foreground/80 shrink-0" />
                   <div className="min-w-0">
-                    <span className="block truncate text-xs font-medium text-foreground group-hover:text-primary transition-colors">
+                    <span className="block truncate text-xs font-medium text-foreground group-hover:text-foreground transition-colors">
                       {folderName(path)}
                     </span>
                     <span className="block truncate font-mono text-[10px] text-muted-foreground">
@@ -248,7 +248,7 @@ export function Welcome(): ReactElement {
                     }}
                     className="rounded p-1 text-muted-foreground opacity-0 group-hover:opacity-100 hover:bg-background hover:text-foreground transition-all"
                   >
-                    <Sliders className="h-3.5 w-3.5" />
+                    <SlidersHorizontal className="h-3.5 w-3.5" />
                   </button>
                   <button
                     type="button"

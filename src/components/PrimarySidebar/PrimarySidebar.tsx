@@ -1,10 +1,10 @@
 // src/components/PrimarySidebar/PrimarySidebar.tsx
 import { useRef, useState, type ReactElement } from 'react'
 import {
-  Layers,
+  LayoutGrid,
   FolderTree,
-  GitBranch,
-  MessagesSquare,
+  GitGraph,
+  Sparkles,
   Plus,
   PanelLeftClose,
   RotateCw
@@ -17,11 +17,11 @@ import { GitPanel } from '@/components/Git/GitPanel'
 import { OrchestraPitPanel } from '@/components/OrchestraPit/OrchestraPitPanel'
 import { cn } from '@/lib/utils'
 
-const PANEL_CONFIG: Record<ActivityTab, { title: string; icon: typeof Layers }> = {
-  explorer: { title: 'Workspaces & Agents', icon: Layers },
+const PANEL_CONFIG: Record<ActivityTab, { title: string; icon: typeof LayoutGrid }> = {
+  explorer: { title: 'Workspaces & Agents', icon: LayoutGrid },
   files: { title: 'Project Files', icon: FolderTree },
-  git: { title: 'Source Control & Worktrees', icon: GitBranch },
-  pit: { title: 'Orchestra Pit', icon: MessagesSquare }
+  git: { title: 'Source Control & Worktrees', icon: GitGraph },
+  pit: { title: 'Orchestra Pit', icon: Sparkles }
 }
 
 export function PrimarySidebar({ onNewWorkspace }: { onNewWorkspace: () => void }): ReactElement | null {
