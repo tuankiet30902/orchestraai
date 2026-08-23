@@ -9,7 +9,6 @@ import {
   X,
   Search
 } from 'lucide-react'
-import { Logo } from '@/components/Logo'
 import { cn } from '@/lib/utils'
 import { useAppStore } from '@/store/app-store'
 import { useActivityBarStore } from '@/store/activity-bar-store'
@@ -59,16 +58,15 @@ export function TitleBar({ fullscreen }: TitleBarProps): ReactElement {
         needsTrafficLightInset(isMac, fullscreen) && 'pl-20'
       )}
     >
-      {/* Left: Brand / Logo */}
+      {/* Left: Brand Name */}
       <div className="flex items-center gap-2 shrink-0">
         <button
           type="button"
           onClick={() => openCommandPalette()}
-          className="flex items-center gap-2 pl-1 hover:opacity-80 transition-opacity cursor-pointer"
+          className="flex items-center pl-1 hover:opacity-80 transition-opacity cursor-pointer"
           title="Open Command Palette (⌘K)"
         >
-          <Logo className="h-5 w-5 shrink-0 rounded-md" />
-          <span className="hidden sm:inline text-xs font-bold text-foreground tracking-tight">
+          <span className="text-xs font-bold text-foreground tracking-tight">
             OrchestraAI
           </span>
         </button>
