@@ -1,9 +1,7 @@
-// Discord-style Orchestra Pit panel shell: sub-tabs over the Members roster and
-// the Discussion transcript. The whole panel is the drop zone. The tab bodies
-// live in their own files — this one only routes between them.
+// src/components/OrchestraPit/OrchestraPitPanel.tsx
 import { useState, type ReactElement, type ReactNode } from 'react'
 import { useDroppable } from '@dnd-kit/core'
-import { MessagesSquare } from 'lucide-react'
+import { MessagesSquare, Sparkles } from 'lucide-react'
 import { useShallow } from 'zustand/react/shallow'
 import { useOrchestraPitStore } from '@/store/orchestra-pit-store'
 import { WAR_ROOM_DROP_ID } from '@/lib/orchestra-pit-drop'
@@ -25,9 +23,6 @@ export function OrchestraPitPanel(): ReactElement {
   const [tab, setTab] = useState<'members' | 'discussion'>('discussion')
   const { setNodeRef, isOver } = useDroppable({ id: WAR_ROOM_DROP_ID })
 
-  // Waiting-message counts per room: the tab badge must be visible even while
-  // another room is on screen — held state is per-terminal, so bucket it by
-  // each member's room.
   const heldByRoom = useOrchestraPitStore(
     useShallow((s) => {
       const out: Record<string, number> = {}
@@ -41,10 +36,6 @@ export function OrchestraPitPanel(): ReactElement {
   )
   const heldTotal = heldByRoom[activeRoomId ?? ''] ?? 0
 
-  // Per-room member counts for the tab strip's armed-delete confirm copy.
-  // Same identity concern as heldByRoom above: a fresh Record needs
-  // useShallow or every store tick reallocates it and RoomTab re-renders for
-  // no reason.
   const memberCountByRoom = useOrchestraPitStore(
     useShallow((s) => {
       const out: Record<string, number> = {}
@@ -57,7 +48,7 @@ export function OrchestraPitPanel(): ReactElement {
     <button
       onClick={() => setTab(key)}
       className={cn(
-        'rounded px-2 py-0.5 text-xs transition-colors font-medium',
+        'rounded-md px-2 py-0.5 text-xs transition-colors font-medium',
         tab === key ? 'bg-muted text-foreground' : 'text-muted-foreground hover:text-foreground'
       )}
     >
@@ -69,10 +60,19 @@ export function OrchestraPitPanel(): ReactElement {
     <div
       ref={setNodeRef}
       className={cn(
-        'flex h-full w-full flex-col overflow-hidden',
-        isOver && 'ring-2 ring-inset ring-primary'
+        'relative flex h-full w-full flex-col overflow-hidden transition-all',
+        isOver && 'ring-2 ring-inset ring-amber-500 bg-amber-500/5'
       )}
     >
+      {/* Drop Target Visual Overlay */}
+      {isOver && (
+        <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-background/85 backdrop-blur-xs border-2 border-dashed border-amber-500 rounded-lg m-2 p-4 text-center select-none pointer-events-none animate-in fade-in-0 duration-150">
+          <Sparkles className="h-8 w-8 text-amber-400 animate-bounce mb-2" />
+          <span className="text-xs font-semibold text-foreground">Drop terminal here to join Orchestra Pit</span>
+          <span className="text-[10px] text-muted-foreground mt-0.5">The agent will connect and collaborate in this room</span>
+        </div>
+      )}
+
       <RoomTabs
         rooms={rooms}
         activeRoomId={activeRoomId}
@@ -86,7 +86,7 @@ export function OrchestraPitPanel(): ReactElement {
           'members',
           <>
             {`Members · ${members.length}`}
-            {heldTotal > 0 && <span className="ml-1 text-[#f97316]">⏸{heldTotal}</span>}
+            {heldTotal > 0 && <span className="ml-1 text-amber-500">⏸{heldTotal}</span>}
           </>
         )}
         {subTab('discussion', 'Discussion')}

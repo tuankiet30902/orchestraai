@@ -123,9 +123,9 @@ export default function App(): ReactElement {
   // Room drop zone. See lib/war-room-drop.ts for the join/leave/reorder rule.
   const reorderPane = useAppStore((s) => s.reorderPane)
   const [draggingLeafId, setDraggingLeafId] = useState<string | null>(null)
-  // Restore the right panel exactly as it was when a drag reveals it and the
+  // Restore the sidebar tab/state exactly as it was when a drag reveals it and the
   // drop lands elsewhere — revealing the zone must not permanently flip tabs.
-  const panelBeforeDragRef = useRef<{ open: boolean; mode: import('@/store/git-store').GitMode } | null>(null)
+  const panelBeforeDragRef = useRef<{ sidebarOpen: boolean; activeTab: import('@/store/activity-bar-store').ActivityTab } | null>(null)
   const dndSensors = useSensors(
     useSensor(GuardedPointerSensor, { activationConstraint: { distance: 5 } })
   )
@@ -139,9 +139,9 @@ export default function App(): ReactElement {
     const prior = panelBeforeDragRef.current
     panelBeforeDragRef.current = null
     if (!prior) return
-    const git = useGitStore.getState()
-    git.setMode(prior.mode === 'warroom' ? 'warroom' : prior.mode)
-    git.setPanelOpen(prior.open)
+    const activity = useActivityBarStore.getState()
+    activity.setActiveTab(prior.activeTab)
+    activity.setSidebarOpen(prior.sidebarOpen)
   }, [])
 
   const joinWarRoom = useCallback((leafId: string, roomId: string): void => {
@@ -180,7 +180,7 @@ export default function App(): ReactElement {
     const peers = (st2.membersByRoom[roomId] ?? [])
       .filter((m) => m.terminalId !== leaf.terminalId)
       .map((m) => m.name)
-    const roomName = st2.rooms.find((r) => r.roomId === roomId)?.name ?? 'War Room'
+    const roomName = st2.rooms.find((r) => r.roomId === roomId)?.name ?? 'Orchestra Pit'
     void warRoomJoin({ roomId, terminalId: leaf.terminalId, agentId, cwd, displayName })
       .then(() => {
         // Same event-vs-response ordering guarantee as moveMember's
@@ -190,12 +190,13 @@ export default function App(): ReactElement {
         if (agentId && !alreadyMember) {
           useWarRoomStore.getState().enqueueIntro(leaf.terminalId, buildIntroText(roomName, peers))
         }
-        useGitStore.getState().setMode('warroom')
-        panelBeforeDragRef.current = null // drop landed — keep the panel on War Room
+        useActivityBarStore.getState().setActiveTab('pit')
+        useActivityBarStore.getState().setSidebarOpen(true)
+        panelBeforeDragRef.current = null // drop landed — keep the panel on Orchestra Pit
       })
       .catch((e) => {
-        console.warn('war room join failed:', e)
-        restorePanelIfNoDrop() // join failed — don't leave the panel flipped to War Room
+        console.warn('orchestra pit join failed:', e)
+        restorePanelIfNoDrop() // join failed — don't leave the panel flipped
       })
   }, [restorePanelIfNoDrop])
 
@@ -206,7 +207,7 @@ export default function App(): ReactElement {
       fromRoom !== null ? st.membersByRoom[fromRoom]?.find((m) => m.terminalId === terminalId) : undefined
     if (!member) return
     const peers = (st.membersByRoom[roomId] ?? []).map((m) => m.name)
-    const roomName = st.rooms.find((r) => r.roomId === roomId)?.name ?? 'War Room'
+    const roomName = st.rooms.find((r) => r.roomId === roomId)?.name ?? 'Orchestra Pit'
     void warRoomJoin({
       roomId,
       terminalId,
@@ -215,29 +216,20 @@ export default function App(): ReactElement {
       displayName: member.name
     })
       .then(() => {
-        // A move resets the handshake (new room, new pending state); the intro
-        // tells the agent to call list_peers, which reconnects it immediately.
-        //
-        // Ordering note — the first place in this file where event-vs-response
-        // ordering is load-bearing, hence written down: the backend emits this
-        // terminal's Leave(oldRoom) then Join(newRoom) BEFORE the `war_room_join`
-        // invoke resolves, and Tauri delivers both events through the same
-        // web-content queue ahead of the response. So by the time this .then
-        // runs, applyEvent's 'leave' branch has already cleared this terminal's
-        // queue — the enqueueIntro below can't be swallowed by its own move.
         if (member.agentId) {
           useWarRoomStore.getState().enqueueIntro(terminalId, buildIntroText(roomName, peers))
         }
       })
-      .catch((e) => console.warn('war room move failed:', e))
+      .catch((e) => console.warn('orchestra pit move failed:', e))
   }, [])
 
   function handleDragStart(id: string): void {
     setDraggingLeafId(id)
     if (id.startsWith(MEMBER_DRAG_PREFIX)) return
-    const git = useGitStore.getState()
-    panelBeforeDragRef.current = { open: git.panelOpen, mode: git.mode }
-    git.setMode('warroom') // reveal the drop zone while the pane is in flight
+    const activity = useActivityBarStore.getState()
+    panelBeforeDragRef.current = { sidebarOpen: activity.sidebarOpen, activeTab: activity.activeTab }
+    activity.setActiveTab('pit') // reveal Orchestra Pit drop zone while the pane is in flight
+    activity.setSidebarOpen(true)
   }
 
   function handleDragEnd(activeId: string, overId: string | null): void {
@@ -699,42 +691,38 @@ export default function App(): ReactElement {
         }}
       />
 
-      <div className="relative flex min-h-0 flex-1">
-        {/* Modern IDE Studio Activity Bar */}
-        <ActivityBar
-          onOpenMissionControl={() => setMissionControlOpen(true)}
-          onOpenSnapshots={() => setSnapshotModalOpen(true)}
-          onOpenSettings={() => {
-            setSettingsTab('appearance')
-            setSettingsOpen(true)
-          }}
-        />
+      <DndContext
+        sensors={dndSensors}
+        collisionDetection={pointerWithin}
+        onDragStart={(e) => handleDragStart(String(e.active.id))}
+        onDragEnd={(e) => handleDragEnd(String(e.active.id), e.over ? String(e.over.id) : null)}
+        onDragCancel={() => {
+          setDraggingLeafId(null)
+          restorePanelIfNoDrop()
+        }}
+      >
+        <div className="relative flex min-h-0 flex-1">
+          {/* Modern IDE Studio Activity Bar */}
+          <ActivityBar
+            onOpenMissionControl={() => setMissionControlOpen(true)}
+            onOpenSnapshots={() => setSnapshotModalOpen(true)}
+            onOpenSettings={() => {
+              setSettingsTab('appearance')
+              setSettingsOpen(true)
+            }}
+          />
 
-        {/* Modern IDE Studio Primary Sidebar (Collapsible with Explorer, Files, Git, Pit) */}
-        <PrimarySidebar onNewWorkspace={handleNewWorkspace} />
+          {/* Modern IDE Studio Primary Sidebar (Collapsible with Explorer, Files, Git, Pit) */}
+          <PrimarySidebar onNewWorkspace={handleNewWorkspace} />
 
-        <main className="relative flex min-w-0 flex-1 flex-col">
-          {/* Workspaces stay mounted and visible whether Settings is open or
-              not — the Settings modal dims them behind its backdrop, and their
-              terminals (and PTYs) survive a Settings detour. */}
-          <div className="flex min-h-0 flex-1 flex-col">
-            <WorkspaceTabs onNewWorkspace={handleNewWorkspace} />
+          <main className="relative flex min-w-0 flex-1 flex-col">
+            {/* Workspaces stay mounted and visible whether Settings is open or
+                not — the Settings modal dims them behind its backdrop, and their
+                terminals (and PTYs) survive a Settings detour. */}
+            <div className="flex min-h-0 flex-1 flex-col">
+              <WorkspaceTabs onNewWorkspace={handleNewWorkspace} />
 
-            <div className="relative min-h-0 flex-1 bg-canvas">
-              {/* Workspace(s) left, right panel (Preview/Git/War Room) when
-                  toggled on. DndContext lives here, above both, so a pane
-                  dragged out of the workspace can be dropped on the War Room
-                  panel sitting beside it — see lib/war-room-drop.ts. */}
-              <DndContext
-                sensors={dndSensors}
-                collisionDetection={pointerWithin}
-                onDragStart={(e) => handleDragStart(String(e.active.id))}
-                onDragEnd={(e) => handleDragEnd(String(e.active.id), e.over ? String(e.over.id) : null)}
-                onDragCancel={() => {
-                  setDraggingLeafId(null)
-                  restorePanelIfNoDrop()
-                }}
-              >
+              <div className="relative min-h-0 flex-1 bg-canvas">
                 <Group
                   key={rightPanelVisible ? 'split' : 'solo'}
                   orientation="horizontal"
@@ -764,20 +752,21 @@ export default function App(): ReactElement {
                     </>
                   )}
                 </Group>
-                <DragOverlay>
-                  {draggingLeaf ? <PaneDragGhost leaf={draggingLeaf} /> : null}
-                </DragOverlay>
-              </DndContext>
 
-              {showWelcome && (
-                <div className="absolute inset-0 z-20 overflow-y-auto bg-canvas">
-                  <Welcome />
-                </div>
-              )}
+                {showWelcome && (
+                  <div className="absolute inset-0 z-20 overflow-y-auto bg-canvas">
+                    <Welcome />
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
+          </main>
+        </div>
 
-        </main>
+        <DragOverlay>
+          {draggingLeaf ? <PaneDragGhost leaf={draggingLeaf} /> : null}
+        </DragOverlay>
+      </DndContext>
 
         {settingsOpen && (
           <SettingsView
@@ -804,6 +793,5 @@ export default function App(): ReactElement {
 
         <TerminateConfirmModal />
       </div>
-    </div>
   )
 }

@@ -43,6 +43,12 @@ import { DEFAULT_TEMPLATE_ID, TEMPLATES, templateById } from '@/lib/templates'
 import { resolvePaneTitle } from '@/lib/pane-title'
 import { displayState, paneDot, workspaceDot } from '@/lib/agent-state/rollup'
 import { joinActiveWorkspaceToRoom } from '@/lib/orchestra-pit-join'
+import { useOrchestraPitStore } from '@/store/orchestra-pit-store'
+import { useActivityBarStore } from '@/store/activity-bar-store'
+import { warRoomJoin } from '@/tauri/orchestrapit'
+import { memberDisplayName } from '@/lib/orchestra-pit-drop'
+import { buildIntroText } from '@/lib/orchestra-pit-nudge'
+import { getTerminalCwd } from '@/lib/terminal-registry'
 import { useTerminateConfirmStore } from '@/store/terminate-confirm-store'
 import { ActivityDot } from '@/components/ActivityDot'
 import { StateDot } from '@/components/StateDot'
@@ -636,6 +642,34 @@ function WorkspaceTreeNode({
                           ))}
                         </DropdownMenuSubContent>
                       </DropdownMenuSub>
+                      <DropdownMenuItem
+                        onSelect={() => {
+                          const activeRoomId = useOrchestraPitStore.getState().activeRoomId
+                          if (!activeRoomId) return
+                          const resolvedAgent = leaf.agentId ?? DEFAULT_TEMPLATE_ID
+                          const agentId = resolvedAgent === DEFAULT_TEMPLATE_ID ? undefined : resolvedAgent
+                          const cwd = getTerminalCwd(leaf.terminalId) ?? leaf.cwd ?? workspace.cwd
+                          const displayName = memberDisplayName(
+                            resolvePaneTitle(resolvedAgent, titles[leaf.terminalId], customTitles[leaf.terminalId]),
+                            cwd
+                          )
+                          const st = useOrchestraPitStore.getState()
+                          const peers = (st.membersByRoom[activeRoomId] ?? []).filter((m) => m.terminalId !== leaf.terminalId).map((m) => m.name)
+                          const roomName = st.rooms.find((r) => r.roomId === activeRoomId)?.name ?? 'Orchestra Pit'
+
+                          void warRoomJoin({ roomId: activeRoomId, terminalId: leaf.terminalId, agentId, cwd, displayName }).then(() => {
+                            if (agentId) {
+                              useOrchestraPitStore.getState().enqueueIntro(leaf.terminalId, buildIntroText(roomName, peers))
+                            }
+                            useActivityBarStore.getState().setActiveTab('pit')
+                            useActivityBarStore.getState().setSidebarOpen(true)
+                          })
+                        }}
+                      >
+                        <MessagesSquare className="h-3.5 w-3.5 mr-1.5 text-amber-500" />
+                        Add to Orchestra Pit
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
                       <DropdownMenuItem
                         onSelect={() => onSplitLeaf(leaf.id, 'horizontal')}
                       >
