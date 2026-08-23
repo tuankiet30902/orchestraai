@@ -15,6 +15,7 @@ import { useAppearanceStore } from '@/store/appearance-store'
 import { useCommandPaletteStore } from '@/store/command-palette-store'
 import { SessionTokenSummary } from '@/components/TokenBar/TokenBar'
 import { collectLeaves } from '@/lib/layout-tree'
+import { DEFAULT_ZOOM } from '@/lib/appearance'
 
 export function StatusBar({
   onOpenMissionControl
@@ -38,7 +39,7 @@ export function StatusBar({
   const resetZoom = useAppearanceStore((s) => s.resetZoom)
   const openCommandPalette = useCommandPaletteStore((s) => s.open)
 
-  const isDefaultZoom = Math.abs(zoom - 1.0) < 0.01
+  const isDefaultZoom = Math.abs(zoom - DEFAULT_ZOOM) < 0.01
 
   return (
     <footer className="flex h-7 shrink-0 items-center justify-between border-t border-border bg-card/95 px-3 text-[11px] font-sans text-muted-foreground select-none z-30 backdrop-blur-xs">

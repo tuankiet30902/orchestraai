@@ -3,7 +3,7 @@ import { type ReactElement } from 'react'
 import { Check, Columns, Palette, ZoomIn, RotateCcw } from 'lucide-react'
 import { useAppearanceStore } from '@/store/appearance-store'
 import { useNavbarVisibilityStore } from '@/store/navbar-visibility-store'
-import { type Style } from '@/lib/appearance'
+import { type Style, DEFAULT_ZOOM } from '@/lib/appearance'
 import { cn } from '@/lib/utils'
 
 interface ThemeDefinition {
@@ -42,7 +42,7 @@ export function AppearancePanel(): ReactElement {
   const setSidebarWidth = useNavbarVisibilityStore((s) => s.setWidth)
   const resetSidebarWidth = useNavbarVisibilityStore((s) => s.resetWidth)
 
-  const isDefaultZoom = Math.abs(zoom - 1.0) < 0.01
+  const isDefaultZoom = Math.abs(zoom - DEFAULT_ZOOM) < 0.01
 
   return (
     <div className="space-y-8 font-sans">
@@ -76,7 +76,7 @@ export function AppearancePanel(): ReactElement {
               className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground underline underline-offset-4 transition-colors"
             >
               <RotateCcw className="h-3 w-3" />
-              <span>Reset (100%)</span>
+              <span>Reset ({Math.round(DEFAULT_ZOOM * 100)}%)</span>
             </button>
           )}
         </div>

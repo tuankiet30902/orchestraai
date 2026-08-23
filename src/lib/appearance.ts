@@ -19,7 +19,7 @@ export type Style =
 
 export const DEFAULT_MODE: ColorMode = 'dark'
 export const DEFAULT_STYLE: Style = 'orchestra-amber'
-export const DEFAULT_ZOOM = 1.0
+export const DEFAULT_ZOOM = 1.25
 export const MIN_ZOOM = 0.6
 export const MAX_ZOOM = 2.0
 export const ZOOM_STEP = 0.1

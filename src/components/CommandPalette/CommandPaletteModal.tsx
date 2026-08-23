@@ -26,7 +26,7 @@ import { useGitStore } from '@/store/git-store'
 import { useRecentsStore } from '@/store/recents-store'
 import { ORCHESTRA_TEMPLATES, type OrchestraTemplate } from '@/lib/agent-templates'
 import { pickDirectory, getHomeDir } from '@/tauri/dialog'
-import { type Style } from '@/lib/appearance'
+import { type Style, DEFAULT_ZOOM } from '@/lib/appearance'
 import { cn } from '@/lib/utils'
 
 interface CommandItem {
@@ -305,7 +305,7 @@ export function CommandPaletteModal({
 
     items.push({
       id: 'zoom-reset',
-      title: 'Reset UI Zoom to 100%',
+      title: `Reset UI Zoom to ${Math.round(DEFAULT_ZOOM * 100)}%`,
       subtitle: `Current scale: ${Math.round(zoom * 100)}%`,
       category: 'Themes & Display',
       icon: <RotateCcw className="h-4 w-4 text-foreground" />,

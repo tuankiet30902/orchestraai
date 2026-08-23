@@ -73,21 +73,21 @@ describe('isEffectiveDark', () => {
 })
 
 describe('readStoredZoom and storeZoom', () => {
-  it('defaults to 1.0 when nothing stored', () => {
+  it('defaults to 1.25 when nothing stored', () => {
     const storage = fakeStorage()
-    expect(readStoredZoom(storage)).toBe(1.0)
+    expect(readStoredZoom(storage)).toBe(1.25)
   })
 
   it('reads and writes zoom levels correctly within bounds', () => {
     const storage = fakeStorage()
-    storeZoom(storage, 1.25)
-    expect(readStoredZoom(storage)).toBe(1.25)
-    expect(storage.getItem(ZOOM_STORAGE_KEY)).toBe('1.25')
+    storeZoom(storage, 1.5)
+    expect(readStoredZoom(storage)).toBe(1.5)
+    expect(storage.getItem(ZOOM_STORAGE_KEY)).toBe('1.5')
   })
 
   it('falls back to default on invalid or out-of-bound zoom values', () => {
-    expect(readStoredZoom(fakeStorage({ [ZOOM_STORAGE_KEY]: 'invalid' }))).toBe(1.0)
-    expect(readStoredZoom(fakeStorage({ [ZOOM_STORAGE_KEY]: '0.1' }))).toBe(1.0)
-    expect(readStoredZoom(fakeStorage({ [ZOOM_STORAGE_KEY]: '10.0' }))).toBe(1.0)
+    expect(readStoredZoom(fakeStorage({ [ZOOM_STORAGE_KEY]: 'invalid' }))).toBe(1.25)
+    expect(readStoredZoom(fakeStorage({ [ZOOM_STORAGE_KEY]: '0.1' }))).toBe(1.25)
+    expect(readStoredZoom(fakeStorage({ [ZOOM_STORAGE_KEY]: '10.0' }))).toBe(1.25)
   })
 })
