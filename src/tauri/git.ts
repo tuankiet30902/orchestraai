@@ -135,3 +135,19 @@ export function getCommitHistory(
 export function revertCommit(worktreePath: string, commitHash: string): Promise<void> {
   return invoke('git_revert_commit', { worktreePath, commitHash })
 }
+
+export function gitPush(worktreePath: string): Promise<string> {
+  return invoke('git_push', { worktreePath })
+}
+
+export function gitPull(worktreePath: string): Promise<string> {
+  return invoke('git_pull', { worktreePath })
+}
+
+export function discardFile(worktreePath: string, file: string): Promise<void> {
+  return invoke('git_discard_file', { worktreePath, file })
+}
+
+export function discardAll(worktreePath: string): Promise<void> {
+  return invoke('git_discard_all', { worktreePath })
+}

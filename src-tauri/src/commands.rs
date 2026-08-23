@@ -315,6 +315,42 @@ pub async fn git_revert_commit(
     .map_err(|e| format!("git task failed: {e}"))?
 }
 
+#[tauri::command]
+pub async fn git_push(worktree_path: String) -> Result<String, String> {
+    tauri::async_runtime::spawn_blocking(move || {
+        crate::git::push(std::path::Path::new(&worktree_path))
+    })
+    .await
+    .map_err(|e| format!("git task failed: {e}"))?
+}
+
+#[tauri::command]
+pub async fn git_pull(worktree_path: String) -> Result<String, String> {
+    tauri::async_runtime::spawn_blocking(move || {
+        crate::git::pull(std::path::Path::new(&worktree_path))
+    })
+    .await
+    .map_err(|e| format!("git task failed: {e}"))?
+}
+
+#[tauri::command]
+pub async fn git_discard_file(worktree_path: String, file: String) -> Result<(), String> {
+    tauri::async_runtime::spawn_blocking(move || {
+        crate::git::discard_file(std::path::Path::new(&worktree_path), &file)
+    })
+    .await
+    .map_err(|e| format!("git task failed: {e}"))?
+}
+
+#[tauri::command]
+pub async fn git_discard_all(worktree_path: String) -> Result<(), String> {
+    tauri::async_runtime::spawn_blocking(move || {
+        crate::git::discard_all(std::path::Path::new(&worktree_path))
+    })
+    .await
+    .map_err(|e| format!("git task failed: {e}"))?
+}
+
 /// Ensure a directory is a git repository with at least one commit.
 /// Frontend calls this during workspace creation when isolate=true and the
 /// folder is not yet a git repo. `home` is resolved here (like git_list_worktrees)

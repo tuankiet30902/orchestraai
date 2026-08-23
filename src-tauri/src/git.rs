@@ -868,6 +868,62 @@ pub fn revert_commit(worktree_path: &Path, commit_hash: &str) -> Result<(), Stri
     Ok(())
 }
 
+pub fn push(worktree_path: &Path) -> Result<String, String> {
+    let p = worktree_path
+        .to_str()
+        .ok_or_else(|| format!("non-UTF-8 path: {}", worktree_path.display()))?;
+    let out = git_command()
+        .args(["-C", p, "push"])
+        .output()
+        .map_err(|e| format!("git push failed: {e}"))?;
+    if !out.status.success() {
+        return Err(String::from_utf8_lossy(&out.stderr).trim().to_string());
+    }
+    Ok(String::from_utf8_lossy(&out.stdout).trim().to_string())
+}
+
+pub fn pull(worktree_path: &Path) -> Result<String, String> {
+    let p = worktree_path
+        .to_str()
+        .ok_or_else(|| format!("non-UTF-8 path: {}", worktree_path.display()))?;
+    let out = git_command()
+        .args(["-C", p, "pull"])
+        .output()
+        .map_err(|e| format!("git pull failed: {e}"))?;
+    if !out.status.success() {
+        return Err(String::from_utf8_lossy(&out.stderr).trim().to_string());
+    }
+    Ok(String::from_utf8_lossy(&out.stdout).trim().to_string())
+}
+
+pub fn discard_file(worktree_path: &Path, file: &str) -> Result<(), String> {
+    let p = worktree_path
+        .to_str()
+        .ok_or_else(|| format!("non-UTF-8 path: {}", worktree_path.display()))?;
+    // Try checkout (for tracked files)
+    let _ = git_command()
+        .args(["-C", p, "checkout", "--", file])
+        .output();
+    // Try clean (for untracked files)
+    let _ = git_command()
+        .args(["-C", p, "clean", "-f", file])
+        .output();
+    Ok(())
+}
+
+pub fn discard_all(worktree_path: &Path) -> Result<(), String> {
+    let p = worktree_path
+        .to_str()
+        .ok_or_else(|| format!("non-UTF-8 path: {}", worktree_path.display()))?;
+    let _ = git_command()
+        .args(["-C", p, "checkout", "."])
+        .output();
+    let _ = git_command()
+        .args(["-C", p, "clean", "-fd"])
+        .output();
+    Ok(())
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
