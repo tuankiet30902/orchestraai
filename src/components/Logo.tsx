@@ -2,8 +2,9 @@
 import type { ReactElement } from 'react'
 
 /**
- * Modern OrchestraAI Brand Mark:
- * A sleek, high-precision developer terminal badge with AI prompt and conductor spark.
+ * OrchestraAI Master Brand Emblem:
+ * A high-precision geometric Letter 'O' featuring concentric multi-agent orbits
+ * and a central conductor spark.
  */
 export function Logo({ className = 'h-5 w-5' }: { className?: string }): ReactElement {
   return (
@@ -14,34 +15,41 @@ export function Logo({ className = 'h-5 w-5' }: { className?: string }): ReactEl
       className={className}
       aria-hidden="true"
     >
-      <rect
-        x="2.5"
-        y="2.5"
-        width="27"
-        height="27"
-        rx="7"
-        fill="currentColor"
-        fillOpacity="0.08"
+      {/* Outer Main Letter 'O' Ring */}
+      <circle
+        cx="16"
+        cy="16"
+        r="12.5"
         stroke="currentColor"
-        strokeWidth="1.75"
+        strokeWidth="2.75"
       />
-      {/* Terminal prompt symbol */}
+
+      {/* Inner Concentric Orchestration Orbit */}
+      <circle
+        cx="16"
+        cy="16"
+        r="7.5"
+        stroke="currentColor"
+        strokeWidth="1.25"
+        strokeDasharray="3 2"
+        strokeOpacity="0.6"
+      />
+
+      {/* Central Conductor Core & Star Spark */}
+      <circle cx="16" cy="16" r="2.2" fill="currentColor" />
       <path
-        d="M9.5 11L14.5 16L9.5 21"
+        d="M16 10.5V21.5M10.5 16H21.5"
         stroke="currentColor"
-        strokeWidth="2"
+        strokeWidth="1.25"
         strokeLinecap="round"
-        strokeLinejoin="round"
+        strokeOpacity="0.8"
       />
-      {/* Terminal cursor line */}
-      <path
-        d="M17 21H22.5"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
-      {/* AI agent conductor spark */}
-      <circle cx="21" cy="11.5" r="1.75" fill="currentColor" />
+
+      {/* 4 Agent Cardinal Nodes around the 'O' Ring */}
+      <circle cx="16" cy="3.5" r="1.5" fill="currentColor" />
+      <circle cx="28.5" cy="16" r="1.5" fill="currentColor" />
+      <circle cx="16" cy="28.5" r="1.5" fill="currentColor" />
+      <circle cx="3.5" cy="16" r="1.5" fill="currentColor" />
     </svg>
   )
 }
