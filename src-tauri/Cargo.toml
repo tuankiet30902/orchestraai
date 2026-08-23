@@ -5,7 +5,7 @@ description = "Conduct your AI coding orchestra — split terminals, per-agent g
 authors = ["kiet"]
 license = "GPL-3.0-only"
 homepage = "https://orchestron.dev"
-repository = "https://github.com/tuankiet30902/orchestron"
+repository = "https://github.com/tuankiet30902/orchestraai"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html

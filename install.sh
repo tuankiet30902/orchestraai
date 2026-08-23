@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 #
 # Orchestron One-Line Installer for macOS & Linux
-# Usage: curl -fsSL https://raw.githubusercontent.com/tuankiet30902/orchestron/main/install.sh | bash
+# Usage: curl -fsSL https://raw.githubusercontent.com/tuankiet30902/orchestraai/main/install.sh | bash
 #
 set -euo pipefail
 
-REPO="tuankiet30902/orchestron"
+REPO="tuankiet30902/orchestraai"
 APP_NAME="Orchestron"
 BINARY_NAME="orchestron"
 

@@ -7,7 +7,7 @@
   "homepage": "https://orchestron.dev",
   "repository": {
     "type": "git",
-    "url": "https://github.com/tuankiet30902/orchestron.git"
+    "url": "https://github.com/tuankiet30902/orchestraai.git"
   },
   "type": "module",
   "scripts": {

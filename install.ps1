@@ -1,9 +1,9 @@
 # Orchestron One-Line Installer for Windows
 # Usage in PowerShell:
-#   irm https://raw.githubusercontent.com/tuankiet30902/orchestron/main/install.ps1 | iex
+#   irm https://raw.githubusercontent.com/tuankiet30902/orchestraai/main/install.ps1 | iex
 
 $ErrorActionPreference = 'Stop'
-$repo = "tuankiet30902/orchestron"
+$repo = "tuankiet30902/orchestraai"
 $appName = "Orchestron"
 
 Write-Host ""

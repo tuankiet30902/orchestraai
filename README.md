@@ -11,7 +11,7 @@
 
 <p align="center">
   <a href="#-quick-installation"><img src="https://img.shields.io/badge/Download-macOS%20%7C%20Windows%20%7C%20Linux-f59e0b?style=for-the-badge&logo=apple&logoColor=white" alt="Download Orchestron" /></a>
-  <a href="https://github.com/tuankiet30902/orchestron/releases"><img src="https://img.shields.io/github/v/release/tuankiet30902/orchestron?style=for-the-badge&color=18181b&label=Latest%20Release" alt="Release" /></a>
+  <a href="https://github.com/tuankiet30902/orchestraai/releases"><img src="https://img.shields.io/github/v/release/tuankiet30902/orchestraai?style=for-the-badge&color=18181b&label=Latest%20Release" alt="Release" /></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-GPL--3.0-18181b?style=for-the-badge" alt="License" /></a>
 </p>
 
@@ -81,22 +81,22 @@ Pre-built binaries are standalone, lightweight (~10MB installer), and require ze
 ### 🍎 macOS (Apple Silicon M1/M2/M3/M4 & Intel x86_64)
 Run in your terminal:
 ```bash
-curl -fsSL https://raw.githubusercontent.com/tuankiet30902/orchestron/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/tuankiet30902/orchestraai/main/install.sh | bash
 ```
-> Or download the standalone disk image: [**Orchestron_0.1.0_universal.dmg**](https://github.com/tuankiet30902/orchestron/releases/download/v0.1.0/Orchestron_0.1.0_universal.dmg)
+> Or download the standalone disk image: [**Orchestron_0.1.0_universal.dmg**](https://github.com/tuankiet30902/orchestraai/releases/download/v0.1.0/Orchestron_0.1.0_universal.dmg)
 
 ### 🪟 Windows (Windows 10 / 11 64-bit)
 Run in PowerShell (Run as Administrator or standard user):
 ```powershell
-irm https://raw.githubusercontent.com/tuankiet30902/orchestron/main/install.ps1 | iex
+irm https://raw.githubusercontent.com/tuankiet30902/orchestraai/main/install.ps1 | iex
 ```
-> Or download the installer: [**Orchestron_0.1.0_x64-setup.exe**](https://github.com/tuankiet30902/orchestron/releases/download/v0.1.0/Orchestron_0.1.0_x64-setup.exe) · [**Enterprise MSI**](https://github.com/tuankiet30902/orchestron/releases/download/v0.1.0/Orchestron_0.1.0_x64_en-US.msi)
+> Or download the installer: [**Orchestron_0.1.0_x64-setup.exe**](https://github.com/tuankiet30902/orchestraai/releases/download/v0.1.0/Orchestron_0.1.0_x64-setup.exe) · [**Enterprise MSI**](https://github.com/tuankiet30902/orchestraai/releases/download/v0.1.0/Orchestron_0.1.0_x64_en-US.msi)
 
 ### 🐧 Linux (Ubuntu, Debian, Fedora, Arch, RHEL)
 ```bash
-curl -fsSL https://raw.githubusercontent.com/tuankiet30902/orchestron/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/tuankiet30902/orchestraai/main/install.sh | bash
 ```
-> Direct packages: [**Universal .AppImage**](https://github.com/tuankiet30902/orchestron/releases/download/v0.1.0/Orchestron_0.1.0_amd64.AppImage) · [**Debian / Ubuntu (.deb)**](https://github.com/tuankiet30902/orchestron/releases/download/v0.1.0/Orchestron_0.1.0_amd64.deb) · [**Fedora / RHEL (.rpm)**](https://github.com/tuankiet30902/orchestron/releases/download/v0.1.0/Orchestron-0.1.0-1.x86_64.rpm)
+> Direct packages: [**Universal .AppImage**](https://github.com/tuankiet30902/orchestraai/releases/download/v0.1.0/Orchestron_0.1.0_amd64.AppImage) · [**Debian / Ubuntu (.deb)**](https://github.com/tuankiet30902/orchestraai/releases/download/v0.1.0/Orchestron_0.1.0_amd64.deb) · [**Fedora / RHEL (.rpm)**](https://github.com/tuankiet30902/orchestraai/releases/download/v0.1.0/Orchestron-0.1.0-1.x86_64.rpm)
 
 ---
 
@@ -312,7 +312,7 @@ Orchestron is agent-agnostic and works with any command-line coding tool:
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/tuankiet30902/orchestron.git
+git clone https://github.com/tuankiet30902/orchestraai.git
 cd orchestron
 
 # 2. Install dependencies
