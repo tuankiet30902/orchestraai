@@ -43,7 +43,7 @@ Write-Host "==> building NSIS installer (v$version)"
 npx tauri build --bundles nsis
 if ($LASTEXITCODE -ne 0) { Die "tauri build failed" }
 
-$setup = "src-tauri/target/release/bundle/nsis/OrchestraAI_${version}_x64-setup.exe"
+$setup = "src-tauri/target/release/bundle/nsis/Orchestron_${version}_x64-setup.exe"
 if (-not (Test-Path $setup)) { Die "installer not found: $setup" }
 if (-not (Test-Path "$setup.sig")) {
   Die "updater signature not found: $setup.sig - was the build run without the signing key?"

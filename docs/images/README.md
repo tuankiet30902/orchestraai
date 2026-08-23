@@ -1,7 +1,7 @@
-# OrchestraAI Documentation Images
+# Orchestron Documentation Images
 
-High-resolution visual assets for OrchestraAI:
+High-resolution visual assets for Orchestron:
 
-- `orchestraai-workspace-hero.png`: Multi-agent workspace with split terminals and live monitoring.
-- `orchestraai-pit-collaboration.png`: Orchestra Pit team communication and agent handshakes.
-- `orchestraai-welcome-hub.png`: Studio welcome launcher and agent template presets.
+- `orchestron-workspace-hero.png`: Multi-agent workspace with split terminals and live monitoring.
+- `orchestron-pit-collaboration.png`: Orchestra Pit team communication and agent handshakes.
+- `orchestron-welcome-hub.png`: Studio welcome launcher and agent template presets.

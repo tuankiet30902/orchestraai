@@ -25,8 +25,8 @@ export const MAX_ZOOM = 2.0
 export const ZOOM_STEP = 0.1
 
 export const APPEARANCE_STORAGE_KEY = 'cc-appearance-style'
-export const COLOR_MODE_STORAGE_KEY = 'orchestraai-color-mode'
-export const ZOOM_STORAGE_KEY = 'orchestraai-zoom-level'
+export const COLOR_MODE_STORAGE_KEY = 'orchestron-color-mode'
+export const ZOOM_STORAGE_KEY = 'orchestron-zoom-level'
 
 export interface AppearanceStorage {
   getItem: (key: string) => string | null

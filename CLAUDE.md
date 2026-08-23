@@ -6,7 +6,7 @@ disagree, **trust the code**.
 
 ## What this is
 
-**OrchestraAI** — a desktop multi-terminal app: a left navbar of workspaces, each
+**Orchestron** — a desktop multi-terminal app: a left navbar of workspaces, each
 a binary split-tree of real terminal panes (xterm.js front, `portable-pty`
 shell back), plus an optional Chrome-style web-preview column. Built on
 **Tauri 2 + Rust** (frontend: **React 19 + TypeScript + Vite**). Ported from an
@@ -135,8 +135,8 @@ touched `src-tauri/` — `cargo test`. Don't assert success without the output.
   verbatim. Don't downscale.
 - **MCP server & session token.** On boot the Rust process binds a random
   loopback port and runs an `rmcp` Streamable-HTTP MCP server. Each PTY is
-  spawned with `ORCHESTRAAI_MCP_URL=http://127.0.0.1:<port>/mcp` and
-  `ORCHESTRAAI_SESSION=<terminalId>`. The session UUID doubles as the bearer
+  spawned with `ORCHESTRON_MCP_URL=http://127.0.0.1:<port>/mcp` and
+  `ORCHESTRON_SESSION=<terminalId>`. The session UUID doubles as the bearer
   token — the terminal's env is the only place it appears, and it stops
   authorising the moment the PTY is killed (auth resolver checks the live
   terminal map). To add a tool: drop it into `src-tauri/src/mcp/tools/` and
@@ -183,13 +183,13 @@ touched `src-tauri/` — `cargo test`. Don't assert success without the output.
   `<repo>.worktrees`; closing panes/workspaces never deletes worktrees;
   worktree directories are never renamed (agent session state is keyed by
   absolute path).
-- **Claude Code status line.** `orchestraai --statusline` is a second entry point
+- **Claude Code status line.** `orchestron --statusline` is a second entry point
   into the same binary, short-circuited in `main.rs` *before* the Tauri builder
   so no window/tray/single-instance/AppKit is touched. It prints one line: an
   `mcp` segment and a `ctx` segment (`statusline/render.rs` is pure and holds
   every state). "Connected" is proved by an axum middleware on `/mcp` that
   records each inbound bearer token (`mcp/clients.rs`) — `initialize` never
-  reaches `OrchestraAIMcpServer::caller`, so hooking the tool layer would miss the
+  reaches `OrchestronMcpServer::caller`, so hooking the tool layer would miss the
   one request that matters; `/status` is registered *after* `.layer(...)` so the
   probe cannot stamp its own verdict. Membership is dropped in both
   `kill_terminal` and `read_loop`, so a same-id respawn starts at `mcp …`. The
@@ -227,7 +227,7 @@ touched `src-tauri/` — `cargo test`. Don't assert success without the output.
   app.
 - **Anonymous telemetry is compile-time gated.** `analytics.rs` sends a GA4
   Measurement Protocol `app_open` + 5-minute heartbeat, but only when
-  `ORCHESTRAAI_GA_MEASUREMENT_ID` / `ORCHESTRAAI_GA_API_SECRET` were in the env
+  `ORCHESTRON_GA_MEASUREMENT_ID` / `ORCHESTRON_GA_API_SECRET` were in the env
   when **cargo compiled** (`option_env!` — the release scripts export them
   from `.env.release`). Dev and source builds are no-ops; don't add runtime
   key lookups, and never send more than version + OS (the user-guide

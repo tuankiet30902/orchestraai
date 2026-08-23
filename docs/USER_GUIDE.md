@@ -1,6 +1,6 @@
-# OrchestraAI User & Conductor Guide
+# Orchestron User & Conductor Guide
 
-Welcome to **OrchestraAI** — the native AI multi-agent collaborative development studio designed to conduct entire teams of autonomous coding agents.
+Welcome to **Orchestron** — the native AI multi-agent collaborative development studio designed to conduct entire teams of autonomous coding agents.
 
 ---
 
@@ -19,7 +19,7 @@ Welcome to **OrchestraAI** — the native AI multi-agent collaborative developme
 ## 1. Getting Started
 
 ### 1.1 Welcome Hub
-When you launch OrchestraAI, you are greeted with the **Welcome Hub**:
+When you launch Orchestron, you are greeted with the **Welcome Hub**:
 - **Open Folder (`⌘O`)**: Instantly open any existing project directory.
 - **Quick Terminal (`⌘T`)**: Spawn a standalone terminal in your home folder.
 - **Team Workspace (`⌘N`)**: Configure a multi-agent team with pre-built role templates and automated Git worktrees.
@@ -44,7 +44,7 @@ When you launch OrchestraAI, you are greeted with the **Welcome Hub**:
 ## 3. Agent Badges & Terminal Renaming
 
 ### 3.1 Official Agent Logos
-OrchestraAI automatically recognizes and displays official vector logos for running agents:
+Orchestron automatically recognizes and displays official vector logos for running agents:
 - 🤖 **Claude Code** (Anthropic)
 - ⚡ **Antigravity** (Google DeepMind)
 - 🌸 **Codex** (OpenAI)

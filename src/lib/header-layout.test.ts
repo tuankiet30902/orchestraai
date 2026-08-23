@@ -50,7 +50,7 @@ describe('shortenPath', () => {
   })
 
   it('returns the trailing segment of a windows path', () => {
-    expect(shortenPath('C:\\Project\\2026\\orchestraai')).toBe('orchestraai')
+    expect(shortenPath('C:\\Project\\2026\\orchestron')).toBe('orchestron')
   })
 
   it('ignores a trailing separator', () => {

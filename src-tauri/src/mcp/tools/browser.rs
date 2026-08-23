@@ -100,7 +100,7 @@ use rmcp::{schemars, tool, tool_router};
 use serde::Deserialize;
 use tauri::Emitter;
 
-use crate::mcp::server::OrchestraAIMcpServer;
+use crate::mcp::server::OrchestronMcpServer;
 
 #[derive(Debug, Deserialize, schemars::JsonSchema)]
 pub struct OpenPreviewArgs {
@@ -120,14 +120,14 @@ pub struct OpenPreviewResult {
 }
 
 #[tool_router(router = tool_router_browser, vis = "pub")]
-impl OrchestraAIMcpServer {
+impl OrchestronMcpServer {
     #[tool(
         name = "browser.open_preview",
-        description = "Show a URL in the user's OrchestraAI web-preview column, beside the \
+        description = "Show a URL in the user's Orchestron web-preview column, beside the \
                        calling terminal. Call this proactively whenever you start a dev \
                        server or produce any viewable http(s) URL (e.g. Local: \
                        http://localhost:3000) instead of only printing it — a connected \
-                       OrchestraAI means the user already has a live preview pane ready. \
+                       Orchestron means the user already has a live preview pane ready. \
                        Accepts one http:// or https:// URL."
     )]
     pub async fn open_preview(

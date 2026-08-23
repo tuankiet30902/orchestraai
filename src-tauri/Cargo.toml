@@ -1,11 +1,11 @@
 [package]
-name = "orchestraai"
+name = "orchestron"
 version = "0.1.0"
 description = "Conduct your AI coding orchestra — split terminals, per-agent git worktrees, live web previews, and an Orchestra Pit where agents collaborate"
 authors = ["kiet"]
 license = "GPL-3.0-only"
-homepage = "https://orchestraai.dev"
-repository = "https://github.com/tuankiet30902/orchestraai"
+homepage = "https://orchestron.dev"
+repository = "https://github.com/tuankiet30902/orchestron"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -14,7 +14,7 @@ edition = "2021"
 # The `_lib` suffix may seem redundant but it is necessary
 # to make the lib name unique and wouldn't conflict with the bin name.
 # This seems to be only an issue on Windows, see https://github.com/rust-lang/cargo/issues/8519
-name = "orchestraai_lib"
+name = "orchestron_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
 [build-dependencies]

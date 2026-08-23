@@ -31,7 +31,7 @@ export type UpdaterEvent =
 /** Delayed so the check never competes with pty spawn on boot. */
 export const STARTUP_CHECK_DELAY_MS = 5_000
 
-/** OrchestraAI runs for days — without an in-app "check" button the periodic
+/** Orchestron runs for days — without an in-app "check" button the periodic
  * re-check is the only way a long-lived instance ever learns of a release. */
 export const PERIODIC_CHECK_INTERVAL_MS = 4 * 60 * 60 * 1000
 

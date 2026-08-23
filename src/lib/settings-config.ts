@@ -130,7 +130,7 @@ export const DEFAULT_APP_SETTINGS: AppSettingsConfig = {
   agents: DEFAULT_AGENT_CONFIGS
 }
 
-export const SETTINGS_STORAGE_KEY = 'orchestraai-app-settings-v1'
+export const SETTINGS_STORAGE_KEY = 'orchestron-app-settings-v1'
 
 export interface StorageSurface {
   getItem: (key: string) => string | null

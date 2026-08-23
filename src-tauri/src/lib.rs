@@ -70,7 +70,7 @@ pub fn run() {
             // idempotent, log-only.
             crate::mcp::config::register_user_scope(app.handle());
             // Boot the MCP server. Any failure is logged and swallowed: browser
-            // preview via MCP just won't work for this run, but OrchestraAI as a
+            // preview via MCP just won't work for this run, but Orchestron as a
             // whole still functions.
             let handle_for_mcp = app.handle().clone();
             tauri::async_runtime::spawn(async move {

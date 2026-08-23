@@ -6,7 +6,7 @@ import { collectLeaves } from '@/lib/layout-tree'
 import { type WorkspaceSnapshot, SNAPSHOT_VERSION } from '@/lib/snapshot-schema'
 import { Button } from '@/components/ui/button'
 
-const STORAGE_KEY = 'orchestraai_snapshots_v1'
+const STORAGE_KEY = 'orchestron_snapshots_v1'
 
 interface SavedSnapshot {
   id: string

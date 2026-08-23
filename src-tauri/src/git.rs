@@ -336,7 +336,7 @@ pub fn worktrees_dir_for(main_root: &Path) -> Option<PathBuf> {
     Some(main_root.parent()?.join(format!("{name}.worktrees")))
 }
 
-/// True only for paths strictly inside the orchestraai-managed container —
+/// True only for paths strictly inside the orchestron-managed container —
 /// the removal guard that makes deleting the main worktree unrepresentable.
 pub fn is_inside_worktrees_dir(path: &Path, main_root: &Path) -> bool {
     use std::path::Component;
@@ -439,7 +439,7 @@ pub fn ensure_repo_with_commit(path: &Path, home: &Path) -> Result<(), String> {
             .map_err(|e| format!("git config failed: {e}"))?;
 
         git_command()
-            .args(["-C", path_str, "config", "user.name", "OrchestraAI"])
+            .args(["-C", path_str, "config", "user.name", "Orchestron"])
             .output()
             .map_err(|e| format!("git config failed: {e}"))?;
     }
@@ -529,7 +529,7 @@ pub fn create_worktree(repo_cwd: &Path, branch: &str) -> Result<CreatedWorktree,
 pub fn remove_worktree(repo_cwd: &Path, worktree_path: &Path) -> Result<(), String> {
     let main_root = resolve_main_root(repo_cwd)?;
     if !is_inside_worktrees_dir(worktree_path, &main_root) {
-        return Err("refusing: path is not a orchestraai-managed worktree".into());
+        return Err("refusing: path is not a orchestron-managed worktree".into());
     }
     if !get_changed_files(worktree_path)?.is_empty() {
         return Err(
@@ -588,7 +588,7 @@ pub fn branch_unmerged_count(repo_cwd: &Path, branch: &str) -> Result<u32, Strin
 pub fn clear_worktree(repo_cwd: &Path, worktree_path: &Path, branch: &str) -> Result<(), String> {
     let main_root = resolve_main_root(repo_cwd)?;
     if !is_inside_worktrees_dir(worktree_path, &main_root) {
-        return Err("refusing: path is not a orchestraai-managed worktree".into());
+        return Err("refusing: path is not a orchestron-managed worktree".into());
     }
     let root = main_root.to_str().ok_or("non-UTF-8 repo root")?;
     let target = worktree_path.to_str().ok_or("non-UTF-8 worktree path")?;
@@ -1003,7 +1003,7 @@ mod tests {
         std::fs::create_dir_all(&outside).unwrap();
         let err = clear_worktree(&repo, &outside, "swarm/x").unwrap_err();
         assert!(
-            err.contains("not a orchestraai-managed worktree"),
+            err.contains("not a orchestron-managed worktree"),
             "got: {err}"
         );
     }

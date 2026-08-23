@@ -50,7 +50,7 @@ pub fn list_agents() -> Vec<AgentEntry> {
 
 /// Resolve one agent executable with the same probe `list_agents` uses —
 /// PATH plus the extra bin dirs a Finder/Explorer-launched app never
-/// inherits. Needed wherever OrchestraAI shells out to an agent CLI itself.
+/// inherits. Needed wherever Orchestron shells out to an agent CLI itself.
 pub fn find_agent_binary(exe: &str) -> Option<PathBuf> {
     let pathext = std::env::var("PATHEXT").unwrap_or_default();
     let cands = candidates(exe, &pathext, cfg!(windows));

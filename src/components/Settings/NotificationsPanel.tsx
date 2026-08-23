@@ -75,7 +75,7 @@ export function NotificationsPanel(): ReactElement {
         <div className="border-t border-border pt-1">
           <ToggleRow
             label="System Desktop Notifications"
-            description="Display an OS banner notification only when the OrchestraAI window is in the background or unfocused."
+            description="Display an OS banner notification only when the Orchestron window is in the background or unfocused."
             checked={prefs.system}
             onChange={setSystem}
           />

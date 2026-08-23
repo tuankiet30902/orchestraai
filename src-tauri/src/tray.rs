@@ -47,7 +47,7 @@ fn quit(app: &tauri::AppHandle) {
 }
 
 pub fn setup_tray(app: &App) -> tauri::Result<()> {
-    let show = MenuItemBuilder::with_id("show", "Show OrchestraAI").build(app)?;
+    let show = MenuItemBuilder::with_id("show", "Show Orchestron").build(app)?;
     let check_updates =
         MenuItemBuilder::with_id("check-updates", "Check for Updates…").build(app)?;
     let quit_item = MenuItemBuilder::with_id("quit", "Quit").build(app)?;
@@ -60,7 +60,7 @@ pub fn setup_tray(app: &App) -> tauri::Result<()> {
         // No-op off macOS, so `cfg!` beats a second attribute-gated builder
         // statement for readability.
         .icon_as_template(cfg!(target_os = "macos"))
-        .tooltip("OrchestraAI")
+        .tooltip("Orchestron")
         .menu(&menu)
         .show_menu_on_left_click(false)
         .on_menu_event(|app, event| match event.id().as_ref() {

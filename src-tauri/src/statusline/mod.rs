@@ -1,4 +1,4 @@
-//! The `orchestraai --statusline` command: Claude Code runs it and renders the
+//! The `orchestron --statusline` command: Claude Code runs it and renders the
 //! single line it prints below the input box.
 
 pub mod install;
@@ -51,8 +51,8 @@ pub fn run_cli() {
     // A read error is treated like empty input: still print the ctx placeholder.
     let _ = std::io::stdin().read_to_string(&mut stdin);
 
-    let url = std::env::var("ORCHESTRAAI_MCP_URL").ok();
-    let token = std::env::var("ORCHESTRAAI_SESSION").ok();
+    let url = std::env::var("ORCHESTRON_MCP_URL").ok();
+    let token = std::env::var("ORCHESTRON_SESSION").ok();
     let mcp = mcp_state(url.as_deref(), token.as_deref(), |u, t| {
         probe::probe(u, t, PROBE_TIMEOUT)
     });

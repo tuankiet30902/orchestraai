@@ -7,12 +7,12 @@ set -euo pipefail
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$REPO_ROOT"
 
-APP_PATH="src-tauri/target/release/bundle/macos/OrchestraAI.app"
+APP_PATH="src-tauri/target/release/bundle/macos/Orchestron.app"
 ICON_PATH="src-tauri/icons/icon.icns"
 OUTPUT_DIR="src-tauri/target/release/bundle/dmg"
-OUTPUT_DMG="$OUTPUT_DIR/OrchestraAI_0.1.0_universal.dmg"
+OUTPUT_DMG="$OUTPUT_DIR/Orchestron_0.1.0_universal.dmg"
 TEMP_DMG="$OUTPUT_DIR/temp.dmg"
-VOL_NAME="OrchestraAI"
+VOL_NAME="Orchestron"
 
 if [ ! -d "$APP_PATH" ]; then
   echo "Error: App bundle not found at $APP_PATH. Run 'npm run build' first." >&2
@@ -50,9 +50,9 @@ hdiutil convert "$TEMP_DMG" -format UDZO -imagekey zlib-level=9 -o "$OUTPUT_DMG"
 rm -f "$TEMP_DMG"
 
 # Also create standard named symlink/copies
-cp "$OUTPUT_DMG" "$OUTPUT_DIR/OrchestraAI.dmg"
-cp "$OUTPUT_DMG" "/Users/kiet/Desktop/OrchestraAI.dmg"
-cp "$OUTPUT_DMG" "/Users/kiet/Documents/Heimer/orchestraai-landing/assets/downloads/OrchestraAI.dmg" 2>/dev/null || true
+cp "$OUTPUT_DMG" "$OUTPUT_DIR/Orchestron.dmg"
+cp "$OUTPUT_DMG" "/Users/kiet/Desktop/Orchestron.dmg"
+cp "$OUTPUT_DMG" "/Users/kiet/Documents/Heimer/orchestron-landing/assets/downloads/Orchestron.dmg" 2>/dev/null || true
 
 echo "==> Setting custom file icon on DMG using Swift..."
 swift - <<EOF 2>/dev/null || true
@@ -60,8 +60,8 @@ import Cocoa
 let iconPath = "$REPO_ROOT/$ICON_PATH"
 let paths = [
   "$REPO_ROOT/$OUTPUT_DMG",
-  "$REPO_ROOT/$OUTPUT_DIR/OrchestraAI.dmg",
-  "/Users/kiet/Desktop/OrchestraAI.dmg"
+  "$REPO_ROOT/$OUTPUT_DIR/Orchestron.dmg",
+  "/Users/kiet/Desktop/Orchestron.dmg"
 ]
 if let img = NSImage(contentsOfFile: iconPath) {
   for path in paths {
@@ -71,7 +71,7 @@ if let img = NSImage(contentsOfFile: iconPath) {
 EOF
 
 echo ""
-echo "  🎉 Successfully built branded OrchestraAI DMG:"
+echo "  🎉 Successfully built branded Orchestron DMG:"
 echo "  👉 $OUTPUT_DMG"
-echo "  👉 /Users/kiet/Desktop/OrchestraAI.dmg"
+echo "  👉 /Users/kiet/Desktop/Orchestron.dmg"
 echo ""

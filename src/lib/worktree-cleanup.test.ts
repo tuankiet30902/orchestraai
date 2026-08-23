@@ -48,7 +48,7 @@ describe('isTransientLock', () => {
   })
 
   it('does not match a genuine git refusal', () => {
-    expect(isTransientLock('refusing: path is not a orchestraai-managed worktree')).toBe(false)
+    expect(isTransientLock('refusing: path is not a orchestron-managed worktree')).toBe(false)
   })
 
   it('matches git post-partial-delete validation errors', () => {

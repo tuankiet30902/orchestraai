@@ -22,7 +22,7 @@ export type LinkKind = 'url' | 'path'
  *   A misclick costs one stray browser tab, which is cheap enough that the
  *   one-click gesture is worth keeping.
  * - `path` requires Cmd (macOS) / Ctrl (win/linux), because it launches an
- *   EXTERNAL editor, which yanks OS focus out of OrchestraAI entirely. That is the
+ *   EXTERNAL editor, which yanks OS focus out of Orchestron entirely. That is the
  *   exact failure terminal-focus.ts exists to prevent, and agent output has far
  *   higher path density than an ordinary shell.
  *

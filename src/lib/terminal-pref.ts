@@ -34,7 +34,7 @@ const EVERYWHERE: readonly ShellPlatform[] = ['windows', 'macos', 'linux']
 
 /** Catalog of every shell the UI knows how to render. Order = display order. */
 export const KNOWN_SHELLS: readonly ShellMeta[] = [
-  { id: 'default', label: 'Default', family: 'Platform', promptSample: '$ orchestraai', platforms: EVERYWHERE },
+  { id: 'default', label: 'Default', family: 'Platform', promptSample: '$ orchestron', platforms: EVERYWHERE },
   { id: 'powershell', label: 'PowerShell', family: 'Windows', promptSample: 'PS C:\\>', platforms: WINDOWS_ONLY },
   { id: 'cmd', label: 'Command Prompt', family: 'Windows', promptSample: 'C:\\Users\\>', platforms: WINDOWS_ONLY },
   { id: 'pwsh', label: 'PowerShell 7', family: 'Cross-platform', promptSample: 'PS >', platforms: EVERYWHERE },

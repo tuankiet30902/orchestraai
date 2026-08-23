@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
 #
-# OrchestraAI One-Line Installer for macOS & Linux
-# Usage: curl -fsSL https://raw.githubusercontent.com/tuankiet30902/orchestraai/main/install.sh | bash
+# Orchestron One-Line Installer for macOS & Linux
+# Usage: curl -fsSL https://raw.githubusercontent.com/tuankiet30902/orchestron/main/install.sh | bash
 #
 set -euo pipefail
 
-REPO="tuankiet30902/orchestraai"
-APP_NAME="OrchestraAI"
-BINARY_NAME="orchestraai"
+REPO="tuankiet30902/orchestron"
+APP_NAME="Orchestron"
+BINARY_NAME="orchestron"
 
 echo ""
-echo "  🎻 Installing OrchestraAI — The AI Multi-Agent Coding Studio"
+echo "  🎻 Installing Orchestron — The AI Multi-Agent Coding Studio"
 echo "  ============================================================"
 echo ""
 
@@ -33,16 +33,16 @@ echo "    Target Release: ${TAG}"
 case "$OS" in
   Darwin*)
     echo "==> Detected macOS (${ARCH})"
-    TMP_DMG="$(mktemp -d)/OrchestraAI.dmg"
+    TMP_DMG="$(mktemp -d)/Orchestron.dmg"
     DOWNLOAD_SUCCESS=0
 
     # Try common Tauri release artifact names
     URLS=(
-      "https://github.com/${REPO}/releases/download/${TAG}/OrchestraAI_${TAG#v}_universal.dmg"
-      "https://github.com/${REPO}/releases/download/${TAG}/OrchestraAI_${TAG#v}_aarch64.dmg"
-      "https://github.com/${REPO}/releases/download/${TAG}/OrchestraAI_${TAG#v}_x64.dmg"
-      "https://github.com/${REPO}/releases/download/${TAG}/OrchestraAI.dmg"
-      "https://github.com/${REPO}/releases/latest/download/OrchestraAI.dmg"
+      "https://github.com/${REPO}/releases/download/${TAG}/Orchestron_${TAG#v}_universal.dmg"
+      "https://github.com/${REPO}/releases/download/${TAG}/Orchestron_${TAG#v}_aarch64.dmg"
+      "https://github.com/${REPO}/releases/download/${TAG}/Orchestron_${TAG#v}_x64.dmg"
+      "https://github.com/${REPO}/releases/download/${TAG}/Orchestron.dmg"
+      "https://github.com/${REPO}/releases/latest/download/Orchestron.dmg"
     )
 
     for url in "${URLS[@]}"; do
@@ -65,12 +65,12 @@ case "$OS" in
     MOUNT_DIR="$(mktemp -d)"
     hdiutil attach "$TMP_DMG" -mountpoint "$MOUNT_DIR" -quiet -nobrowse
 
-    if [ -d "/Applications/OrchestraAI.app" ]; then
-      echo "    Removing previous version in /Applications/OrchestraAI.app..."
-      rm -rf "/Applications/OrchestraAI.app"
+    if [ -d "/Applications/Orchestron.app" ]; then
+      echo "    Removing previous version in /Applications/Orchestron.app..."
+      rm -rf "/Applications/Orchestron.app"
     fi
 
-    cp -R "$MOUNT_DIR/OrchestraAI.app" /Applications/
+    cp -R "$MOUNT_DIR/Orchestron.app" /Applications/
     hdiutil detach "$MOUNT_DIR" -quiet
     rm -rf "$TMP_DMG" "$MOUNT_DIR"
 
@@ -81,11 +81,11 @@ case "$OS" in
       mkdir -p "$CLI_DIR"
     fi
 
-    ln -sf "/Applications/OrchestraAI.app/Contents/MacOS/OrchestraAI" "${CLI_DIR}/${BINARY_NAME}" 2>/dev/null || true
-    ln -sf "/Applications/OrchestraAI.app/Contents/MacOS/OrchestraAI" "${CLI_DIR}/orch" 2>/dev/null || true
+    ln -sf "/Applications/Orchestron.app/Contents/MacOS/Orchestron" "${CLI_DIR}/${BINARY_NAME}" 2>/dev/null || true
+    ln -sf "/Applications/Orchestron.app/Contents/MacOS/Orchestron" "${CLI_DIR}/orch" 2>/dev/null || true
 
     echo ""
-    echo "  🎉 OrchestraAI has been successfully installed to /Applications/OrchestraAI.app!"
+    echo "  🎉 Orchestron has been successfully installed to /Applications/Orchestron.app!"
     echo "  👉 Launch from Spotlight or run '${BINARY_NAME}' in your terminal."
     echo ""
     ;;
@@ -98,13 +98,13 @@ case "$OS" in
       mkdir -p "$CLI_DIR"
     fi
 
-    APPIMAGE_URL="https://github.com/${REPO}/releases/download/${TAG}/OrchestraAI_${ARCH}.AppImage"
+    APPIMAGE_URL="https://github.com/${REPO}/releases/download/${TAG}/Orchestron_${ARCH}.AppImage"
     DEST_BIN="${CLI_DIR}/${BINARY_NAME}"
 
     echo "==> Downloading AppImage from ${APPIMAGE_URL}..."
     if ! curl -fL --progress-bar "$APPIMAGE_URL" -o "$DEST_BIN"; then
       # Fallback URL
-      APPIMAGE_URL="https://github.com/${REPO}/releases/latest/download/OrchestraAI.AppImage"
+      APPIMAGE_URL="https://github.com/${REPO}/releases/latest/download/Orchestron.AppImage"
       curl -fL --progress-bar "$APPIMAGE_URL" -o "$DEST_BIN" || {
         echo "Error: Failed to download Linux AppImage." >&2
         exit 1
@@ -115,7 +115,7 @@ case "$OS" in
     ln -sf "$DEST_BIN" "${CLI_DIR}/orch" 2>/dev/null || true
 
     echo ""
-    echo "  🎉 OrchestraAI binary installed to ${DEST_BIN}!"
+    echo "  🎉 Orchestron binary installed to ${DEST_BIN}!"
     echo "  👉 Run '${BINARY_NAME}' or 'orch' in your terminal."
     echo ""
     ;;

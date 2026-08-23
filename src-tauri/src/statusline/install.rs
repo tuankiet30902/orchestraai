@@ -29,11 +29,11 @@ pub fn format_command(exe: &str, windows: bool) -> String {
 }
 
 /// Does this `statusLine.command` belong to us? Both halves must match so a
-/// third-party script that happens to live next to a `orchestraai` binary, or an
+/// third-party script that happens to live next to a `orchestron` binary, or an
 /// unrelated tool that also takes `--statusline`, is left alone.
 pub fn is_ours(command: &str) -> bool {
     let c = command.trim().to_ascii_lowercase();
-    c.ends_with("--statusline") && c.contains("orchestraai")
+    c.ends_with("--statusline") && c.contains("orchestron")
 }
 
 /// What `merge_settings` decided.
@@ -168,13 +168,13 @@ mod tests {
         serde_json::from_str(s).unwrap()
     }
 
-    const OURS: &str = "\"/Applications/OrchestraAI.app/Contents/MacOS/orchestraai\" --statusline";
+    const OURS: &str = "\"/Applications/Orchestron.app/Contents/MacOS/orchestron\" --statusline";
 
     #[test]
     fn quotes_the_path_and_appends_the_flag() {
         assert_eq!(
             format_command(
-                "/Applications/OrchestraAI.app/Contents/MacOS/orchestraai",
+                "/Applications/Orchestron.app/Contents/MacOS/orchestron",
                 false
             ),
             OURS
@@ -188,10 +188,10 @@ mod tests {
         // resolves. Forward slashes work in both shells.
         assert_eq!(
             format_command(
-                "C:\\Users\\me\\AppData\\Local\\OrchestraAI\\orchestraai.exe",
+                "C:\\Users\\me\\AppData\\Local\\Orchestron\\orchestron.exe",
                 true
             ),
-            "\"C:/Users/me/AppData/Local/OrchestraAI/orchestraai.exe\" --statusline"
+            "\"C:/Users/me/AppData/Local/Orchestron/orchestron.exe\" --statusline"
         );
     }
 
@@ -200,23 +200,23 @@ mod tests {
         // A backslash is a legal character in a POSIX filename; rewriting it
         // there would corrupt the path.
         assert_eq!(
-            format_command("/tmp/we\\ird/orchestraai", false),
-            "\"/tmp/we\\ird/orchestraai\" --statusline"
+            format_command("/tmp/we\\ird/orchestron", false),
+            "\"/tmp/we\\ird/orchestron\" --statusline"
         );
     }
 
     #[test]
     fn recognises_our_own_command() {
         assert!(is_ours(OURS));
-        assert!(is_ours("\"C:/x/orchestraai.exe\" --statusline"));
-        assert!(is_ours("/usr/local/bin/orchestraai --statusline"));
+        assert!(is_ours("\"C:/x/orchestron.exe\" --statusline"));
+        assert!(is_ours("/usr/local/bin/orchestron --statusline"));
     }
 
     #[test]
     fn does_not_claim_a_foreign_command() {
         assert!(!is_ours("~/.claude/statusline.sh"));
         assert!(!is_ours("starship prompt"));
-        assert!(!is_ours("orchestraai"));
+        assert!(!is_ours("orchestron"));
         assert!(!is_ours("some-other-tool --statusline"));
         assert!(!is_ours(""));
     }
@@ -267,7 +267,7 @@ mod tests {
     #[test]
     fn rewrites_our_entry_when_the_binary_moved() {
         let existing =
-            r#"{"statusLine":{"type":"command","command":"\"/old/path/orchestraai\" --statusline"}}"#;
+            r#"{"statusLine":{"type":"command","command":"\"/old/path/orchestron\" --statusline"}}"#;
         let SettingsWrite::Write(out) = merge_settings(Some(existing), Some(OURS)).unwrap() else {
             panic!("expected a write");
         };

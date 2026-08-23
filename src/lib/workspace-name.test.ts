@@ -7,7 +7,7 @@ describe('workspaceNameFor', () => {
   })
 
   it('handles unix paths and trailing separators', () => {
-    expect(workspaceNameFor('/Users/me/projects/orchestraai/', [], 1)).toBe('orchestraai')
+    expect(workspaceNameFor('/Users/me/projects/orchestron/', [], 1)).toBe('orchestron')
   })
 
   it('suffixes (1) when the folder name is already taken', () => {

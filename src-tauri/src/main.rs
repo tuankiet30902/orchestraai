@@ -2,7 +2,7 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 fn main() {
-    // `orchestraai --statusline` is Claude Code's status line command: read its
+    // `orchestron --statusline` is Claude Code's status line command: read its
     // JSON from stdin, print one line, exit. Handled here, before `run()`, so
     // the Tauri builder / single-instance plugin / tray / AppKit are never
     // initialised for what is a sub-second CLI invocation.
@@ -13,8 +13,8 @@ fn main() {
     // GetStdHandle resolves them normally. ("GUI subsystem means no stdio" is
     // the intuitive-but-wrong read of that attribute.)
     if std::env::args().skip(1).any(|a| a == "--statusline") {
-        orchestraai_lib::statusline::run_cli();
+        orchestron_lib::statusline::run_cli();
         return;
     }
-    orchestraai_lib::run()
+    orchestron_lib::run()
 }

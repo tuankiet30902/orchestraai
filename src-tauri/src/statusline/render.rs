@@ -6,14 +6,14 @@ use serde::Deserialize;
 /// What we can say about this pane's MCP link.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum McpState {
-    /// OrchestraAI answered and a client has called in with this pane's token.
+    /// Orchestron answered and a client has called in with this pane's token.
     Connected,
-    /// OrchestraAI answered, the token is live, but no client ever called in —
+    /// Orchestron answered, the token is live, but no client ever called in —
     /// Claude did not load our config. The state this feature exists to expose.
     NoClient,
-    /// `ORCHESTRAAI_*` env is present but the probe failed.
+    /// `ORCHESTRON_*` env is present but the probe failed.
     Unreachable,
-    /// No `ORCHESTRAAI_*` env — this Claude session was not spawned by OrchestraAI.
+    /// No `ORCHESTRON_*` env — this Claude session was not spawned by Orchestron.
     Absent,
 }
 
@@ -116,7 +116,7 @@ fn paint(s: &str, code: &str, color: bool) -> String {
 }
 
 /// Build the whole line. Two segments joined by `"  ·  "`; the `mcp` one is
-/// dropped entirely outside OrchestraAI rather than rendered as a "no" — a status
+/// dropped entirely outside Orchestron rather than rendered as a "no" — a status
 /// line in a plain terminal should not nag about a product that isn't running.
 pub fn render(mcp: McpState, ctx: Option<CtxInfo>, color: bool) -> String {
     let mut parts: Vec<String> = Vec::with_capacity(2);

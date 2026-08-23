@@ -60,20 +60,20 @@ describe('resolveDragEnd', () => {
 
 describe('memberDisplayName', () => {
   it('appends the posix cwd basename', () => {
-    expect(memberDisplayName('Claude Code', '/Users/dev/projects/orchestraai')).toBe(
-      'Claude Code · orchestraai'
+    expect(memberDisplayName('Claude Code', '/Users/dev/projects/orchestron')).toBe(
+      'Claude Code · orchestron'
     )
   })
 
   it('appends the windows cwd basename', () => {
-    expect(memberDisplayName('Claude Code', 'C:\\Users\\dev\\projects\\orchestraai')).toBe(
-      'Claude Code · orchestraai'
+    expect(memberDisplayName('Claude Code', 'C:\\Users\\dev\\projects\\orchestron')).toBe(
+      'Claude Code · orchestron'
     )
   })
 
   it('ignores a trailing slash', () => {
-    expect(memberDisplayName('Claude Code', '/Users/dev/projects/orchestraai/')).toBe(
-      'Claude Code · orchestraai'
+    expect(memberDisplayName('Claude Code', '/Users/dev/projects/orchestron/')).toBe(
+      'Claude Code · orchestron'
     )
   })
 

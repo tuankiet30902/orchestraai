@@ -596,7 +596,7 @@ export function CommandPaletteModal({
               <kbd className="font-mono text-[10px] bg-muted/80 border border-border px-1 rounded">ESC</kbd> Close
             </span>
           </div>
-          <span className="text-[10px] font-mono text-amber-500 font-medium">OrchestraAI Studio</span>
+          <span className="text-[10px] font-mono text-amber-500 font-medium">Orchestron Studio</span>
         </div>
       </div>
     </div>

@@ -67,7 +67,7 @@ export function TitleBar({ fullscreen }: TitleBarProps): ReactElement {
           title="Open Command Palette (⌘K)"
         >
           <span className="text-xs font-bold text-foreground tracking-tight">
-            OrchestraAI
+            Orchestron
           </span>
         </button>
       </div>

@@ -4,22 +4,22 @@ use std::path::{Path, PathBuf};
 use serde_json::{json, Value};
 use tauri::{AppHandle, Manager};
 
-/// The MCP entry OrchestraAI writes into `.mcp.json`. Uses `${VAR}` syntax that
+/// The MCP entry Orchestron writes into `.mcp.json`. Uses `${VAR}` syntax that
 /// Claude Code expands from the shell env — the two vars are set on every PTY
 /// by `pty::spawn_terminal`.
-pub fn orchestraai_entry() -> Value {
+pub fn orchestron_entry() -> Value {
     json!({
         "type": "http",
-        "url": "${ORCHESTRAAI_MCP_URL}",
-        "headers": { "Authorization": "Bearer ${ORCHESTRAAI_SESSION}" }
+        "url": "${ORCHESTRON_MCP_URL}",
+        "headers": { "Authorization": "Bearer ${ORCHESTRON_SESSION}" }
     })
 }
 
 /// Produce the new `.mcp.json` contents:
-/// * If `existing` is `None` or blank, return a file with only OrchestraAI.
+/// * If `existing` is `None` or blank, return a file with only Orchestron.
 /// * If `existing` parses as JSON with a `mcpServers` object, deep-merge the
-///   `orchestraai` key (preserving any other server entries and any user edits
-///   to keys the user added under `orchestraai`).
+///   `orchestron` key (preserving any other server entries and any user edits
+///   to keys the user added under `orchestron`).
 /// * If `existing` is malformed JSON, return `Err` — the caller logs it and
 ///   leaves the file untouched.
 pub fn merge_mcp_config(existing: Option<&str>) -> Result<String, String> {
@@ -41,11 +41,11 @@ pub fn merge_mcp_config(existing: Option<&str>) -> Result<String, String> {
     servers
         .as_object_mut()
         .unwrap()
-        .insert("orchestraai".to_string(), orchestraai_entry());
+        .insert("orchestron".to_string(), orchestron_entry());
     serde_json::to_string_pretty(&root).map_err(|e| e.to_string())
 }
 
-/// Merge-write the `orchestraai` MCP entry into `path` on disk (read →
+/// Merge-write the `orchestron` MCP entry into `path` on disk (read →
 /// `merge_mcp_config` → write tmp → rename). The tmp+rename means a crash
 /// mid-write can never truncate the target — important for `~/.claude.json`,
 /// which holds far more than MCP config. A missing file is created; a
@@ -64,7 +64,7 @@ pub fn write_mcp_config_to_file(path: &Path) -> Result<(), String> {
     // So we only ever write on the first run (or if the entry drifts).
     if let Some(s) = existing.as_deref() {
         if let Ok(v) = serde_json::from_str::<Value>(s) {
-            if v.get("mcpServers").and_then(|m| m.get("orchestraai")) == Some(&orchestraai_entry()) {
+            if v.get("mcpServers").and_then(|m| m.get("orchestron")) == Some(&orchestron_entry()) {
                 return Ok(());
             }
         }
@@ -82,12 +82,12 @@ pub fn write_mcp_config_to_file(path: &Path) -> Result<(), String> {
     Ok(())
 }
 
-/// Register OrchestraAI's MCP server once in Claude Code's user-scope config
-/// (`~/.claude.json`) so every terminal OrchestraAI spawns — in any folder or
+/// Register Orchestron's MCP server once in Claude Code's user-scope config
+/// (`~/.claude.json`) so every terminal Orchestron spawns — in any folder or
 /// worktree — discovers it without a per-project `.mcp.json`. Idempotent: the
 /// entry is placeholder-only, so re-running on an already-registered config
 /// writes identical bytes. Log-only: a failure here must never block boot, and
-/// leaves OrchestraAI fully usable minus the agent-facing MCP tools.
+/// leaves Orchestron fully usable minus the agent-facing MCP tools.
 pub fn register_user_scope(app: &AppHandle) {
     let home = match app.path().home_dir() {
         Ok(h) => h,
@@ -135,7 +135,7 @@ pub fn merge_codex_config(existing: Option<&str>, url: &str) -> Result<String, S
         .entry("mcp_servers")
         .or_insert(toml_edit::Item::Table({
             // Implicit so an empty parent never renders a bare [mcp_servers]
-            // header above the real [mcp_servers.orchestraai] one.
+            // header above the real [mcp_servers.orchestron] one.
             let mut t = toml_edit::Table::new();
             t.set_implicit(true);
             t
@@ -146,9 +146,9 @@ pub fn merge_codex_config(existing: Option<&str>, url: &str) -> Result<String, S
     entry.insert("url", toml_edit::value(url));
     entry.insert(
         "bearer_token_env_var",
-        toml_edit::value("ORCHESTRAAI_SESSION"),
+        toml_edit::value("ORCHESTRON_SESSION"),
     );
-    servers.insert("orchestraai", toml_edit::Item::Table(entry));
+    servers.insert("orchestron", toml_edit::Item::Table(entry));
     Ok(doc.to_string())
 }
 
@@ -161,12 +161,12 @@ pub fn write_codex_config_to_file(path: &Path, url: &str) -> Result<(), String> 
     };
     if let Some(s) = existing.as_deref() {
         if let Ok(doc) = s.parse::<toml_edit::DocumentMut>() {
-            let current = doc.get("mcp_servers").and_then(|m| m.get("orchestraai"));
+            let current = doc.get("mcp_servers").and_then(|m| m.get("orchestron"));
             let url_ok = current.and_then(|c| c.get("url")).and_then(|v| v.as_str()) == Some(url);
             let bearer_ok = current
                 .and_then(|c| c.get("bearer_token_env_var"))
                 .and_then(|v| v.as_str())
-                == Some("ORCHESTRAAI_SESSION");
+                == Some("ORCHESTRON_SESSION");
             if url_ok && bearer_ok {
                 return Ok(());
             }
@@ -224,14 +224,14 @@ mod tests {
     fn creates_from_nothing() {
         let out = merge_mcp_config(None).unwrap();
         let v = parse(&out);
-        assert_eq!(v["mcpServers"]["orchestraai"]["type"], "http");
-        assert_eq!(v["mcpServers"]["orchestraai"]["url"], "${ORCHESTRAAI_MCP_URL}");
+        assert_eq!(v["mcpServers"]["orchestron"]["type"], "http");
+        assert_eq!(v["mcpServers"]["orchestron"]["url"], "${ORCHESTRON_MCP_URL}");
     }
 
     #[test]
     fn creates_from_empty_string() {
         let out = merge_mcp_config(Some("   ")).unwrap();
-        assert_eq!(parse(&out)["mcpServers"]["orchestraai"]["type"], "http");
+        assert_eq!(parse(&out)["mcpServers"]["orchestron"]["type"], "http");
     }
 
     #[test]
@@ -240,16 +240,16 @@ mod tests {
         let out = merge_mcp_config(Some(existing)).unwrap();
         let v = parse(&out);
         assert_eq!(v["mcpServers"]["other"]["command"], "x");
-        assert_eq!(v["mcpServers"]["orchestraai"]["type"], "http");
+        assert_eq!(v["mcpServers"]["orchestron"]["type"], "http");
     }
 
     #[test]
-    fn replaces_existing_orchestraai_block() {
-        // If the user (or an old OrchestraAI build) already had a orchestraai entry
+    fn replaces_existing_orchestron_block() {
+        // If the user (or an old Orchestron build) already had a orchestron entry
         // with stale headers, overwrite it so the current shape wins.
-        let existing = r#"{"mcpServers": {"orchestraai": {"type": "stdio"}}}"#;
+        let existing = r#"{"mcpServers": {"orchestron": {"type": "stdio"}}}"#;
         let out = merge_mcp_config(Some(existing)).unwrap();
-        assert_eq!(parse(&out)["mcpServers"]["orchestraai"]["type"], "http");
+        assert_eq!(parse(&out)["mcpServers"]["orchestron"]["type"], "http");
     }
 
     #[test]
@@ -258,7 +258,7 @@ mod tests {
         let out = merge_mcp_config(Some(existing)).unwrap();
         let v = parse(&out);
         assert_eq!(v["projects"]["foo"], 1);
-        assert_eq!(v["mcpServers"]["orchestraai"]["type"], "http");
+        assert_eq!(v["mcpServers"]["orchestron"]["type"], "http");
     }
 
     #[test]
@@ -302,8 +302,8 @@ mod tests {
         let path = dir.path().join(".claude.json");
         write_mcp_config_to_file(&path).unwrap();
         let contents = std::fs::read_to_string(&path).unwrap();
-        assert!(contents.contains("\"orchestraai\""));
-        assert!(contents.contains("${ORCHESTRAAI_MCP_URL}"));
+        assert!(contents.contains("\"orchestron\""));
+        assert!(contents.contains("${ORCHESTRON_MCP_URL}"));
     }
 
     #[test]
@@ -322,7 +322,7 @@ mod tests {
             serde_json::from_str(&std::fs::read_to_string(&path).unwrap()).unwrap();
         assert_eq!(v["numStartups"], 42);
         assert_eq!(v["mcpServers"]["1devtool"]["command"], "x");
-        assert_eq!(v["mcpServers"]["orchestraai"]["type"], "http");
+        assert_eq!(v["mcpServers"]["orchestron"]["type"], "http");
     }
 
     #[test]
@@ -338,7 +338,7 @@ mod tests {
     #[test]
     fn to_file_is_idempotent() {
         // Writing twice must leave byte-identical content: the second call sees
-        // the orchestraai entry already present and must not rewrite (no reformat).
+        // the orchestron entry already present and must not rewrite (no reformat).
         let dir = tempfile::tempdir().unwrap();
         let path = dir.path().join(".claude.json");
         write_mcp_config_to_file(&path).unwrap();
@@ -350,12 +350,12 @@ mod tests {
 
     #[test]
     fn to_file_skips_rewrite_when_entry_already_present() {
-        // A file that already contains the exact orchestraai entry but in a
+        // A file that already contains the exact orchestron entry but in a
         // different (compact) formatting must be left byte-for-byte untouched —
         // we must not reformat/reorder the user's ~/.claude.json on repeat boots.
         let dir = tempfile::tempdir().unwrap();
         let path = dir.path().join(".claude.json");
-        let compact = r#"{"numStartups":7,"mcpServers":{"orchestraai":{"type":"http","url":"${ORCHESTRAAI_MCP_URL}","headers":{"Authorization":"Bearer ${ORCHESTRAAI_SESSION}"}}}}"#;
+        let compact = r#"{"numStartups":7,"mcpServers":{"orchestron":{"type":"http","url":"${ORCHESTRON_MCP_URL}","headers":{"Authorization":"Bearer ${ORCHESTRON_SESSION}"}}}}"#;
         std::fs::write(&path, compact).unwrap();
         write_mcp_config_to_file(&path).unwrap();
         assert_eq!(std::fs::read_to_string(&path).unwrap(), compact);
@@ -366,9 +366,9 @@ mod tests {
     #[test]
     fn codex_creates_from_nothing() {
         let out = merge_codex_config(None, URL).unwrap();
-        assert!(out.contains("[mcp_servers.orchestraai]"));
+        assert!(out.contains("[mcp_servers.orchestron]"));
         assert!(out.contains(&format!("url = \"{URL}\"")));
-        assert!(out.contains("bearer_token_env_var = \"ORCHESTRAAI_SESSION\""));
+        assert!(out.contains("bearer_token_env_var = \"ORCHESTRON_SESSION\""));
     }
 
     #[test]
@@ -379,12 +379,12 @@ mod tests {
         assert!(out.contains("# my codex settings"));
         assert!(out.contains("model = \"o4\""));
         assert!(out.contains("[mcp_servers.other]"));
-        assert!(out.contains("[mcp_servers.orchestraai]"));
+        assert!(out.contains("[mcp_servers.orchestron]"));
     }
 
     #[test]
     fn codex_updates_stale_url() {
-        let existing = "[mcp_servers.orchestraai]\nurl = \"http://127.0.0.1:9/mcp\"\nbearer_token_env_var = \"ORCHESTRAAI_SESSION\"\n";
+        let existing = "[mcp_servers.orchestron]\nurl = \"http://127.0.0.1:9/mcp\"\nbearer_token_env_var = \"ORCHESTRON_SESSION\"\n";
         let out = merge_codex_config(Some(existing), URL).unwrap();
         assert!(out.contains(&format!("url = \"{URL}\"")));
         assert!(!out.contains("127.0.0.1:9"));

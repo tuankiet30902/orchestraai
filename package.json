@@ -1,13 +1,13 @@
 {
-  "name": "orchestraai",
+  "name": "orchestron",
   "private": true,
   "version": "0.1.0",
   "description": "Conduct your AI coding orchestra — split terminals, per-agent git worktrees, live web previews, and an Orchestra Pit where agents collaborate",
   "license": "GPL-3.0-only",
-  "homepage": "https://orchestraai.dev",
+  "homepage": "https://orchestron.dev",
   "repository": {
     "type": "git",
-    "url": "https://github.com/tuankiet30902/orchestraai.git"
+    "url": "https://github.com/tuankiet30902/orchestron.git"
   },
   "type": "module",
   "scripts": {

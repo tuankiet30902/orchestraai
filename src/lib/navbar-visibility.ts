@@ -2,7 +2,7 @@
 export const NAVBAR_VISIBILITY_STORAGE_KEY = 'cc-navbar-visible'
 
 /** localStorage key the sidebar width is persisted under. */
-export const NAVBAR_WIDTH_STORAGE_KEY = 'orchestraai-navbar-width'
+export const NAVBAR_WIDTH_STORAGE_KEY = 'orchestron-navbar-width'
 
 /** The visibility used on first run, before anything is persisted. */
 export const DEFAULT_NAVBAR_VISIBLE = true

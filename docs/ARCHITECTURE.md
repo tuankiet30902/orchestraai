@@ -1,6 +1,6 @@
-# OrchestraAI v1.0 — Architecture & System Design
+# Orchestron v1.0 — Architecture & System Design
 
-**OrchestraAI** is a native desktop application designed for conducting teams of AI coding agents in parallel. Built with **Tauri 2**, **Rust**, **React 19**, and **TypeScript**, it bridges real operating system PTY terminals with multi-agent coordination protocols.
+**Orchestron** is a native desktop application designed for conducting teams of AI coding agents in parallel. Built with **Tauri 2**, **Rust**, **React 19**, and **TypeScript**, it bridges real operating system PTY terminals with multi-agent coordination protocols.
 
 ---
 
@@ -50,9 +50,9 @@ graph TD
 - **Process Trees**: On Windows, child processes are managed via Windows Job Objects; on macOS/Linux, POSIX process groups guarantee complete cleanups on pane termination.
 
 ### 2.2 Model Context Protocol (MCP) Integration
-- Every terminal pane spawned within OrchestraAI automatically receives:
-  - `ORCHESTRAAI_MCP_URL`: Local HTTP endpoint bound to the native Rust MCP server.
-  - `ORCHESTRAAI_SESSION`: Ephemeral authentication token scoping the agent to its specific workspace and pane.
+- Every terminal pane spawned within Orchestron automatically receives:
+  - `ORCHESTRON_MCP_URL`: Local HTTP endpoint bound to the native Rust MCP server.
+  - `ORCHESTRON_SESSION`: Ephemeral authentication token scoping the agent to its specific workspace and pane.
 - **MCP Tool Endpoints**:
   - `worktree.*`: Inspect, switch, and delegate tasks to isolated Git worktree branches.
   - `orchestra_pit.*`: Broadcast messages, coordinate with peer agents, and query team inboxes.

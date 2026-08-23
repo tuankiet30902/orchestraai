@@ -102,8 +102,8 @@ mod tests {
     #[test]
     fn encode_replaces_every_non_alphanumeric_with_dash() {
         assert_eq!(
-            encode_project_dir("/Users/me/Projects/orchestraai"),
-            "-Users-me-Projects-orchestraai"
+            encode_project_dir("/Users/me/Projects/orchestron"),
+            "-Users-me-Projects-orchestron"
         );
         assert_eq!(
             encode_project_dir("C:\\Users\\me\\proj"),

@@ -20,8 +20,8 @@ use std::path::{Path, PathBuf};
 use std::time::Duration;
 use tauri::Manager;
 
-const MEASUREMENT_ID: Option<&str> = option_env!("ORCHESTRAAI_GA_MEASUREMENT_ID");
-const API_SECRET: Option<&str> = option_env!("ORCHESTRAAI_GA_API_SECRET");
+const MEASUREMENT_ID: Option<&str> = option_env!("ORCHESTRON_GA_MEASUREMENT_ID");
+const API_SECRET: Option<&str> = option_env!("ORCHESTRON_GA_API_SECRET");
 
 /// GA's Realtime window is 30 minutes; a 5-minute pulse keeps a running app
 /// counted with wide margin while staying far below any GA rate limit.

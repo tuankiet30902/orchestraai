@@ -66,7 +66,7 @@ export function GeneralPanel(): ReactElement {
             </div>
             <div>
               <div className="text-sm font-semibold text-foreground flex items-center gap-2">
-                OrchestraAI Studio
+                Orchestron Studio
                 <span className="text-[11px] font-mono px-2 py-0.5 rounded-md bg-muted text-muted-foreground border border-border">
                   v{version}
                 </span>

@@ -3,7 +3,7 @@
   "app": {
     "windows": [
       {
-        "title": "OrchestraAI",
+        "title": "Orchestron",
         "width": 1280,
         "height": 820,
         "minWidth": 860,

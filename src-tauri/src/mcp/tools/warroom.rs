@@ -57,7 +57,7 @@ use rmcp::handler::server::wrapper::{Json, Parameters};
 use rmcp::{schemars, tool, tool_router};
 use tauri::{Emitter, Manager};
 
-use crate::mcp::server::OrchestraAIMcpServer;
+use crate::mcp::server::OrchestronMcpServer;
 use crate::pty::AppState;
 use crate::warroom::{now_ms, MessageMode, RoomMessage};
 
@@ -107,10 +107,10 @@ pub struct ReadInboxResult {
 }
 
 #[tool_router(router = tool_router_warroom, vis = "pub")]
-impl OrchestraAIMcpServer {
+impl OrchestronMcpServer {
     #[tool(
         name = "war_room.list_peers",
-        description = "List the terminals currently in OrchestraAI's War Room: name, agent type, working directory. Only works when the user has dragged this pane into the War Room."
+        description = "List the terminals currently in Orchestron's War Room: name, agent type, working directory. Only works when the user has dragged this pane into the War Room."
     )]
     pub async fn war_room_list_peers(
         &self,

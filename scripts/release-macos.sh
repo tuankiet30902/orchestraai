@@ -62,7 +62,7 @@ fi
 echo "==> building ($TARGET, --bundles $BUNDLES)"
 npm run tauri build -- --target "$TARGET" --bundles "$BUNDLES"
 
-APP="src-tauri/target/$TARGET/release/bundle/macos/OrchestraAI.app"
+APP="src-tauri/target/$TARGET/release/bundle/macos/Orchestron.app"
 [ -d "$APP" ] || die "app bundle not found: $APP"
 
 echo "==> verifying signature"

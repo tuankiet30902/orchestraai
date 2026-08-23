@@ -1,21 +1,21 @@
 //! The MCP server surface. One struct = the whole tool set; tool groups are
-//! added as additional `impl OrchestraAIMcpServer` blocks in dedicated files
+//! added as additional `impl OrchestronMcpServer` blocks in dedicated files
 //! (e.g. `mcp/tools/browser.rs`). Each such block gets its own
 //! `#[tool_router(router = tool_router_<group>)]` (rmcp's macro emits a
 //! generated fn per `impl` block, so every group needs a distinct name to
-//! avoid colliding on the default `tool_router`); `OrchestraAIMcpServer::new`
+//! avoid colliding on the default `tool_router`); `OrchestronMcpServer::new`
 //! below merges every group's router with `ToolRouter`'s `+` into the single
 //! `tool_router` field `#[tool_handler]` reads from.
 //!
 //! Adding a tool later:
 //! 1. Add `pub mod <group>;` in `mcp/tools/mod.rs`.
-//! 2. Write an `impl OrchestraAIMcpServer` block in `mcp/tools/<group>.rs`
+//! 2. Write an `impl OrchestronMcpServer` block in `mcp/tools/<group>.rs`
 //!    annotated `#[tool_router(router = tool_router_<group>, vis = "pub")]`
 //!    (see `mcp/tools/browser.rs`) with `#[tool]` methods, importing
 //!    `use rmcp::{tool, tool_router};` (the macros must be in scope
 //!    unqualified — invoking them via a fully-qualified `rmcp::tool_router`
 //!    path does not expand correctly with this rmcp version).
-//! 3. Register that block's router in `OrchestraAIMcpServer::new` below via
+//! 3. Register that block's router in `OrchestronMcpServer::new` below via
 //!    `Self::tool_router_<group>()`, merged into the `tool_router` field with
 //!    `+` if more than one group exists.
 //!
@@ -65,12 +65,12 @@ use crate::mcp::auth::{self, AuthError, TerminalId};
 use crate::pty::AppState;
 
 #[derive(Clone)]
-pub struct OrchestraAIMcpServer {
+pub struct OrchestronMcpServer {
     pub app: AppHandle,
     tool_router: ToolRouter<Self>,
 }
 
-impl OrchestraAIMcpServer {
+impl OrchestronMcpServer {
     fn new(app: AppHandle) -> Self {
         // Merge every tool group's router. `+` combines `ToolRouter`s so
         // `#[tool_handler]` sees the union of both groups' `#[tool]` methods.
@@ -128,7 +128,7 @@ impl OrchestraAIMcpServer {
 }
 
 #[tool_handler(router = self.tool_router)]
-impl ServerHandler for OrchestraAIMcpServer {
+impl ServerHandler for OrchestronMcpServer {
     fn get_info(&self) -> ServerInfo {
         // `ServerInfo` (aka `InitializeResult`) is `#[non_exhaustive]`, so a
         // field literal is rejected even naming every field — use its builder
@@ -136,7 +136,7 @@ impl ServerHandler for OrchestraAIMcpServer {
         ServerInfo::new(ServerCapabilities::builder().enable_tools().build())
             .with_protocol_version(ProtocolVersion::LATEST)
             .with_server_info(
-                Implementation::new("orchestraai", env!("CARGO_PKG_VERSION")).with_title("OrchestraAI"),
+                Implementation::new("orchestron", env!("CARGO_PKG_VERSION")).with_title("Orchestron"),
             )
             // The delegation guidance below is what makes agents reach for
             // worktree.spawn unprompted — MCP clients (Claude Code et al.)
@@ -146,9 +146,9 @@ impl ServerHandler for OrchestraAIMcpServer {
             // static; the tools themselves stay gated per-workspace, hence
             // the "when the workspace enables them" hedge.
             .with_instructions(
-                "OrchestraAI in-app tools: control the desktop terminal app from an agent \
+                "Orchestron in-app tools: control the desktop terminal app from an agent \
                  running inside one of its panes. Because this server is connected, the \
-                 user is working inside OrchestraAI, which has a built-in web-preview column \
+                 user is working inside Orchestron, which has a built-in web-preview column \
                  beside each terminal. Whenever you start a local dev server or otherwise \
                  produce a viewable http(s) URL, call browser.open_preview with that URL so \
                  the page opens right next to your pane — prefer this over only printing the \
@@ -176,7 +176,7 @@ impl ServerHandler for OrchestraAIMcpServer {
 /// Build the axum router that hosts the MCP server on `POST /mcp`.
 ///
 /// Stateless-session config: each HTTP call is independent (no `Mcp-Session-Id`
-/// continuity required across requests). OrchestraAI's tools are one-shot
+/// continuity required across requests). Orchestron's tools are one-shot
 /// (open a preview, etc.) and the bearer token — not an MCP session — is what
 /// scopes a call to a terminal, so `LocalSessionManager`'s in-memory session
 /// bookkeeping is used purely to satisfy the transport's type, not to persist
@@ -186,7 +186,7 @@ pub fn axum_router(app: AppHandle) -> axum::Router {
     let service = StreamableHttpService::new(
         {
             let app = app.clone();
-            move || Ok(OrchestraAIMcpServer::new(app.clone()))
+            move || Ok(OrchestronMcpServer::new(app.clone()))
         },
         session_manager,
         StreamableHttpServerConfig::default(),
@@ -194,13 +194,13 @@ pub fn axum_router(app: AppHandle) -> axum::Router {
     axum::Router::new()
         .route_service("/mcp", service)
         // Record every inbound MCP request's bearer BEFORE rmcp consumes the
-        // body. This layer — not `OrchestraAIMcpServer::caller` — is what makes
+        // body. This layer — not `OrchestronMcpServer::caller` — is what makes
         // `initialize` count, and `initialize` is the request that proves the
         // client actually loaded our config. Peeking the JSON-RPC body would
         // mean buffering it; the header is enough.
         //
         // `layer` applies to routes registered ABOVE it only, which is why
-        // `/status` is added afterwards: the status probe is OrchestraAI asking
+        // `/status` is added afterwards: the status probe is Orchestron asking
         // itself a question, and must never be able to manufacture the
         // `connected` verdict it is about to read.
         .layer(axum::middleware::from_fn_with_state(

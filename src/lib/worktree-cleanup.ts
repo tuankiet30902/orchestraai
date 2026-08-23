@@ -1,7 +1,7 @@
 import type { ChangedFile } from '@/tauri/git'
 
 /**
- * Files OrchestraAI itself writes into every worktree — never user work, so they
+ * Files Orchestron itself writes into every worktree — never user work, so they
  * must not count as "uncommitted changes" when deciding whether a worktree is
  * safe to clear. Without this, `git`'s own dirty-check refuses to remove even an
  * empty throwaway worktree (the whole reason stale worktrees piled up).

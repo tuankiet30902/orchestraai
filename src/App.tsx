@@ -573,7 +573,7 @@ export default function App(): ReactElement {
   useEffect(() => wirePreviewEvents(), [])
 
   // Silent update checks: one a few seconds after boot (never competing with
-  // pty spawn), then periodically — OrchestraAI runs for days, and the navbar
+  // pty spawn), then periodically — Orchestron runs for days, and the navbar
   // update button only ever appears through these. Failures are swallowed by
   // the flow reducer. The periodic tick only fires from idle so it can never
   // clobber a known update or an in-flight download.
@@ -605,11 +605,11 @@ export default function App(): ReactElement {
       if (cur.state.phase === prev.state.phase) return
       if (cur.state.phase === 'upToDate') {
         useUpdaterStore.getState().dismiss()
-        void showMessage('OrchestraAI is up to date.', { title: 'OrchestraAI' })
+        void showMessage('Orchestron is up to date.', { title: 'Orchestron' })
       } else if (cur.state.phase === 'error') {
         const detail = cur.state.message
         useUpdaterStore.getState().dismiss()
-        void showMessage(`Update check failed:\n${detail}`, { title: 'OrchestraAI', kind: 'error' })
+        void showMessage(`Update check failed:\n${detail}`, { title: 'Orchestron', kind: 'error' })
       }
     })
   }, [])

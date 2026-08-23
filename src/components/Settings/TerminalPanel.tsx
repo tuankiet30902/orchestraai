@@ -122,7 +122,7 @@ function StatusLineSettings(): ReactElement {
       <div className="mb-4">
         <h2 className="text-sm font-semibold text-foreground">Claude Code Agent Status Line</h2>
         <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
-          Display real-time context token usage, cost estimations, and OrchestraAI MCP connection status under the prompt.
+          Display real-time context token usage, cost estimations, and Orchestron MCP connection status under the prompt.
         </p>
       </div>
 

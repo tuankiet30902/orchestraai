@@ -14,7 +14,7 @@ export interface StatuslineStore {
 }
 
 /**
- * Whether OrchestraAI owns Claude Code's status line. Renderer-only — touches
+ * Whether Orchestron owns Claude Code's status line. Renderer-only — touches
  * `window` directly. `sync` runs on boot so the entry self-heals after the app
  * moves: the backend re-derives the command from `current_exe()` every time,
  * and a stale path would otherwise leave Claude running a binary that is gone.

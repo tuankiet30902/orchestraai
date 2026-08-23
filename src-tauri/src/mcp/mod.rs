@@ -1,5 +1,5 @@
 //! MCP server: an in-process HTTP endpoint that in-terminal AI agents call to
-//! drive OrchestraAI (open a browser preview today; more tools later).
+//! drive Orchestron (open a browser preview today; more tools later).
 
 pub mod auth;
 pub mod clients;

@@ -75,7 +75,7 @@ use rmcp::handler::server::wrapper::{Json, Parameters};
 use rmcp::{schemars, tool, tool_router};
 use tauri::{Emitter, Manager};
 
-use crate::mcp::server::OrchestraAIMcpServer;
+use crate::mcp::server::OrchestronMcpServer;
 
 #[derive(Debug, Deserialize, schemars::JsonSchema)]
 pub struct WorktreeSpawnArgs {
@@ -113,10 +113,10 @@ pub struct WorktreeListResult {
 }
 
 #[tool_router(router = tool_router_worktree, vis = "pub")]
-impl OrchestraAIMcpServer {
+impl OrchestronMcpServer {
     #[tool(
         name = "worktree.spawn",
-        description = "Create an isolated git worktree for a task and open a new OrchestraAI pane running a coding agent inside it. The worktree is created as <repo>.worktrees/<branch-slug> next to the repository, on a new branch. Use this instead of `git worktree add` when delegating a feature/fix to a parallel agent. Dependencies are NOT installed in the fresh worktree — the spawned agent must run project setup first."
+        description = "Create an isolated git worktree for a task and open a new Orchestron pane running a coding agent inside it. The worktree is created as <repo>.worktrees/<branch-slug> next to the repository, on a new branch. Use this instead of `git worktree add` when delegating a feature/fix to a parallel agent. Dependencies are NOT installed in the fresh worktree — the spawned agent must run project setup first."
     )]
     pub async fn worktree_spawn(
         &self,
@@ -138,7 +138,7 @@ impl OrchestraAIMcpServer {
 
         let branch = args.branch.clone();
         let created = tauri::async_runtime::spawn_blocking(move || {
-            // The spawned pane's env already carries ORCHESTRAAI_MCP_URL/SESSION;
+            // The spawned pane's env already carries ORCHESTRON_MCP_URL/SESSION;
             // the MCP server is registered once at Claude's user scope, so a
             // fresh worktree needs no per-directory .mcp.json.
             crate::git::create_worktree(Path::new(&repo_root), &branch)
@@ -202,7 +202,7 @@ impl OrchestraAIMcpServer {
 
     #[tool(
         name = "worktree.remove",
-        description = "Remove a orchestraai-created worktree after its branch is merged. Refuses if uncommitted changes remain or the path is not under <repo>.worktrees."
+        description = "Remove a orchestron-created worktree after its branch is merged. Refuses if uncommitted changes remain or the path is not under <repo>.worktrees."
     )]
     pub async fn worktree_remove(
         &self,

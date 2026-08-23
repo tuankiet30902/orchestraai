@@ -3,7 +3,7 @@
 //! The `mcp` segment of the status line answers "did Claude load our config?",
 //! and the only honest evidence is an inbound request carrying the pane's
 //! bearer token. Env-var presence proves nothing (the env is injected whether
-//! or not Claude ever reads `~/.claude.json`), and `OrchestraAIMcpServer::caller`
+//! or not Claude ever reads `~/.claude.json`), and `OrchestronMcpServer::caller`
 //! is too late — it only runs for `#[tool]` invocations, while `initialize` is
 //! both the first request Claude Code sends and the one that proves the link.
 //! So this set is fed from a transport-level middleware instead.

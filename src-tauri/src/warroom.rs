@@ -312,7 +312,7 @@ impl WarRoom {
                 if mode == MessageMode::Execute && target.agent_id.is_none() && from_id != MODERATOR_ID {
                     return Err(if t == MODERATOR_ID {
                         "mode \"execute\" cannot target the Moderator — that seat is the human \
-                         user driving OrchestraAI, not a terminal. Use mode \"probe\" to ask them."
+                         user driving Orchestron, not a terminal. Use mode \"probe\" to ask them."
                             .into()
                     } else {
                         "mode \"execute\" is only allowed toward panes running a coding agent — \

@@ -1,5 +1,5 @@
 /**
- * agent-templates.ts — Rich OrchestraAI workspace templates.
+ * agent-templates.ts — Rich Orchestron workspace templates.
  * Each template defines a full team configuration with role-specific prompts.
  */
 

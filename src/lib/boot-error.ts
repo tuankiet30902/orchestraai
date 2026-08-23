@@ -20,7 +20,7 @@ export function formatBootError(error: unknown): BootError {
         ? error
         : safeStringify(error)
 
-  const boot: BootError = { title: 'OrchestraAI failed to start', detail }
+  const boot: BootError = { title: 'Orchestron failed to start', detail }
 
   // Vite inlines VITE_* at build time, so a value present in dev can still be
   // missing from a production bundle — the exact trap that made the app boot

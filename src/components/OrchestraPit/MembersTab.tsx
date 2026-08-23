@@ -33,8 +33,8 @@ import { StateDot } from '@/components/StateDot'
 import { Avatar, jumpToTerminal } from './Avatar'
 
 const MANUAL_HINT =
-  'To connect this agent to Orchestra Pit MCP, ensure it points to $ORCHESTRAAI_MCP_URL with ' +
-  'Authorization: Bearer $ORCHESTRAAI_SESSION.'
+  'To connect this agent to Orchestra Pit MCP, ensure it points to $ORCHESTRON_MCP_URL with ' +
+  'Authorization: Bearer $ORCHESTRON_SESSION.'
 
 function MemberRow({ member }: { member: OrchestraPitMember }): ReactElement {
   const active = useTerminalActivityStore((s) => s.active[member.terminalId] ?? false)

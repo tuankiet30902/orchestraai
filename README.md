@@ -1,8 +1,8 @@
 <div align="center">
 
-<img src="src-tauri/icons/128x128.png" alt="OrchestraAI Logo" width="96" height="96" style="border-radius: 24px; box-shadow: 0 8px 24px rgba(245, 158, 11, 0.25);" />
+<img src="src-tauri/icons/128x128.png" alt="Orchestron Logo" width="96" height="96" style="border-radius: 24px; box-shadow: 0 8px 24px rgba(245, 158, 11, 0.25);" />
 
-# OrchestraAI
+# Orchestron
 
 ### **The Multi-Agent AI Coding Studio**
 *A native desktop studio to orchestrate, isolate, and conduct teams of autonomous AI coding agents.*
@@ -10,8 +10,8 @@
 <br />
 
 <p align="center">
-  <a href="#-quick-installation"><img src="https://img.shields.io/badge/Download-macOS%20%7C%20Windows%20%7C%20Linux-f59e0b?style=for-the-badge&logo=apple&logoColor=white" alt="Download OrchestraAI" /></a>
-  <a href="https://github.com/tuankiet30902/orchestraai/releases"><img src="https://img.shields.io/github/v/release/tuankiet30902/orchestraai?style=for-the-badge&color=18181b&label=Latest%20Release" alt="Release" /></a>
+  <a href="#-quick-installation"><img src="https://img.shields.io/badge/Download-macOS%20%7C%20Windows%20%7C%20Linux-f59e0b?style=for-the-badge&logo=apple&logoColor=white" alt="Download Orchestron" /></a>
+  <a href="https://github.com/tuankiet30902/orchestron/releases"><img src="https://img.shields.io/github/v/release/tuankiet30902/orchestron?style=for-the-badge&color=18181b&label=Latest%20Release" alt="Release" /></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-GPL--3.0-18181b?style=for-the-badge" alt="License" /></a>
 </p>
 
@@ -25,7 +25,7 @@
 
 <br />
 
-<img src="docs/images/orchestraai-workspace-preview.png" alt="OrchestraAI Studio Workspace" width="100%" style="border-radius: 14px; border: 1px solid rgba(255, 255, 255, 0.12); box-shadow: 0 30px 70px rgba(0, 0, 0, 0.7);" />
+<img src="docs/images/orchestron-workspace-preview.png" alt="Orchestron Studio Workspace" width="100%" style="border-radius: 14px; border: 1px solid rgba(255, 255, 255, 0.12); box-shadow: 0 30px 70px rgba(0, 0, 0, 0.7);" />
 
 </div>
 
@@ -33,17 +33,17 @@
 
 ---
 
-## 📖 What is OrchestraAI?
+## 📖 What is Orchestron?
 
-**OrchestraAI** is a high-performance desktop engineering studio built from the ground up to solve a fundamental problem in modern software development: **how to effectively manage and collaborate with multiple autonomous AI coding agents at the same time.**
+**Orchestron** is a high-performance desktop engineering studio built from the ground up to solve a fundamental problem in modern software development: **how to effectively manage and collaborate with multiple autonomous AI coding agents at the same time.**
 
 Running a single AI coding agent (like Claude Code, Antigravity, or Codex) inside a standard terminal works well for small, isolated tasks. But when building production-grade software requiring an **Architect**, a **Frontend Engineer**, a **Backend Engineer**, and a **QA Tester**, standard terminal emulators immediately break down.
 
-OrchestraAI unifies **hardware pseudo-terminal multiplexing**, **per-agent Git worktree isolation**, an **inter-agent Model Context Protocol (MCP) collaboration room**, and **live web application previews with visual DOM inspection** into a single native desktop application.
+Orchestron unifies **hardware pseudo-terminal multiplexing**, **per-agent Git worktree isolation**, an **inter-agent Model Context Protocol (MCP) collaboration room**, and **live web application previews with visual DOM inspection** into a single native desktop application.
 
 ```
                      ┌────────────────────────────────────────────────────────┐
-                     │              ORCHESTRAAI DESKTOP STUDIO                │
+                     │              ORCHESTRON DESKTOP STUDIO                │
                      │                 (You as the Conductor)                 │
                      └───────────────────────────┬────────────────────────────┘
                                                  │
@@ -81,28 +81,28 @@ Pre-built binaries are standalone, lightweight (~10MB installer), and require ze
 ### 🍎 macOS (Apple Silicon M1/M2/M3/M4 & Intel x86_64)
 Run in your terminal:
 ```bash
-curl -fsSL https://raw.githubusercontent.com/tuankiet30902/orchestraai/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/tuankiet30902/orchestron/main/install.sh | bash
 ```
-> Or download the standalone disk image: [**OrchestraAI_0.1.0_universal.dmg**](https://github.com/tuankiet30902/orchestraai/releases/download/v0.1.0/OrchestraAI_0.1.0_universal.dmg)
+> Or download the standalone disk image: [**Orchestron_0.1.0_universal.dmg**](https://github.com/tuankiet30902/orchestron/releases/download/v0.1.0/Orchestron_0.1.0_universal.dmg)
 
 ### 🪟 Windows (Windows 10 / 11 64-bit)
 Run in PowerShell (Run as Administrator or standard user):
 ```powershell
-irm https://raw.githubusercontent.com/tuankiet30902/orchestraai/main/install.ps1 | iex
+irm https://raw.githubusercontent.com/tuankiet30902/orchestron/main/install.ps1 | iex
 ```
-> Or download the installer: [**OrchestraAI_0.1.0_x64-setup.exe**](https://github.com/tuankiet30902/orchestraai/releases/download/v0.1.0/OrchestraAI_0.1.0_x64-setup.exe) · [**Enterprise MSI**](https://github.com/tuankiet30902/orchestraai/releases/download/v0.1.0/OrchestraAI_0.1.0_x64_en-US.msi)
+> Or download the installer: [**Orchestron_0.1.0_x64-setup.exe**](https://github.com/tuankiet30902/orchestron/releases/download/v0.1.0/Orchestron_0.1.0_x64-setup.exe) · [**Enterprise MSI**](https://github.com/tuankiet30902/orchestron/releases/download/v0.1.0/Orchestron_0.1.0_x64_en-US.msi)
 
 ### 🐧 Linux (Ubuntu, Debian, Fedora, Arch, RHEL)
 ```bash
-curl -fsSL https://raw.githubusercontent.com/tuankiet30902/orchestraai/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/tuankiet30902/orchestron/main/install.sh | bash
 ```
-> Direct packages: [**Universal .AppImage**](https://github.com/tuankiet30902/orchestraai/releases/download/v0.1.0/OrchestraAI_0.1.0_amd64.AppImage) · [**Debian / Ubuntu (.deb)**](https://github.com/tuankiet30902/orchestraai/releases/download/v0.1.0/OrchestraAI_0.1.0_amd64.deb) · [**Fedora / RHEL (.rpm)**](https://github.com/tuankiet30902/orchestraai/releases/download/v0.1.0/OrchestraAI-0.1.0-1.x86_64.rpm)
+> Direct packages: [**Universal .AppImage**](https://github.com/tuankiet30902/orchestron/releases/download/v0.1.0/Orchestron_0.1.0_amd64.AppImage) · [**Debian / Ubuntu (.deb)**](https://github.com/tuankiet30902/orchestron/releases/download/v0.1.0/Orchestron_0.1.0_amd64.deb) · [**Fedora / RHEL (.rpm)**](https://github.com/tuankiet30902/orchestron/releases/download/v0.1.0/Orchestron-0.1.0-1.x86_64.rpm)
 
 ---
 
-## 🎯 The Five Core Problems OrchestraAI Solves
+## 🎯 The Five Core Problems Orchestron Solves
 
-| Problem in Multi-Agent Workflows | What Happens in Traditional Terminals | How OrchestraAI Solves It |
+| Problem in Multi-Agent Workflows | What Happens in Traditional Terminals | How Orchestron Solves It |
 | :--- | :--- | :--- |
 | **1. Blind Multi-Tasking & Hidden Status** | Tabs hide background agent output. You don't know which agent is still thinking, which is blocked waiting for user confirmation, or which finished. | **Live Split Panes + State Sniffing LEDs**: Every pane displays real-time status indicators: 🟡 Generating, 🔵 Awaiting Permission, 🟢 Idle. |
 | **2. Destructive Git File Collisions** | When 3 agents write to the same folder at once, they overwrite each other's unstaged files, break builds, and create impossible merge conflicts. | **Isolated Git Worktrees**: Automatically provisions isolated working trees on dedicated branches (`orchestra/<role>`). Each agent has its own folder. |
@@ -116,7 +116,7 @@ curl -fsSL https://raw.githubusercontent.com/tuankiet30902/orchestraai/main/inst
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                             ORCHESTRAAI STUDIO                              │
+│                             ORCHESTRON STUDIO                              │
 ├───────────────────────────────┬─────────────────────────────────────────────┤
 │ 1. Terminal Core & PTY        │ Real OS PTYs (portable-pty), infinite split │
 │                               │ grid, dynamic zoom, process sniffing.       │
@@ -139,7 +139,7 @@ curl -fsSL https://raw.githubusercontent.com/tuankiet30902/orchestraai/main/inst
 
 ### Pillar 1: Hardware Pseudo-Terminals (PTY) & Real-Time Process Sniffing
 
-OrchestraAI does not use web socket simulations or fake shells. It embeds a native **Rust PTY engine** using `portable-pty` and `xterm.js`.
+Orchestron does not use web socket simulations or fake shells. It embeds a native **Rust PTY engine** using `portable-pty` and `xterm.js`.
 
 - **Infinite Split Grid**: Split horizontally (`⌘D`) or vertically (`⇧⌘D`). Rearrange panes with drag-and-drop tabs.
 - **Process Sniffing Engine**: Scans foreground processes to detect active CLI agents:
@@ -154,14 +154,14 @@ OrchestraAI does not use web socket simulations or fake shells. It embeds a nati
 - **Conduct (Broadcast) Mode (`⇧⌘B`)**: Broadcast keystrokes and commands simultaneously across all open panes (e.g. running `git pull` or `npm test` across all worktrees in one keystroke).
 
 <div align="center">
-  <img src="docs/images/orchestraai-multi-agent-split.png" alt="OrchestraAI Split Terminal Grid" width="88%" style="border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1); margin: 12px 0;" />
+  <img src="docs/images/orchestron-multi-agent-split.png" alt="Orchestron Split Terminal Grid" width="88%" style="border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1); margin: 12px 0;" />
 </div>
 
 ---
 
 ### Pillar 2: The Orchestra Pit — Autonomous Agent Collaboration via MCP
 
-The **Orchestra Pit** is an integrated inter-agent messaging system powered by the **Model Context Protocol (MCP)**. OrchestraAI hosts an embedded loopback MCP server on `localhost` with authorization tokens injected directly into agent terminal sessions.
+The **Orchestra Pit** is an integrated inter-agent messaging system powered by the **Model Context Protocol (MCP)**. Orchestron hosts an embedded loopback MCP server on `localhost` with authorization tokens injected directly into agent terminal sessions.
 
 #### How Agents Communicate in the Pit:
 1. **Peer Discovery**: Connected agents call `war_room.list_peers` to see who else is in the room.
@@ -173,14 +173,14 @@ The **Orchestra Pit** is an integrated inter-agent messaging system powered by t
 4. **Conductor Intervention**: The human developer can view the entire live conversation in the Orchestra Pit panel, jump in with guidance, or broadcast directives.
 
 <div align="center">
-  <img src="docs/images/orchestraai-pit-collaboration.png" alt="Orchestra Pit MCP Collaboration" width="88%" style="border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1); margin: 12px 0;" />
+  <img src="docs/images/orchestron-pit-collaboration.png" alt="Orchestra Pit MCP Collaboration" width="88%" style="border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1); margin: 12px 0;" />
 </div>
 
 ---
 
 ### Pillar 3: Zero-Collision Git Worktree Isolation & Visual Diff Viewer
 
-When multiple agents work on a single repository simultaneously, file conflicts normally make parallel development impossible. OrchestraAI solves this with **Git Worktrees**.
+When multiple agents work on a single repository simultaneously, file conflicts normally make parallel development impossible. Orchestron solves this with **Git Worktrees**.
 
 - **Automatic Worktree Creation**: Each agent pane is assigned its own dedicated folder and branch (`orchestra/<role-name>`), branching cleanly off `main`.
 - **Independent Build & Test Environments**: Frontend agent can run `npm install` and modify UI files while Backend agent compiles Rust/Go code in parallel without lockfile conflicts.
@@ -190,18 +190,18 @@ When multiple agents work on a single repository simultaneously, file conflicts 
   - One-click Stage All, Unstage All, Commit, and Merge.
 
 <div align="center">
-  <img src="docs/images/orchestraai-git-worktrees.png" alt="Source Control & Worktree Inspector" width="88%" style="border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1); margin: 12px 0;" />
+  <img src="docs/images/orchestron-git-worktrees.png" alt="Source Control & Worktree Inspector" width="88%" style="border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1); margin: 12px 0;" />
 </div>
 
 ---
 
 ### Pillar 4: Live Web Application Preview & Visual DOM Inspector
 
-No need to keep switching between your code editor and Google Chrome. OrchestraAI provides a native embedded webview column:
+No need to keep switching between your code editor and Google Chrome. Orchestron provides a native embedded webview column:
 
 - **Localhost Discovery**: Automatically senses active dev server ports (`3000`, `5173`, `8080`, `4173`, etc.) and opens the live preview.
 - **Click-to-Prompt Element Picker**: Click any button, card, or navigation element in the web preview to select it.
-- **1-Click Context Injection**: Enter an instruction (e.g. *"Change this card layout to CSS Grid and make the border amber on hover"*) and click **Send to Agent**. OrchestraAI extracts the exact DOM hierarchy, class names, and CSS selectors and types them directly into the active agent terminal.
+- **1-Click Context Injection**: Enter an instruction (e.g. *"Change this card layout to CSS Grid and make the border amber on hover"*) and click **Send to Agent**. Orchestron extracts the exact DOM hierarchy, class names, and CSS selectors and types them directly into the active agent terminal.
 
 ---
 
@@ -223,7 +223,7 @@ No need to keep switching between your code editor and Google Chrome. OrchestraA
 
 ## 🚀 Step-by-Step Walkthrough: Building a Feature from Scratch
 
-Here is how a developer builds a complete feature using OrchestraAI in 5 minutes:
+Here is how a developer builds a complete feature using Orchestron in 5 minutes:
 
 ```
 Step 1: Open Project (⌘O) ➔ Select your repository folder.
@@ -239,7 +239,7 @@ Step 7: Review visual diffs in the Git sidebar and merge the feature branch clea
 
 ## 📋 Pre-Configured Team Workflows (Templates)
 
-OrchestraAI includes pre-built team configurations with tailored system role prompts:
+Orchestron includes pre-built team configurations with tailored system role prompts:
 
 | Template | Icon | Team Composition | Best For |
 | :--- | :---: | :--- | :--- |
@@ -254,7 +254,7 @@ OrchestraAI includes pre-built team configurations with tailored system role pro
 
 ## 🤖 Supported Coding Agents & LLM Tools
 
-OrchestraAI is agent-agnostic and works with any command-line coding tool:
+Orchestron is agent-agnostic and works with any command-line coding tool:
 
 | Agent / CLI | Command | Integration Level |
 | :--- | :--- | :--- |
@@ -312,8 +312,8 @@ OrchestraAI is agent-agnostic and works with any command-line coding tool:
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/tuankiet30902/orchestraai.git
-cd orchestraai
+git clone https://github.com/tuankiet30902/orchestron.git
+cd orchestron
 
 # 2. Install dependencies
 npm install
@@ -336,7 +336,7 @@ npm run tauri build
 ## 🛡️ Security, Privacy & Local-First Philosophy
 
 - **Zero Cloud Relay / 100% Local**: All pseudo-terminals, MCP sockets, Git worktrees, and IPC commands run entirely on your local machine.
-- **Zero Telemetry**: OrchestraAI contains no analytics trackers, advertising IDs, or telemetry. Your proprietary code and prompts remain private.
+- **Zero Telemetry**: Orchestron contains no analytics trackers, advertising IDs, or telemetry. Your proprietary code and prompts remain private.
 - **Termination Guard**: Prevents accidental application closing while background AI agents are actively executing commands or generating code.
 
 ---
@@ -355,7 +355,7 @@ We welcome community contributions, bug reports, and suggestions!
 
 ## 📜 License
 
-OrchestraAI is free and open-source software licensed under the **[GNU General Public License v3.0 (GPL-3.0)](LICENSE)**.
+Orchestron is free and open-source software licensed under the **[GNU General Public License v3.0 (GPL-3.0)](LICENSE)**.
 
 <br />
 
