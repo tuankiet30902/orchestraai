@@ -137,7 +137,7 @@ export function FileTreeNode({
             <FileIcon name={entry.name} isDir={entry.isDir} expanded={expanded} />
 
             {/* Name */}
-            <span className="flex-1 truncate font-mono text-[11px] leading-tight">
+            <span className="flex-1 min-w-0 truncate font-mono text-[11px] leading-tight">
               {entry.name}
             </span>
 

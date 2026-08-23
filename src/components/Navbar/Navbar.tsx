@@ -450,7 +450,7 @@ function WorkspaceTreeNode({
         )}
 
         {/* Workspace Name */}
-        <span className="flex-1 truncate leading-none font-medium">{workspace.name}</span>
+        <span className="flex-1 min-w-0 truncate leading-none font-medium">{workspace.name}</span>
 
         {/* Activity Dot */}
         {dot && (
@@ -593,7 +593,7 @@ function WorkspaceTreeNode({
                   </div>
 
                   {/* Terminal / Agent Name */}
-                  <span className="flex-1 truncate font-mono text-[11px] leading-tight">
+                  <span className="flex-1 min-w-0 truncate font-mono text-[11px] leading-tight">
                     {title}
                   </span>
 

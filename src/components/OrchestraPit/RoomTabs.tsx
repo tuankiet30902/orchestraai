@@ -38,7 +38,7 @@ function NameInput(props: {
         else if (e.key === 'Escape') props.onCancel()
       }}
       onBlur={props.onCancel}
-      className="w-24 rounded border border-border bg-card px-1 py-0.5 text-[11px] text-foreground outline-none focus:border-[#00b0f4]"
+      className="w-24 rounded border border-border bg-card px-1 py-0.5 text-[11px] text-foreground outline-none focus:border-primary"
     />
   )
 }
@@ -79,8 +79,8 @@ function RoomTab(props: {
       ref={setNodeRef}
       className={cn(
         'group flex shrink-0 items-center gap-1 rounded px-2 py-0.5 text-[11px] transition-colors',
-        props.active ? 'bg-muted text-foreground' : 'text-muted-foreground hover:text-foreground',
-        isOver && 'ring-2 ring-inset ring-[#f97316]'
+        props.active ? 'bg-muted text-foreground font-medium' : 'text-muted-foreground hover:text-foreground',
+        isOver && 'ring-2 ring-inset ring-amber-500 bg-amber-500/10'
       )}
     >
       <button
@@ -88,11 +88,11 @@ function RoomTab(props: {
         onClick={props.onSelect}
         onDoubleClick={() => setRenaming(true)}
         title={props.room.name}
-        className="max-w-[8rem] truncate"
+        className="max-w-[7rem] truncate min-w-0"
       >
         {props.room.name}
       </button>
-      {props.heldCount > 0 && <span className="text-[#f97316]">⏸{props.heldCount}</span>}
+      {props.heldCount > 0 && <span className="text-amber-500 font-mono text-[10px]">⏸{props.heldCount}</span>}
       {props.deletable && (
         <button
           tabIndex={-1}
@@ -129,7 +129,7 @@ export function RoomTabs(props: {
 }): ReactElement {
   const [creating, setCreating] = useState(false)
   return (
-    <div className="flex shrink-0 items-center gap-1 overflow-x-auto border-b border-border px-2 py-1">
+    <div className="flex shrink-0 items-center gap-1 overflow-x-auto no-scrollbar border-b border-border px-2 py-1">
       {props.rooms.map((r) => (
         <RoomTab
           key={r.roomId}

@@ -43,10 +43,10 @@ export function PrimarySidebar({ onNewWorkspace }: { onNewWorkspace: () => void 
     const onPointerMove = (moveEvent: PointerEvent): void => {
       const delta = moveEvent.clientX - startX
       const targetWidth = startWidth + delta
-      if (targetWidth < 100) {
+      if (targetWidth < 120) {
         setSidebarOpen(false)
       } else {
-        setSidebarWidth(targetWidth)
+        setSidebarWidth(Math.min(Math.max(targetWidth, 180), 550))
       }
     }
 
@@ -83,7 +83,7 @@ export function PrimarySidebar({ onNewWorkspace }: { onNewWorkspace: () => void 
     <div
       ref={sidebarRef}
       style={{ width: `${sidebarWidth}px` }}
-      className="relative flex h-full flex-col border-r border-border bg-card select-none shrink-0 overflow-hidden"
+      className="relative flex h-full min-w-[180px] max-w-[550px] flex-col border-r border-border bg-card select-none shrink-0 overflow-hidden"
     >
       {/* Sidebar Header (No close button: drag edge or double-click to close) */}
       <div className="flex h-8 shrink-0 items-center justify-between border-b border-border bg-muted/20 px-2.5">

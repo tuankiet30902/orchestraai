@@ -489,11 +489,11 @@ export function GitPanel(): ReactElement {
                         {isExpanded ? '▼' : '▶'}
                       </span>
                       {getFileIcon(file.path)}
-                      <span className="font-mono text-foreground font-medium truncate" title={file.path}>
+                      <span className="font-mono text-foreground font-medium truncate min-w-0" title={file.path}>
                         {basename}
                       </span>
                       {dir && (
-                        <span className="text-[10px] text-muted-foreground/50 truncate max-w-[100px]" title={dir}>
+                        <span className="text-[10px] text-muted-foreground/50 truncate max-w-[80px] min-w-0 shrink" title={dir}>
                           {dir}
                         </span>
                       )}
@@ -612,11 +612,11 @@ export function GitPanel(): ReactElement {
                           {isExpanded ? '▼' : '▶'}
                         </span>
                         {getFileIcon(file.path)}
-                        <span className="font-mono text-foreground font-medium truncate" title={file.path}>
+                        <span className="font-mono text-foreground font-medium truncate min-w-0" title={file.path}>
                           {basename}
                         </span>
                         {dir && (
-                          <span className="text-[10px] text-muted-foreground/50 truncate max-w-[100px]" title={dir}>
+                          <span className="text-[10px] text-muted-foreground/50 truncate max-w-[80px] min-w-0 shrink" title={dir}>
                             {dir}
                           </span>
                         )}
