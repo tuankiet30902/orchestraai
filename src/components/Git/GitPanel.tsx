@@ -99,10 +99,12 @@ export function GitPanel(): ReactElement {
   const [feedback, setFeedback] = useState<string | null>(null)
   const [viewMode, setViewMode] = useState<'list' | 'tree'>('list')
 
-  // Collapsible accordion states (docked and expandable)
+  // Section Open/Collapsed state:
+  // Active/opened sections render in main scroll body;
+  // Collapsed sections dock at the bottom of the sidebar.
   const [stagedOpen, setStagedOpen] = useState(true)
   const [changesOpen, setChangesOpen] = useState(true)
-  const [worktreesOpen, setWorktreesOpen] = useState(true)
+  const [worktreesOpen, setWorktreesOpen] = useState(false)
   const [branchesOpen, setBranchesOpen] = useState(false)
   const [historyOpen, setHistoryOpen] = useState(false)
 
@@ -437,17 +439,19 @@ export function GitPanel(): ReactElement {
         </div>
       </div>
 
-      {/* Accordion Stack Container (Flex Col with Collapsed Headers Stacked) */}
+      {/* ========================================================================= */}
+      {/* 1. MAIN SCROLLABLE CONTAINER (Contains all currently OPEN sections)       */}
+      {/* ========================================================================= */}
       <div className="flex-1 min-h-0 overflow-y-auto flex flex-col divide-y divide-border/30">
-        {/* 1. STAGED CHANGES SECTION (Shown when staged files exist) */}
-        {stagedFiles.length > 0 && (
+        {/* STAGED CHANGES (if open and files exist) */}
+        {stagedOpen && stagedFiles.length > 0 && (
           <div className="shrink-0">
             <div
-              onClick={() => setStagedOpen(!stagedOpen)}
-              className="flex h-[22px] items-center justify-between px-2 bg-muted/20 hover:bg-muted/50 cursor-pointer transition-colors"
+              onClick={() => setStagedOpen(false)}
+              className="flex h-[23px] items-center justify-between px-2 bg-muted/25 hover:bg-muted/50 cursor-pointer transition-colors"
             >
               <div className="flex items-center gap-1 text-[10.5px] font-bold uppercase tracking-wider text-muted-foreground">
-                {stagedOpen ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
+                <ChevronDown className="h-3 w-3" />
                 <span>Staged Changes</span>
                 <span className="rounded-full bg-emerald-500/20 text-emerald-400 px-1.5 py-0.2 text-[9.5px] font-mono font-bold ml-1">
                   {stagedFiles.length}
@@ -466,129 +470,127 @@ export function GitPanel(): ReactElement {
               </div>
             </div>
 
-            {stagedOpen && (
-              <div className="divide-y divide-border/10">
-                {stagedFiles.map((file) => {
-                  const isExpanded = expandedFiles.has(file.path)
-                  const diff = fileDiffs.get(file.path) ?? ''
-                  const parts = file.path.split('/')
-                  const basename = parts.pop() ?? file.path
-                  const dir = parts.join('/')
-                  const statusInfo = STATUS_MAP[file.status] ?? { label: file.status, className: 'text-muted-foreground' }
+            <div className="divide-y divide-border/10">
+              {stagedFiles.map((file) => {
+                const isExpanded = expandedFiles.has(file.path)
+                const diff = fileDiffs.get(file.path) ?? ''
+                const parts = file.path.split('/')
+                const basename = parts.pop() ?? file.path
+                const dir = parts.join('/')
+                const statusInfo = STATUS_MAP[file.status] ?? { label: file.status, className: 'text-muted-foreground' }
 
-                  return (
-                    <div key={`staged-${file.path}`} className="border-b border-border/10">
-                      <div
-                        onClick={() => toggleFileExpand(file.path)}
-                        className="group flex h-[22px] cursor-pointer items-center gap-1.5 px-2 hover:bg-muted/30 transition-colors text-[11px]"
-                      >
-                        <span className="text-[9px] text-muted-foreground/60 w-2.5 shrink-0">
-                          {isExpanded ? '▼' : '▶'}
+                return (
+                  <div key={`staged-${file.path}`} className="border-b border-border/10">
+                    <div
+                      onClick={() => toggleFileExpand(file.path)}
+                      className="group flex h-[22px] cursor-pointer items-center gap-1.5 px-2 hover:bg-muted/30 transition-colors text-[11px]"
+                    >
+                      <span className="text-[9px] text-muted-foreground/60 w-2.5 shrink-0">
+                        {isExpanded ? '▼' : '▶'}
+                      </span>
+                      {getFileIcon(file.path)}
+                      <span className="font-mono text-foreground font-medium truncate" title={file.path}>
+                        {basename}
+                      </span>
+                      {dir && (
+                        <span className="text-[10px] text-muted-foreground/50 truncate max-w-[100px]" title={dir}>
+                          {dir}
                         </span>
-                        {getFileIcon(file.path)}
-                        <span className="font-mono text-foreground font-medium truncate" title={file.path}>
-                          {basename}
+                      )}
+
+                      <span className="flex-1" />
+
+                      {(file.added > 0 || file.removed > 0) && (
+                        <span className="shrink-0 font-mono text-[9.5px] mr-1">
+                          {file.added > 0 && <span className="text-emerald-400">+{file.added}</span>}
+                          {file.added > 0 && file.removed > 0 && <span className="text-muted-foreground"> </span>}
+                          {file.removed > 0 && <span className="text-rose-400">-{file.removed}</span>}
                         </span>
-                        {dir && (
-                          <span className="text-[10px] text-muted-foreground/50 truncate max-w-[100px]" title={dir}>
-                            {dir}
-                          </span>
-                        )}
+                      )}
 
-                        <span className="flex-1" />
+                      <span className={`font-mono text-[10px] font-bold mr-1 ${statusInfo.className}`}>
+                        {statusInfo.label}
+                      </span>
 
-                        {(file.added > 0 || file.removed > 0) && (
-                          <span className="shrink-0 font-mono text-[9.5px] mr-1">
-                            {file.added > 0 && <span className="text-emerald-400">+{file.added}</span>}
-                            {file.added > 0 && file.removed > 0 && <span className="text-muted-foreground"> </span>}
-                            {file.removed > 0 && <span className="text-rose-400">-{file.removed}</span>}
-                          </span>
-                        )}
-
-                        <span className={`font-mono text-[10px] font-bold mr-1 ${statusInfo.className}`}>
-                          {statusInfo.label}
-                        </span>
-
-                        <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <button
-                            type="button"
-                            onClick={(e) => handleUnstageFile(file.path, e)}
-                            title="Unstage File"
-                            className="rounded p-0.5 text-muted-foreground hover:text-foreground hover:bg-muted"
-                          >
-                            <Minus className="h-2.5 w-2.5" />
-                          </button>
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              setFullDiff({ path: file.path, diff })
-                            }}
-                            title="Open Visual Diff"
-                            className="rounded p-0.5 text-muted-foreground hover:text-foreground hover:bg-muted"
-                          >
-                            <Maximize2 className="h-2.5 w-2.5" />
-                          </button>
-                          <button
-                            type="button"
-                            onClick={(e) => handleOpenFile(file.path, e)}
-                            title="Reveal File in Explorer"
-                            className="rounded p-0.5 text-muted-foreground hover:text-foreground hover:bg-muted"
-                          >
-                            <ExternalLink className="h-2.5 w-2.5" />
-                          </button>
-                        </div>
+                      <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button
+                          type="button"
+                          onClick={(e) => handleUnstageFile(file.path, e)}
+                          title="Unstage File"
+                          className="rounded p-0.5 text-muted-foreground hover:text-foreground hover:bg-muted"
+                        >
+                          <Minus className="h-2.5 w-2.5" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            setFullDiff({ path: file.path, diff })
+                          }}
+                          title="Open Visual Diff"
+                          className="rounded p-0.5 text-muted-foreground hover:text-foreground hover:bg-muted"
+                        >
+                          <Maximize2 className="h-2.5 w-2.5" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={(e) => handleOpenFile(file.path, e)}
+                          title="Reveal File in Explorer"
+                          className="rounded p-0.5 text-muted-foreground hover:text-foreground hover:bg-muted"
+                        >
+                          <ExternalLink className="h-2.5 w-2.5" />
+                        </button>
                       </div>
-
-                      {isExpanded && <InlineDiff raw={diff} />}
                     </div>
-                  )
-                })}
-              </div>
-            )}
+
+                    {isExpanded && <InlineDiff raw={diff} />}
+                  </div>
+                )
+              })}
+            </div>
           </div>
         )}
 
-        {/* 2. CHANGES SECTION (Unstaged Working Tree) */}
-        <div className="shrink-0">
-          <div
-            onClick={() => setChangesOpen(!changesOpen)}
-            className="flex h-[22px] items-center justify-between px-2 bg-muted/20 hover:bg-muted/50 cursor-pointer transition-colors"
-          >
-            <div className="flex items-center gap-1 text-[10.5px] font-bold uppercase tracking-wider text-muted-foreground">
-              {changesOpen ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
-              <span>Changes</span>
-              <span className="rounded-full bg-muted px-1.5 py-0.2 text-[9.5px] font-mono font-bold text-muted-foreground ml-1">
-                {unstagedFiles.length}
-              </span>
+        {/* CHANGES (if open) */}
+        {changesOpen && (
+          <div className="shrink-0">
+            <div
+              onClick={() => setChangesOpen(false)}
+              className="flex h-[23px] items-center justify-between px-2 bg-muted/25 hover:bg-muted/50 cursor-pointer transition-colors"
+            >
+              <div className="flex items-center gap-1 text-[10.5px] font-bold uppercase tracking-wider text-muted-foreground">
+                <ChevronDown className="h-3 w-3" />
+                <span>Changes</span>
+                <span className="rounded-full bg-muted px-1.5 py-0.2 text-[9.5px] font-mono font-bold text-muted-foreground ml-1">
+                  {unstagedFiles.length}
+                </span>
+              </div>
+
+              {unstagedFiles.length > 0 && (
+                <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
+                  <button
+                    type="button"
+                    onClick={handleStageAll}
+                    title="Stage All Changes"
+                    className="rounded p-0.5 text-muted-foreground hover:text-foreground hover:bg-muted"
+                  >
+                    <Plus className="h-3 w-3" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleDiscardAll}
+                    title="Discard All Changes"
+                    className="rounded p-0.5 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                  >
+                    <Undo2 className="h-3 w-3" />
+                  </button>
+                </div>
+              )}
             </div>
 
-            {unstagedFiles.length > 0 && (
-              <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
-                <button
-                  type="button"
-                  onClick={handleStageAll}
-                  title="Stage All Changes"
-                  className="rounded p-0.5 text-muted-foreground hover:text-foreground hover:bg-muted"
-                >
-                  <Plus className="h-3 w-3" />
-                </button>
-                <button
-                  type="button"
-                  onClick={handleDiscardAll}
-                  title="Discard All Changes"
-                  className="rounded p-0.5 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
-                >
-                  <Undo2 className="h-3 w-3" />
-                </button>
-              </div>
-            )}
-          </div>
-
-          {changesOpen && (
             <div className="divide-y divide-border/10">
               {unstagedFiles.length === 0 ? (
-                <div className="py-2.5 text-center text-[10.5px] text-muted-foreground/60 italic font-sans">
+                <div className="py-3 text-center text-[10.5px] text-muted-foreground/60 italic font-sans">
                   No changes in working directory
                 </div>
               ) : (
@@ -678,25 +680,25 @@ export function GitPanel(): ReactElement {
                 })
               )}
             </div>
-          )}
-        </div>
-
-        {/* 3. AGENT WORKTREES SECTION */}
-        <div className="shrink-0">
-          <div
-            onClick={() => setWorktreesOpen(!worktreesOpen)}
-            className="flex h-[22px] items-center justify-between px-2 bg-muted/20 hover:bg-muted/50 cursor-pointer transition-colors"
-          >
-            <div className="flex items-center gap-1 text-[10.5px] font-bold uppercase tracking-wider text-muted-foreground">
-              {worktreesOpen ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
-              <span>Agent Worktrees</span>
-              <span className="rounded-full bg-muted px-1.5 py-0.2 text-[9.5px] font-mono font-bold text-muted-foreground ml-1">
-                {worktrees.length}
-              </span>
-            </div>
           </div>
+        )}
 
-          {worktreesOpen && (
+        {/* AGENT WORKTREES (if open) */}
+        {worktreesOpen && (
+          <div className="shrink-0">
+            <div
+              onClick={() => setWorktreesOpen(false)}
+              className="flex h-[23px] items-center justify-between px-2 bg-muted/25 hover:bg-muted/50 cursor-pointer transition-colors"
+            >
+              <div className="flex items-center gap-1 text-[10.5px] font-bold uppercase tracking-wider text-muted-foreground">
+                <ChevronDown className="h-3 w-3" />
+                <span>Agent Worktrees</span>
+                <span className="rounded-full bg-muted px-1.5 py-0.2 text-[9.5px] font-mono font-bold text-muted-foreground ml-1">
+                  {worktrees.length}
+                </span>
+              </div>
+            </div>
+
             <div className="divide-y divide-border/10">
               {worktrees.map((wt) => {
                 const isActive = wt.path === selectedWorktree
@@ -723,7 +725,7 @@ export function GitPanel(): ReactElement {
                         </span>
                       )}
                       {assignedAgent && (
-                        <span className="rounded bg-muted px-1 py-0.2 text-[8.5px] font-mono text-foreground">
+                        <span className="rounded bg-muted px-1.5 py-0.2 text-[8.5px] font-mono text-foreground">
                           @{assignedAgent}
                         </span>
                       )}
@@ -754,26 +756,26 @@ export function GitPanel(): ReactElement {
                 )
               })}
             </div>
-          )}
-        </div>
-
-        {/* 4. BRANCHES SECTION */}
-        <div className="shrink-0">
-          <div
-            onClick={() => setBranchesOpen(!branchesOpen)}
-            className="flex h-[22px] items-center justify-between px-2 bg-muted/20 hover:bg-muted/50 cursor-pointer transition-colors"
-          >
-            <div className="flex items-center gap-1 text-[10.5px] font-bold uppercase tracking-wider text-muted-foreground">
-              {branchesOpen ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
-              <span>Branches</span>
-              <span className="rounded-full bg-muted px-1.5 py-0.2 text-[9.5px] font-mono font-bold text-muted-foreground ml-1">
-                {branches.length}
-              </span>
-            </div>
           </div>
+        )}
 
-          {branchesOpen && (
-            <div className="divide-y divide-border/10 max-h-40 overflow-y-auto">
+        {/* BRANCHES (if open) */}
+        {branchesOpen && (
+          <div className="shrink-0">
+            <div
+              onClick={() => setBranchesOpen(false)}
+              className="flex h-[23px] items-center justify-between px-2 bg-muted/25 hover:bg-muted/50 cursor-pointer transition-colors"
+            >
+              <div className="flex items-center gap-1 text-[10.5px] font-bold uppercase tracking-wider text-muted-foreground">
+                <ChevronDown className="h-3 w-3" />
+                <span>Branches</span>
+                <span className="rounded-full bg-muted px-1.5 py-0.2 text-[9.5px] font-mono font-bold text-muted-foreground ml-1">
+                  {branches.length}
+                </span>
+              </div>
+            </div>
+
+            <div className="divide-y divide-border/10 max-h-44 overflow-y-auto">
               {branches.map((b) => (
                 <div
                   key={b.name}
@@ -792,26 +794,119 @@ export function GitPanel(): ReactElement {
                 </div>
               ))}
             </div>
-          )}
-        </div>
+          </div>
+        )}
 
-        {/* 5. COMMIT HISTORY SECTION */}
-        <div className="shrink-0">
+        {/* COMMIT HISTORY (if open) */}
+        {historyOpen && (
+          <div className="shrink-0">
+            <div
+              onClick={() => setHistoryOpen(false)}
+              className="flex h-[23px] items-center justify-between px-2 bg-muted/25 hover:bg-muted/50 cursor-pointer transition-colors"
+            >
+              <div className="flex items-center gap-1 text-[10.5px] font-bold uppercase tracking-wider text-muted-foreground">
+                <ChevronDown className="h-3 w-3" />
+                <span>Commit History</span>
+              </div>
+            </div>
+
+            <CommitHistoryList />
+          </div>
+        )}
+
+        {/* Fallback when everything is closed */}
+        {!stagedOpen && !changesOpen && !worktreesOpen && !branchesOpen && !historyOpen && (
+          <div className="flex-1 flex items-center justify-center p-4 text-[11px] text-muted-foreground/60 italic font-sans">
+            All sections collapsed. Click below to expand.
+          </div>
+        )}
+      </div>
+
+      {/* ========================================================================= */}
+      {/* 2. BOTTOM DOCKED AREA (Pinned to bottom: Contains COLLAPSED headers)       */}
+      {/* ========================================================================= */}
+      <div className="shrink-0 border-t border-border bg-card flex flex-col divide-y divide-border/30">
+        {/* Collapsed Staged Changes Header */}
+        {!stagedOpen && stagedFiles.length > 0 && (
           <div
-            onClick={() => setHistoryOpen(!historyOpen)}
-            className="flex h-[22px] items-center justify-between px-2 bg-muted/20 hover:bg-muted/50 cursor-pointer transition-colors"
+            onClick={() => setStagedOpen(true)}
+            className="flex h-[23px] items-center justify-between px-2 bg-muted/15 hover:bg-muted/40 cursor-pointer transition-colors"
           >
             <div className="flex items-center gap-1 text-[10.5px] font-bold uppercase tracking-wider text-muted-foreground">
-              {historyOpen ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
+              <ChevronRight className="h-3 w-3" />
+              <span>Staged Changes</span>
+              <span className="rounded-full bg-emerald-500/20 text-emerald-400 px-1.5 py-0.2 text-[9.5px] font-mono font-bold ml-1">
+                {stagedFiles.length}
+              </span>
+            </div>
+          </div>
+        )}
+
+        {/* Collapsed Changes Header */}
+        {!changesOpen && (
+          <div
+            onClick={() => setChangesOpen(true)}
+            className="flex h-[23px] items-center justify-between px-2 bg-muted/15 hover:bg-muted/40 cursor-pointer transition-colors"
+          >
+            <div className="flex items-center gap-1 text-[10.5px] font-bold uppercase tracking-wider text-muted-foreground">
+              <ChevronRight className="h-3 w-3" />
+              <span>Changes</span>
+              <span className="rounded-full bg-muted px-1.5 py-0.2 text-[9.5px] font-mono font-bold text-muted-foreground ml-1">
+                {unstagedFiles.length}
+              </span>
+            </div>
+          </div>
+        )}
+
+        {/* Collapsed Worktrees Header */}
+        {!worktreesOpen && (
+          <div
+            onClick={() => setWorktreesOpen(true)}
+            className="flex h-[23px] items-center justify-between px-2 bg-muted/15 hover:bg-muted/40 cursor-pointer transition-colors"
+          >
+            <div className="flex items-center gap-1 text-[10.5px] font-bold uppercase tracking-wider text-muted-foreground">
+              <ChevronRight className="h-3 w-3" />
+              <span>Agent Worktrees</span>
+              <span className="rounded-full bg-muted px-1.5 py-0.2 text-[9.5px] font-mono font-bold text-muted-foreground ml-1">
+                {worktrees.length}
+              </span>
+            </div>
+          </div>
+        )}
+
+        {/* Collapsed Branches Header */}
+        {!branchesOpen && (
+          <div
+            onClick={() => setBranchesOpen(true)}
+            className="flex h-[23px] items-center justify-between px-2 bg-muted/15 hover:bg-muted/40 cursor-pointer transition-colors"
+          >
+            <div className="flex items-center gap-1 text-[10.5px] font-bold uppercase tracking-wider text-muted-foreground">
+              <ChevronRight className="h-3 w-3" />
+              <span>Branches</span>
+              <span className="rounded-full bg-muted px-1.5 py-0.2 text-[9.5px] font-mono font-bold text-muted-foreground ml-1">
+                {branches.length}
+              </span>
+            </div>
+          </div>
+        )}
+
+        {/* Collapsed History Header */}
+        {!historyOpen && (
+          <div
+            onClick={() => setHistoryOpen(true)}
+            className="flex h-[23px] items-center justify-between px-2 bg-muted/15 hover:bg-muted/40 cursor-pointer transition-colors"
+          >
+            <div className="flex items-center gap-1 text-[10.5px] font-bold uppercase tracking-wider text-muted-foreground">
+              <ChevronRight className="h-3 w-3" />
               <span>Commit History</span>
             </div>
           </div>
-
-          {historyOpen && <CommitHistoryList />}
-        </div>
+        )}
       </div>
 
-      {/* Status Bar at Bottom of Git Panel (Branch & Sync) */}
+      {/* ========================================================================= */}
+      {/* 3. STATUS BAR (Branch & Remote Sync at very bottom)                        */}
+      {/* ========================================================================= */}
       <div className="flex h-6 items-center justify-between border-t border-border bg-muted/30 px-2 text-[10.5px] font-mono text-muted-foreground shrink-0">
         <div className="flex items-center gap-1.5 truncate">
           <GitBranch className="h-3 w-3 text-foreground" />
