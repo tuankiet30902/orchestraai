@@ -1,19 +1,45 @@
+// src/tauri/window.ts
 import { getCurrentWindow } from '@tauri-apps/api/window'
+import { getCurrentWebview } from '@tauri-apps/api/webview'
 
-const appWindow = getCurrentWindow()
+function getAppWindow() {
+  if (typeof window === 'undefined') return null
+  try {
+    return getCurrentWindow()
+  } catch {
+    return null
+  }
+}
 
-export const minimize = (): Promise<void> => appWindow.minimize()
-export const toggleMaximize = (): Promise<void> => appWindow.toggleMaximize()
-export const closeWindow = (): Promise<void> => appWindow.close()
-export const showWindow = (): Promise<void> => appWindow.show()
+export const minimize = (): Promise<void> => getAppWindow()?.minimize() ?? Promise.resolve()
+export const toggleMaximize = (): Promise<void> => getAppWindow()?.toggleMaximize() ?? Promise.resolve()
+export const closeWindow = (): Promise<void> => getAppWindow()?.close() ?? Promise.resolve()
+export const showWindow = (): Promise<void> => getAppWindow()?.show() ?? Promise.resolve()
+
+/** Set native WebKit / WebView zoom factor (same as Electron / VS Code webFrame zoom). */
+export async function setWebviewZoom(scaleFactor: number): Promise<void> {
+  if (typeof window === 'undefined') return
+  try {
+    const webview = getCurrentWebview()
+    await webview.setZoom(scaleFactor)
+  } catch (err) {
+    // Non-tauri browser fallback (e.g. during unit tests or web-only preview)
+    console.debug('Native webview zoom not available in this context:', err)
+  }
+}
 
 /** Invoke `cb` with the current maximized state now and on every resize.
  *  Returns an unlisten function. */
 export async function onMaximizedChanged(
   cb: (maximized: boolean) => void
 ): Promise<() => void> {
-  cb(await appWindow.isMaximized())
-  return appWindow.onResized(async () => cb(await appWindow.isMaximized()))
+  const win = getAppWindow()
+  if (!win) return () => {}
+  cb(await win.isMaximized())
+  return win.onResized(async () => {
+    const currentWin = getAppWindow()
+    if (currentWin) cb(await currentWin.isMaximized())
+  })
 }
 
 /** Invoke `cb` with the current full-screen state now and on every resize.
@@ -26,6 +52,11 @@ export async function onMaximizedChanged(
 export async function onFullscreenChanged(
   cb: (fullscreen: boolean) => void
 ): Promise<() => void> {
-  cb(await appWindow.isFullscreen())
-  return appWindow.onResized(async () => cb(await appWindow.isFullscreen()))
+  const win = getAppWindow()
+  if (!win) return () => {}
+  cb(await win.isFullscreen())
+  return win.onResized(async () => {
+    const currentWin = getAppWindow()
+    if (currentWin) cb(await currentWin.isFullscreen())
+  })
 }

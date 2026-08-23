@@ -1,6 +1,7 @@
 /**
- * appearance.ts — Color mode, themes, and application-wide zoom scaling.
+ * appearance.ts — Color mode, themes, and native application-wide zoom scaling.
  */
+import { setWebviewZoom } from '@/tauri/window'
 
 export type ColorMode = 'dark' | 'light' | 'system'
 
@@ -99,16 +100,22 @@ export function isEffectiveDark(mode: ColorMode, style: Style): boolean {
   return !LIGHT_STYLES.includes(style)
 }
 
-/** Apply application-wide zoom scaling. */
+/** Apply application-wide zoom scaling cleanly without CSS coordinate distortion. */
 export function applyZoomToDOM(zoom: number): void {
   if (typeof document === 'undefined') return
   const rounded = Math.round(zoom * 100) / 100
-  // WebKit / Chromium native CSS zoom
+
+  // 1. Completely remove CSS root.style.zoom (which distorts coordinates and breaks modals)
   const root = document.documentElement as HTMLElement & { style: CSSStyleDeclaration & { zoom?: string } }
-  root.style.zoom = String(rounded)
+  if (root.style.zoom) {
+    root.style.zoom = ''
+  }
   root.style.setProperty('--app-zoom', String(rounded))
 
-  // Dispatch window resize so responsive containers & xterm fit gracefully
+  // 2. Apply native WebKit / WebView zoom factor (VS Code / Electron webFrame equivalent)
+  void setWebviewZoom(rounded)
+
+  // 3. Dispatch window resize so responsive containers & xterm fit gracefully
   if (typeof window !== 'undefined') {
     requestAnimationFrame(() => {
       window.dispatchEvent(new Event('resize'))
