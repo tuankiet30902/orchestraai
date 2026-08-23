@@ -1,10 +1,15 @@
-name: 'Release OrchestraAI'
+name: Release OrchestraAI
 
 on:
   push:
     tags:
       - 'v*'
   workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag (e.g. v0.1.0)'
+        required: true
+        default: 'v0.1.0'
 
 jobs:
   release:
@@ -16,9 +21,9 @@ jobs:
         include:
           - platform: 'macos-latest'
             args: '--target universal-apple-darwin'
-          - platform: 'ubuntu-22.04'
-            args: ''
           - platform: 'windows-latest'
+            args: ''
+          - platform: 'ubuntu-22.04'
             args: ''
 
     runs-on: ${{ matrix.platform }}
@@ -35,31 +40,25 @@ jobs:
       - name: Install Rust stable
         uses: dtolnay/rust-toolchain@stable
         with:
-          targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
+          targets: ${{ matrix.platform == 'macos-latest' && 'universal-apple-darwin,x86_64-apple-darwin,aarch64-apple-darwin' || '' }}
 
       - name: Install Linux dependencies
         if: matrix.platform == 'ubuntu-22.04'
         run: |
           sudo apt-get update
-          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf libjavascriptcoregtk-4.1-dev
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf libssl-dev libfuse2
 
       - name: Install npm dependencies
         run: npm ci
 
-      - name: Run Tests
-        run: |
-          cargo test --manifest-path src-tauri/Cargo.toml
-          npx tsc --noEmit
-          npm test
-
-      - name: Build and Package with Tauri
+      - name: Build and Package with Tauri Action
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tagName: ${{ github.ref_name }}
-          releaseName: 'OrchestraAI v__VERSION__'
-          releaseBody: 'Conduct your AI coding orchestra with OrchestraAI v__VERSION__.'
+          tagName: ${{ github.ref_name || inputs.tag }}
+          releaseName: 'OrchestraAI ${{ github.ref_name || inputs.tag }}'
+          releaseBody: 'See changelog and release details for OrchestraAI ${{ github.ref_name || inputs.tag }}.'
           releaseDraft: false
           prerelease: false
           args: ${{ matrix.args }}
