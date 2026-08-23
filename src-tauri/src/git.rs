@@ -1115,7 +1115,7 @@ detached
 
         let auth = result.iter().find(|f| f.path == "src/auth.ts").unwrap();
         assert_eq!(auth.status, "M");
-        assert_eq!(auth.staged, false);
+        assert!(!auth.staged);
         assert_eq!(auth.added, 4);
         assert_eq!(auth.removed, 1);
 
@@ -1124,12 +1124,12 @@ detached
             .find(|f| f.path == "src/hooks/useAuth.ts")
             .unwrap();
         assert_eq!(hook.status, "A");
-        assert_eq!(hook.staged, true);
+        assert!(hook.staged);
         assert_eq!(hook.added, 18);
 
         let env = result.iter().find(|f| f.path == ".env.local").unwrap();
         assert_eq!(env.status, "?");
-        assert_eq!(env.staged, false);
+        assert!(!env.staged);
         assert_eq!(env.added, 0);
     }
 
@@ -1175,7 +1175,7 @@ detached
         // Only the new (destination) path should be stored
         assert_eq!(result[0].path, "src/new-name.ts");
         assert_eq!(result[0].status, "R");
-        assert_eq!(result[0].staged, true);
+        assert!(result[0].staged);
         // Line counts should be associated with the new path
         assert_eq!(result[0].added, 2);
         assert_eq!(result[0].removed, 1);

@@ -263,6 +263,7 @@ fn probe_wsl() -> ShellEntry {
 /// Decode a possibly-UTF-16-LE byte buffer (BOM-tolerant) into a `String`.
 /// Falls back to UTF-8 lossy when the buffer is not valid UTF-16.
 #[cfg(windows)]
+#[allow(clippy::chunks_exact_to_as_chunks)]
 fn decode_utf16_lossy(bytes: &[u8]) -> String {
     if bytes.len() >= 2 && bytes.len().is_multiple_of(2) {
         let words: Vec<u16> = bytes
