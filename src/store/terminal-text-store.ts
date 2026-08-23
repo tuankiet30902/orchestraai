@@ -12,6 +12,9 @@ export interface TerminalTextStore {
   text: TerminalTextPref
   setFontFamily: (stack: string) => void
   setFontSize: (px: number) => void
+  increaseFontSize: (delta?: number) => void
+  decreaseFontSize: (delta?: number) => void
+  resetFontSize: () => void
   setLineHeight: (mult: number) => void
   setLigatures: (on: boolean) => void
   reset: () => void
@@ -39,6 +42,9 @@ export const useTerminalTextStore = create<TerminalTextStore>((set, get) => {
     text: initial,
     setFontFamily: (stack) => update({ fontFamily: stack }),
     setFontSize: (px) => update({ fontSize: clampFontSize(px) }),
+    increaseFontSize: (delta = 1) => update({ fontSize: clampFontSize(get().text.fontSize + delta) }),
+    decreaseFontSize: (delta = 1) => update({ fontSize: clampFontSize(get().text.fontSize - delta) }),
+    resetFontSize: () => update({ fontSize: DEFAULT_TERMINAL_TEXT.fontSize }),
     setLineHeight: (mult) => update({ lineHeight: clampLineHeight(mult) }),
     setLigatures: (on) => update({ ligatures: on }),
     reset: () => update({ ...DEFAULT_TERMINAL_TEXT })

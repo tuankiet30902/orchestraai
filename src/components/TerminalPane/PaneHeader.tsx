@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
-import { FolderGit2, SquareTerminal as ShellIcon, Check, Columns2, Rows2, Radio, X, GitBranch } from 'lucide-react'
+import { FolderGit2, SquareTerminal as ShellIcon, Check, Columns2, Rows2, Radio, X, GitBranch, ZoomIn, Plus, Minus, RotateCcw } from 'lucide-react'
 import type { DraggableAttributes, DraggableSyntheticListeners } from '@dnd-kit/core'
 import { AgentIcon } from '@/components/AgentIcon'
 import { TokenBar } from '@/components/TokenBar/TokenBar'
 import { Button } from '@/components/ui/button'
+import { useTerminalTextStore } from '@/store/terminal-text-store'
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -77,6 +78,11 @@ export function PaneHeader(props: PaneHeaderProps): React.ReactElement {
   const customTitle = useTerminalTitleStore((s) => s.customTitles[terminalId])
   const setCustomTitle = useTerminalTitleStore((s) => s.setCustomTitle)
   const clearCustomTitle = useTerminalTitleStore((s) => s.clearCustomTitle)
+
+  const terminalFontSize = useTerminalTextStore((s) => s.text.fontSize)
+  const increaseFontSize = useTerminalTextStore((s) => s.increaseFontSize)
+  const decreaseFontSize = useTerminalTextStore((s) => s.decreaseFontSize)
+  const resetFontSize = useTerminalTextStore((s) => s.resetFontSize)
 
   // Title: custom wins; then agent-supplied; then agent template name.
   const displayTitle = resolvePaneTitle(agentId, props.agentTitle, customTitle)
@@ -320,6 +326,39 @@ export function PaneHeader(props: PaneHeaderProps): React.ReactElement {
             <Radio className="h-3.5 w-3.5" />
           </Button>
         )}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              title={`Terminal Text Size: ${terminalFontSize}px (Click to Zoom)`}
+              aria-label="Terminal Zoom & Text Size"
+            >
+              <ZoomIn className="h-3.5 w-3.5" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-48">
+            <div className="px-2 py-1.5 text-[11px] font-medium text-muted-foreground border-b border-border/50">
+              Terminal Text Size: <span className="font-mono text-foreground font-semibold">{terminalFontSize}px</span>
+            </div>
+            <DropdownMenuItem onSelect={() => increaseFontSize()}>
+              <Plus className="h-3.5 w-3.5 mr-2" />
+              <span>Zoom In</span>
+              <span className="ml-auto text-[10px] text-muted-foreground font-mono">⌘+</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => decreaseFontSize()}>
+              <Minus className="h-3.5 w-3.5 mr-2" />
+              <span>Zoom Out</span>
+              <span className="ml-auto text-[10px] text-muted-foreground font-mono">⌘-</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => resetFontSize()}>
+              <RotateCcw className="h-3.5 w-3.5 mr-2" />
+              <span>Reset (100% · 13px)</span>
+              <span className="ml-auto text-[10px] text-muted-foreground font-mono">⌘0</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+
         <Button variant="ghost" size="icon-sm" title="Split right" aria-label="Split right" onClick={props.onSplitRight}>
           <Columns2 className="h-3.5 w-3.5" />
         </Button>
