@@ -1,13 +1,9 @@
 // src/components/TitleBar/TitleBar.tsx
 import { useEffect, useState, type ReactElement } from 'react'
 import {
-  Activity,
-  Archive,
   Minus,
   PanelLeft,
   PanelRight,
-  Radio,
-  Settings,
   Square,
   Copy,
   X,
@@ -22,12 +18,9 @@ import { minimize, toggleMaximize, closeWindow, onMaximizedChanged } from '@/tau
 import { isMacPlatform } from '@/lib/platform'
 import { needsTrafficLightInset } from '@/lib/titlebar-chrome'
 import { HeaderRecentSearch } from './HeaderRecentSearch'
-import { SnapshotManagerModal } from '@/components/Snapshot/SnapshotManagerModal'
-import { MissionControlModal } from '@/components/MissionControl/MissionControlModal'
 
 const isMac = isMacPlatform()
 const navbarHint = isMac ? '⌘B' : 'Ctrl+B'
-const broadcastHint = isMac ? '⇧⌘B' : 'Ctrl+Shift+B'
 
 interface TitleBarProps {
   fullscreen: boolean
@@ -35,10 +28,8 @@ interface TitleBarProps {
   onToggleSettings?: () => void
 }
 
-export function TitleBar({ fullscreen, settingsOpen, onToggleSettings }: TitleBarProps): ReactElement {
+export function TitleBar({ fullscreen }: TitleBarProps): ReactElement {
   const [isMaximized, setIsMaximized] = useState(false)
-  const [snapshotModalOpen, setSnapshotModalOpen] = useState(false)
-  const [missionControlOpen, setMissionControlOpen] = useState(false)
 
   const sidebarOpen = useActivityBarStore((s) => s.sidebarOpen)
   const toggleSidebar = useActivityBarStore((s) => s.toggleSidebar)
@@ -50,8 +41,6 @@ export function TitleBar({ fullscreen, settingsOpen, onToggleSettings }: TitleBa
   const activeWorkspaceName = activeWorkspace?.name
 
   const onHome = useAppStore((s) => s.welcomeFocused || s.workspaces.length === 0)
-  const broadcastActive = activeWorkspace?.broadcastActive ?? false
-  const toggleBroadcast = useAppStore((s) => s.toggleBroadcast)
 
   useEffect(() => {
     if (isMac) return
@@ -69,24 +58,8 @@ export function TitleBar({ fullscreen, settingsOpen, onToggleSettings }: TitleBa
         needsTrafficLightInset(isMac, fullscreen) && 'pl-20'
       )}
     >
-      {/* Left: Brand & Sidebar Toggle */}
+      {/* Left: Brand / Logo */}
       <div className="flex items-center gap-2 shrink-0">
-        <button
-          type="button"
-          data-tauri-drag-region="false"
-          aria-label={sidebarOpen ? `Hide sidebar (${navbarHint})` : `Show sidebar (${navbarHint})`}
-          title={`Toggle Primary Sidebar (${navbarHint})`}
-          onClick={toggleSidebar}
-          className={cn(
-            'flex h-7 w-7 items-center justify-center rounded-md transition-colors',
-            sidebarOpen
-              ? 'bg-muted text-foreground'
-              : 'text-muted-foreground hover:bg-muted hover:text-foreground'
-          )}
-        >
-          <PanelLeft className="h-4 w-4" />
-        </button>
-
         <div className="flex items-center gap-2 pl-1">
           <Logo className="h-4 w-4 shrink-0" />
           <span className="hidden sm:inline text-xs font-bold text-foreground tracking-tight">
@@ -95,7 +68,7 @@ export function TitleBar({ fullscreen, settingsOpen, onToggleSettings }: TitleBa
         </div>
       </div>
 
-      {/* Center: Command Center & Quick Search Bar (Cursor/VSCode Studio style) */}
+      {/* Center: Command Center & Quick Search Bar */}
       <div
         data-tauri-drag-region
         className="flex min-w-0 flex-1 items-center justify-center px-4"
@@ -117,38 +90,36 @@ export function TitleBar({ fullscreen, settingsOpen, onToggleSettings }: TitleBa
         )}
       </div>
 
-      {/* Right: Studio Layout Controls & Actions */}
+      {/* Right: Sidebar & Panel Open/Close Toggle Icons */}
       <div className="flex h-full items-center gap-1 shrink-0">
-        {/* Layout Triad Controls */}
+        {/* Open/Close Toggle Control Group */}
         <div className="flex items-center rounded-md border border-border bg-background/80 p-0.5 gap-0.5">
-          {/* Multi-terminal Broadcast */}
-          {!onHome && (
-            <button
-              type="button"
-              data-tauri-drag-region="false"
-              aria-label={`Toggle broadcast input (${broadcastHint})`}
-              aria-pressed={broadcastActive}
-              title={`Broadcast Input to Terminals (${broadcastHint})`}
-              onClick={toggleBroadcast}
-              className={cn(
-                'flex h-6.5 w-6.5 items-center justify-center rounded transition-colors',
-                broadcastActive
-                  ? 'bg-foreground text-background shadow-xs font-semibold'
-                  : 'text-muted-foreground hover:bg-muted hover:text-foreground'
-              )}
-            >
-              <Radio className="h-3.5 w-3.5" />
-            </button>
-          )}
+          {/* Toggle Left Sidebar */}
+          <button
+            type="button"
+            data-tauri-drag-region="false"
+            aria-label={sidebarOpen ? `Hide sidebar (${navbarHint})` : `Show sidebar (${navbarHint})`}
+            aria-pressed={sidebarOpen}
+            title={`Toggle Left Sidebar (${navbarHint})`}
+            onClick={toggleSidebar}
+            className={cn(
+              'flex h-6.5 w-6.5 items-center justify-center rounded transition-colors',
+              sidebarOpen
+                ? 'bg-muted text-foreground'
+                : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+            )}
+          >
+            <PanelLeft className="h-3.5 w-3.5" />
+          </button>
 
-          {/* Auxiliary Right Panel Toggle */}
+          {/* Toggle Right Panel */}
           {!onHome && (
             <button
               type="button"
               data-tauri-drag-region="false"
-              aria-label="Toggle auxiliary right sidebar"
+              aria-label="Toggle right panel"
               aria-pressed={rightPanelOpen}
-              title="Toggle Right Preview / Git Panel"
+              title="Toggle Right Panel"
               onClick={toggleRightPanel}
               className={cn(
                 'flex h-6.5 w-6.5 items-center justify-center rounded transition-colors',
@@ -161,48 +132,6 @@ export function TitleBar({ fullscreen, settingsOpen, onToggleSettings }: TitleBa
             </button>
           )}
         </div>
-
-        {/* Mission Control Timeline Modal */}
-        <button
-          type="button"
-          data-tauri-drag-region="false"
-          aria-label="Mission Control Activity Timeline"
-          title="Mission Control & Activity Timeline"
-          onClick={() => setMissionControlOpen(true)}
-          className="flex h-7 w-7 items-center justify-center rounded-md transition-colors hover:bg-muted text-muted-foreground hover:text-foreground"
-        >
-          <Activity className="h-4 w-4" />
-        </button>
-
-        {/* Snapshots / Checkpoints Modal */}
-        <button
-          type="button"
-          data-tauri-drag-region="false"
-          aria-label="Workspace Snapshots"
-          title="Workspace Snapshots & Presets"
-          onClick={() => setSnapshotModalOpen(true)}
-          className="flex h-7 w-7 items-center justify-center rounded-md transition-colors hover:bg-muted text-muted-foreground hover:text-foreground"
-        >
-          <Archive className="h-4 w-4" />
-        </button>
-
-        {/* Settings Button */}
-        {onToggleSettings && (
-          <button
-            type="button"
-            data-tauri-drag-region="false"
-            aria-label="Settings"
-            aria-pressed={settingsOpen}
-            title="Settings (⌘,)"
-            onClick={onToggleSettings}
-            className={cn(
-              'flex h-7 w-7 items-center justify-center rounded-md transition-colors hover:bg-muted',
-              settingsOpen ? 'bg-muted text-foreground' : 'text-muted-foreground hover:text-foreground'
-            )}
-          >
-            <Settings className="h-4 w-4" />
-          </button>
-        )}
 
         {/* Window controls on non-macOS */}
         {!isMac && (
@@ -234,16 +163,6 @@ export function TitleBar({ fullscreen, settingsOpen, onToggleSettings }: TitleBa
           </div>
         )}
       </div>
-
-      <SnapshotManagerModal
-        open={snapshotModalOpen}
-        onClose={() => setSnapshotModalOpen(false)}
-      />
-
-      <MissionControlModal
-        open={missionControlOpen}
-        onClose={() => setMissionControlOpen(false)}
-      />
     </header>
   )
 }
