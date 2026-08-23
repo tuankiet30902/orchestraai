@@ -1,4 +1,6 @@
+// src/components/Settings/NotificationsPanel.tsx
 import type { ReactElement } from 'react'
+import { Bell, ShieldCheck } from 'lucide-react'
 import { AgentIcon } from '@/components/AgentIcon'
 import { manifestForAgent } from '@/lib/agent-state/manifests'
 import { agentNotificationsEnabled } from '@/lib/notification-pref'
@@ -16,12 +18,12 @@ interface ToggleRowProps {
 
 function ToggleRow({ label, description, checked, onChange, icon }: ToggleRowProps): ReactElement {
   return (
-    <div className="flex items-center justify-between gap-4 py-2">
-      <div className="flex min-w-0 items-center gap-2">
+    <div className="flex items-center justify-between gap-4 py-3">
+      <div className="flex min-w-0 items-center gap-3">
         {icon}
         <div className="min-w-0">
-          <div className="text-sm text-foreground">{label}</div>
-          {description && <div className="text-xs text-muted-foreground">{description}</div>}
+          <div className="text-sm font-medium text-foreground">{label}</div>
+          {description && <div className="text-xs text-muted-foreground mt-0.5">{description}</div>}
         </div>
       </div>
       <button
@@ -31,8 +33,8 @@ function ToggleRow({ label, description, checked, onChange, icon }: ToggleRowPro
         aria-label={label}
         onClick={() => onChange(!checked)}
         className={cn(
-          'relative h-5 w-9 shrink-0 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:ring-offset-background',
-          checked ? 'bg-primary' : 'bg-muted'
+          'relative h-5 w-9 shrink-0 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:ring-offset-background cursor-pointer',
+          checked ? 'bg-foreground' : 'bg-muted'
         )}
       >
         <span
@@ -55,33 +57,73 @@ export function NotificationsPanel(): ReactElement {
   const { setSound, setSystem, setAgentEnabled } = useNotificationPrefStore.getState()
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 font-sans">
       <section>
         <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-          Notifications
+          Notifications & Alerts
         </h1>
         <p className="mt-2 max-w-prose text-sm leading-relaxed text-muted-foreground">
-          When a background agent pane needs your input or finishes, OrchestraAI plays a short
-          chime — and shows a system notification if the window is unfocused.
+          Receive audio chimes and system notifications when background agents finish jobs or require human attention.
         </p>
-        <div className="mt-4">
-          <ToggleRow label="Sound" description="Chime when a background agent blocks or finishes." checked={prefs.sound} onChange={setSound} />
-          <ToggleRow label="System notifications" description="Only shown while the OrchestraAI window is unfocused." checked={prefs.system} onChange={setSystem} />
+      </section>
+
+      {/* Global Notification Channels */}
+      <section className="rounded-xl border border-border bg-card/40 p-5 sm:p-6 space-y-4">
+        <div>
+          <h2 className="text-sm font-semibold text-foreground flex items-center gap-2">
+            <Bell className="h-4 w-4 text-foreground" />
+            Global Notification Channels
+          </h2>
+          <p className="mt-1 text-xs text-muted-foreground">
+            Master switches for audio sound and system-level alerts.
+          </p>
+        </div>
+
+        <ToggleRow
+          label="Audio Chime"
+          description="Play a subtle audio bell when a background agent finishes or blocks on input."
+          checked={prefs.sound}
+          onChange={setSound}
+        />
+
+        <div className="border-t border-border pt-1">
+          <ToggleRow
+            label="System Desktop Notifications"
+            description="Display an OS banner notification only when the OrchestraAI window is in the background or unfocused."
+            checked={prefs.system}
+            onChange={setSystem}
+          />
         </div>
       </section>
 
-      <section>
-        <h2 className="mb-1 text-sm font-semibold text-foreground">Per agent</h2>
-        <p className="mb-2 text-xs text-muted-foreground">Turn off both channels for a specific agent.</p>
-        {AGENT_TEMPLATES.map((t) => (
-          <ToggleRow
-            key={t.id}
-            label={t.name}
-            checked={agentNotificationsEnabled(prefs, t.id)}
-            onChange={(on) => setAgentEnabled(t.id, on)}
-            icon={<AgentIcon template={t} className="h-4 w-4" />}
-          />
-        ))}
+      {/* Per-Agent Notification Control */}
+      <section className="rounded-xl border border-border bg-card/40 p-5 sm:p-6 space-y-4">
+        <div>
+          <h2 className="text-sm font-semibold text-foreground flex items-center gap-2">
+            <ShieldCheck className="h-4 w-4 text-foreground" />
+            Per-Agent Notification Filters
+          </h2>
+          <p className="mt-1 text-xs text-muted-foreground">
+            Toggle notification alerts for individual AI agent CLI tools.
+          </p>
+        </div>
+
+        <div className="divide-y divide-border/60">
+          {AGENT_TEMPLATES.map((t) => (
+            <ToggleRow
+              key={t.id}
+              label={t.name}
+              description={`Alerts for ${t.name} state changes`}
+              checked={agentNotificationsEnabled(prefs, t.id)}
+              onChange={(on) => setAgentEnabled(t.id, on)}
+              icon={
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-card border border-border shrink-0">
+                  <AgentIcon template={t} className="h-4 w-4" />
+                </div>
+              }
+            />
+          ))}
+        </div>
       </section>
     </div>
   )
