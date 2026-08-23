@@ -111,8 +111,12 @@ export function applyZoomToDOM(zoom: number): void {
     root.style.zoom = ''
   }
   root.style.setProperty('--app-zoom', String(rounded))
+  root.style.fontSize = `${14 * rounded}px`
+  if (document.body) {
+    document.body.style.fontSize = `${12 * rounded}px`
+  }
 
-  // 2. Apply native WebKit / WebView zoom factor (VS Code / Electron webFrame equivalent)
+  // 2. Apply native WebKit / WebView zoom factor if available
   void setWebviewZoom(rounded)
 
   // 3. Dispatch window resize so responsive containers & xterm fit gracefully

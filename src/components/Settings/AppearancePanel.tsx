@@ -1,5 +1,6 @@
+// src/components/Settings/AppearancePanel.tsx
 import { type ReactElement } from 'react'
-import { Check, Columns, Palette } from 'lucide-react'
+import { Check, Columns, Palette, ZoomIn, RotateCcw } from 'lucide-react'
 import { useAppearanceStore } from '@/store/appearance-store'
 import { useNavbarVisibilityStore } from '@/store/navbar-visibility-store'
 import { type Style } from '@/lib/appearance'
@@ -21,40 +22,107 @@ const DARK_THEMES: ThemeDefinition[] = [
   { id: 'rose-dark', label: 'Rose Pink', surface: 'True Neutral Dark', accentColor: 'bg-rose-500' }
 ]
 
+const ZOOM_PRESETS = [
+  { value: 0.8, label: '80%' },
+  { value: 0.9, label: '90%' },
+  { value: 1.0, label: '100%' },
+  { value: 1.1, label: '110%' },
+  { value: 1.25, label: '125%' },
+  { value: 1.5, label: '150%' }
+]
+
 export function AppearancePanel(): ReactElement {
   const style = useAppearanceStore((s) => s.style)
   const setStyle = useAppearanceStore((s) => s.setStyle)
+  const zoom = useAppearanceStore((s) => s.zoom)
+  const setZoom = useAppearanceStore((s) => s.setZoom)
+  const resetZoom = useAppearanceStore((s) => s.resetZoom)
 
   const sidebarWidth = useNavbarVisibilityStore((s) => s.width)
   const setSidebarWidth = useNavbarVisibilityStore((s) => s.setWidth)
   const resetSidebarWidth = useNavbarVisibilityStore((s) => s.resetWidth)
 
+  const isDefaultZoom = Math.abs(zoom - 1.0) < 0.01
+
   return (
-    <div className="space-y-8 font-sans">
+    <div className="space-y-6 font-sans">
       <section>
-        <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-          Appearance & Themes
+        <h1 className="text-xl font-semibold tracking-tight text-foreground">
+          Giao diện & Hiển thị
         </h1>
-        <p className="mt-2 max-w-prose text-sm leading-relaxed text-muted-foreground">
-          Customise OrchestraAI's dark IDE theme with clean neutral obsidian backgrounds and your preferred accent palette.
+        <p className="mt-1 text-xs text-muted-foreground">
+          Tùy chỉnh chủ đề màu sắc, tỉ lệ phóng to/thu nhỏ và kích thước layout ứng dụng.
         </p>
       </section>
 
-      {/* Dark Theme Accent Presets (workbench.colorTheme) */}
-      <section className="space-y-4">
+      {/* 1. Tỉ lệ phóng to / thu nhỏ giao diện (Simple & Clean) */}
+      <section className="rounded-xl border border-border bg-card/40 p-4 space-y-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Palette className="h-4 w-4 text-primary" />
-            <h2 className="text-sm font-semibold text-foreground">
-              Color Theme Presets (Pure Neutral Obsidian)
-            </h2>
+            <ZoomIn className="h-4 w-4 text-foreground" />
+            <h2 className="text-sm font-semibold text-foreground">Tỉ lệ giao diện (Zoom)</h2>
           </div>
-          <span className="font-mono text-[10px] text-muted-foreground bg-muted px-1.5 py-0.5 rounded border border-border">
-            workbench.colorTheme
-          </span>
+
+          {!isDefaultZoom && (
+            <button
+              type="button"
+              onClick={resetZoom}
+              className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground underline underline-offset-4"
+            >
+              <RotateCcw className="h-3 w-3" />
+              <span>Khôi phục 100%</span>
+            </button>
+          )}
         </div>
 
-        <div className="grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(240px,1fr))]">
+        {/* Thanh trượt & Nút chọn nhanh */}
+        <div className="space-y-2.5 pt-1">
+          <div className="flex items-center gap-3">
+            <input
+              type="range"
+              min={0.8}
+              max={1.5}
+              step={0.05}
+              value={zoom}
+              onChange={(e) => setZoom(parseFloat(e.target.value))}
+              className="flex-1 accent-foreground h-1.5 bg-muted rounded-lg cursor-pointer"
+            />
+            <span className="font-mono text-xs font-semibold text-foreground bg-muted px-2.5 py-1 rounded border border-border min-w-[55px] text-center">
+              {Math.round(zoom * 100)}%
+            </span>
+          </div>
+
+          <div className="flex items-center gap-1.5 flex-wrap">
+            {ZOOM_PRESETS.map((preset) => {
+              const active = Math.abs(zoom - preset.value) < 0.02
+              return (
+                <button
+                  key={preset.value}
+                  type="button"
+                  onClick={() => setZoom(preset.value)}
+                  className={cn(
+                    'rounded px-2.5 py-1 text-xs font-mono transition-colors border',
+                    active
+                      ? 'bg-foreground text-background border-foreground font-semibold shadow-xs'
+                      : 'bg-card text-muted-foreground border-border hover:text-foreground hover:bg-muted'
+                  )}
+                >
+                  {preset.label}
+                </button>
+              )
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* 2. Chủ đề màu sắc (Themes) */}
+      <section className="rounded-xl border border-border bg-card/40 p-4 space-y-3">
+        <div className="flex items-center gap-2">
+          <Palette className="h-4 w-4 text-foreground" />
+          <h2 className="text-sm font-semibold text-foreground">Chủ đề màu sắc</h2>
+        </div>
+
+        <div className="grid gap-3 [grid-template-columns:repeat(auto-fit,minmax(200px,1fr))]">
           {DARK_THEMES.map((opt) => (
             <ThemeCard
               key={opt.id}
@@ -66,17 +134,12 @@ export function AppearancePanel(): ReactElement {
         </div>
       </section>
 
-      {/* Sidebar Dimensions */}
-      <section className="rounded-xl border border-border bg-card/40 p-5 sm:p-6 space-y-4">
+      {/* 3. Độ rộng Sidebar */}
+      <section className="rounded-xl border border-border bg-card/40 p-4 space-y-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Columns className="h-4 w-4 text-primary" />
-            <div>
-              <h2 className="text-sm font-semibold text-foreground">Left Navigation Sidebar Width</h2>
-              <p className="text-xs text-muted-foreground mt-0.5">
-                Default width for the left activity panel. (You can also drag the sidebar border in real-time).
-              </p>
-            </div>
+            <Columns className="h-4 w-4 text-foreground" />
+            <h2 className="text-sm font-semibold text-foreground">Độ rộng Sidebar bên trái</h2>
           </div>
 
           <button
@@ -84,21 +147,21 @@ export function AppearancePanel(): ReactElement {
             onClick={resetSidebarWidth}
             className="text-xs text-muted-foreground hover:text-foreground underline underline-offset-4"
           >
-            Reset (260px)
+            Mặc định (260px)
           </button>
         </div>
 
-        <div className="flex items-center gap-4 pt-2">
+        <div className="flex items-center gap-3 pt-1">
           <input
             type="range"
             min={180}
-            max={500}
+            max={450}
             step={10}
             value={sidebarWidth}
             onChange={(e) => setSidebarWidth(parseInt(e.target.value, 10))}
-            className="flex-1 accent-primary h-1.5 bg-muted rounded-lg cursor-pointer"
+            className="flex-1 accent-foreground h-1.5 bg-muted rounded-lg cursor-pointer"
           />
-          <span className="font-mono text-xs text-foreground bg-muted px-2.5 py-1 rounded border border-border min-w-[65px] text-center">
+          <span className="font-mono text-xs text-foreground bg-muted px-2.5 py-1 rounded border border-border min-w-[55px] text-center">
             {sidebarWidth}px
           </span>
         </div>
@@ -120,57 +183,17 @@ function ThemeCard({ option, active, onSelect }: ThemeCardProps): ReactElement {
       onClick={onSelect}
       aria-pressed={active}
       className={cn(
-        'flex flex-col gap-2.5 rounded-lg border bg-card p-3 text-left transition-colors',
+        'flex items-center justify-between rounded-lg border p-2.5 text-left transition-colors',
         active
-          ? 'border-primary/60 ring-2 ring-primary/20 bg-primary/5'
-          : 'border-pane-border hover:border-pane-border/80 hover:bg-muted/40'
+          ? 'border-foreground bg-muted/50 ring-1 ring-foreground'
+          : 'border-border hover:bg-muted/30'
       )}
     >
-      <div className="relative">
-        <TerminalPreview active={active} accentColor={option.accentColor} />
-        {active && (
-          <span
-            aria-hidden
-            className="absolute right-2 top-2 inline-flex h-5 w-5 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-sm"
-          >
-            <Check className="h-3 w-3" strokeWidth={3} />
-          </span>
-        )}
+      <div className="flex items-center gap-2.5">
+        <span className={cn('h-3.5 w-3.5 rounded-full shrink-0', option.accentColor)} />
+        <span className="text-xs font-medium text-foreground">{option.label}</span>
       </div>
-      <div className="flex items-center justify-between px-0.5">
-        <div>
-          <div className="text-xs font-semibold text-foreground">{option.label}</div>
-          <div className="mt-0.5 text-[11px] text-muted-foreground">
-            {option.surface}
-          </div>
-        </div>
-      </div>
+      {active && <Check className="h-3.5 w-3.5 text-foreground shrink-0" strokeWidth={2.5} />}
     </button>
-  )
-}
-
-function TerminalPreview({ active, accentColor }: { active: boolean; accentColor: string }): ReactElement {
-  return (
-    <div
-      className={cn(
-        'h-20 rounded-md border border-pane-border bg-canvas p-2 font-mono text-[10px] leading-tight text-foreground/80 overflow-hidden',
-        active && 'border-primary/40'
-      )}
-    >
-      <div className="flex items-center justify-between border-b border-border/50 pb-1 text-[9px] text-muted-foreground">
-        <div className="flex items-center gap-1.5">
-          <span className={cn('h-1.5 w-1.5 rounded-full', accentColor)} />
-          <span>terminal 1</span>
-        </div>
-        <span>zsh</span>
-      </div>
-      <div className="pt-2 text-muted-foreground space-y-1">
-        <div className="flex items-center gap-1">
-          <span className="text-primary font-bold">~</span>
-          <span className="text-foreground/90">orchestraai dev</span>
-        </div>
-        <div className="text-emerald-400">ready on localhost:1420</div>
-      </div>
-    </div>
   )
 }
