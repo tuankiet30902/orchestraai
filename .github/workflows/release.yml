@@ -1,4 +1,4 @@
-name: Release OrchestraAI
+name: Release Orchestron
 
 on:
   push:
@@ -57,8 +57,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tagName: ${{ github.ref_name || inputs.tag }}
-          releaseName: 'OrchestraAI ${{ github.ref_name || inputs.tag }}'
-          releaseBody: 'See changelog and release details for OrchestraAI ${{ github.ref_name || inputs.tag }}.'
+          releaseName: 'Orchestron ${{ github.ref_name || inputs.tag }}'
+          releaseBody: 'Official release binaries for Orchestron ${{ github.ref_name || inputs.tag }} (macOS, Windows, Linux).'
           releaseDraft: false
           prerelease: false
           args: ${{ matrix.args }}
