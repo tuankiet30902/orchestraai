@@ -17,10 +17,11 @@ import {
 export type { WorktreeInfo, ChangedFile, CommitInfo, BranchInfo, GitCommitLog }
 
 export type GitSubTab = 'changes' | 'history' | 'branches'
+export type GitMode = 'files' | 'git' | 'orchestrapit' | 'browser' | 'warroom' | 'tasks'
 
 interface GitStore {
   panelOpen: boolean
-  mode: 'files' | 'git' | 'orchestrapit' | 'browser' | 'warroom'
+  mode: GitMode
   gitSubTab: GitSubTab
   currentCwd: string
   worktrees: WorktreeInfo[]
@@ -36,7 +37,7 @@ interface GitStore {
   loading: boolean
   error: string | null
 
-  setMode: (mode: 'files' | 'git' | 'orchestrapit' | 'browser' | 'warroom') => void
+  setMode: (mode: 'files' | 'git' | 'orchestrapit' | 'browser' | 'warroom' | 'tasks') => void
   setGitSubTab: (tab: GitSubTab) => void
   setPanelOpen: (open: boolean) => void
   togglePanel: () => void

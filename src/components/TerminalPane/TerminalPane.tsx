@@ -27,6 +27,8 @@ import { buildAgentSpawnCommand, shellFlavor } from '@/lib/agent-spawn-command'
 import { buildResumeCommand } from '@/lib/resume-command'
 import { isWindowsPlatform } from '@/lib/platform'
 import { pickDirectory } from '@/tauri/dialog'
+import { writeTerminal } from '@/tauri/terminal'
+import { useTaskStore } from '@/store/task-store'
 import { cn } from '@/lib/utils'
 import {
   attachTerminal,
@@ -109,6 +111,24 @@ export function TerminalPane({
   const setPaneRef = (el: HTMLDivElement | null): void => {
     setDropRef(el)
     setDragRef(el)
+  }
+
+  const [taskDragOver, setTaskDragOver] = useState(false)
+
+  const handleTaskDrop = (e: React.DragEvent) => {
+    const raw = e.dataTransfer.getData('application/orchestraai-task')
+    if (!raw) return
+    e.preventDefault()
+    e.stopPropagation()
+    setTaskDragOver(false)
+    try {
+      const task = JSON.parse(raw) as { id: string; title: string; detail?: string }
+      useTaskStore.getState().assignTask(task.id, resolvedAgentId, terminalId, leaf.worktreeBranch)
+      const prompt = `Please work on this task: ${task.title}${task.detail ? `. Details: ${task.detail}` : ''}\n`
+      void writeTerminal(terminalId, prompt)
+    } catch {
+      // fallback
+    }
   }
 
   // Resolve each per-pane value against its default.
@@ -342,8 +362,30 @@ export function TerminalPane({
         onClose={() => setDialog(null)}
       />
 
-      <div className="relative flex-1 overflow-hidden">
+      <div
+        onDragOver={(e) => {
+          if (e.dataTransfer.types.includes('application/orchestraai-task')) {
+            e.preventDefault()
+            setTaskDragOver(true)
+          }
+        }}
+        onDragLeave={() => setTaskDragOver(false)}
+        onDrop={handleTaskDrop}
+        className={cn(
+          'relative flex-1 overflow-hidden transition-all',
+          taskDragOver && 'ring-2 ring-primary ring-inset bg-primary/5'
+        )}
+      >
         <div ref={containerRef} className="absolute inset-0" />
+
+        {taskDragOver && (
+          <div className="absolute inset-0 z-40 flex items-center justify-center bg-background/80 backdrop-blur-xs pointer-events-none">
+            <div className="rounded-lg border border-primary bg-card p-3 shadow-xl text-center">
+              <p className="text-xs font-semibold text-primary">Drop Task into Agent Terminal</p>
+              <p className="text-[10px] text-muted-foreground mt-0.5">Assigns task & dispatches instructions</p>
+            </div>
+          </div>
+        )}
 
         <HeldDeliveryPill terminalId={terminalId} />
         {searchOpen && <SearchOverlay terminalId={terminalId} />}

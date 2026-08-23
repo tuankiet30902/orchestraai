@@ -118,7 +118,7 @@ export default function App(): ReactElement {
   const [draggingLeafId, setDraggingLeafId] = useState<string | null>(null)
   // Restore the right panel exactly as it was when a drag reveals it and the
   // drop lands elsewhere — revealing the zone must not permanently flip tabs.
-  const panelBeforeDragRef = useRef<{ open: boolean; mode: 'files' | 'git' | 'orchestrapit' | 'browser' | 'warroom' } | null>(null)
+  const panelBeforeDragRef = useRef<{ open: boolean; mode: import('@/store/git-store').GitMode } | null>(null)
   const dndSensors = useSensors(
     useSensor(GuardedPointerSensor, { activationConstraint: { distance: 5 } })
   )

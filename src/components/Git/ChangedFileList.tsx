@@ -1,8 +1,9 @@
 // src/components/Git/ChangedFileList.tsx
-import type { ReactElement } from 'react'
-import { Check } from 'lucide-react'
+import { useState, type ReactElement } from 'react'
+import { Check, Maximize2 } from 'lucide-react'
 import { useGitStore, type ChangedFile } from '@/store/git-store'
 import { InlineDiff } from './InlineDiff'
+import { VisualDiffViewer } from './VisualDiffViewer'
 
 const STATUS_COLOR: Record<string, string> = {
   M: 'text-[#4ec994]',
@@ -12,7 +13,13 @@ const STATUS_COLOR: Record<string, string> = {
   '?': 'text-muted-foreground'
 }
 
-function FileRow({ file }: { file: ChangedFile }): ReactElement {
+function FileRow({
+  file,
+  onOpenFullDiff
+}: {
+  file: ChangedFile
+  onOpenFullDiff: (filePath: string, diff: string) => void
+}): ReactElement {
   const expandedFiles = useGitStore((s) => s.expandedFiles)
   const fileDiffs = useGitStore((s) => s.fileDiffs)
   const toggleFileExpand = useGitStore((s) => s.toggleFileExpand)
@@ -45,6 +52,18 @@ function FileRow({ file }: { file: ChangedFile }): ReactElement {
             {file.removed > 0 && <span className="text-[#f14c4c]">-{file.removed}</span>}
           </span>
         )}
+
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation()
+            onOpenFullDiff(file.path, diff)
+          }}
+          title="Open Visual Diff Viewer"
+          className="opacity-0 group-hover:opacity-100 p-0.5 rounded text-muted-foreground hover:text-foreground hover:bg-muted transition-opacity shrink-0"
+        >
+          <Maximize2 className="h-3 w-3" />
+        </button>
       </div>
       {isExpanded && <InlineDiff raw={diff} />}
     </div>
@@ -55,6 +74,8 @@ export function ChangedFileList(): ReactElement {
   const changedFiles = useGitStore((s) => s.changedFiles)
   const loading = useGitStore((s) => s.loading)
   const error = useGitStore((s) => s.error)
+
+  const [fullDiff, setFullDiff] = useState<{ path: string; diff: string } | null>(null)
 
   const tracked = changedFiles.filter((f) => f.status !== '?')
   const untracked = changedFiles.filter((f) => f.status === '?')
@@ -85,39 +106,54 @@ export function ChangedFileList(): ReactElement {
     )
   }
 
-  return (
-    <div className="flex flex-1 flex-col overflow-y-auto">
-      {tracked.length > 0 && (
-        <div>
-          <div className="flex items-center justify-between px-2 pb-1 pt-2 border-b border-border/40 bg-muted/20">
-            <span className="text-[10px] uppercase tracking-wider font-semibold text-muted-foreground">
-              Changes
-            </span>
-            <span className="rounded-full bg-emerald-500/15 px-1.5 py-0.2 text-[10px] font-mono text-emerald-400 font-semibold">
-              {tracked.length}
-            </span>
-          </div>
-          {tracked.map((f) => (
-            <FileRow key={f.path} file={f} />
-          ))}
-        </div>
-      )}
+  const handleOpenFullDiff = (path: string, diff: string) => {
+    setFullDiff({ path, diff })
+  }
 
-      {untracked.length > 0 && (
-        <div>
-          <div className="flex items-center justify-between border-t border-b border-border/40 px-2 pb-1 pt-2 bg-muted/20">
-            <span className="text-[10px] uppercase tracking-wider font-semibold text-muted-foreground">
-              Untracked Files
-            </span>
-            <span className="rounded-full bg-muted px-1.5 py-0.2 text-[10px] font-mono text-muted-foreground">
-              {untracked.length}
-            </span>
+  return (
+    <>
+      <div className="flex flex-1 flex-col overflow-y-auto">
+        {tracked.length > 0 && (
+          <div>
+            <div className="flex items-center justify-between px-2 pb-1 pt-2 border-b border-border/40 bg-muted/20">
+              <span className="text-[10px] uppercase tracking-wider font-semibold text-muted-foreground">
+                Changes
+              </span>
+              <span className="rounded-full bg-emerald-500/15 px-1.5 py-0.2 text-[10px] font-mono text-emerald-400 font-semibold">
+                {tracked.length}
+              </span>
+            </div>
+            {tracked.map((f) => (
+              <FileRow key={f.path} file={f} onOpenFullDiff={handleOpenFullDiff} />
+            ))}
           </div>
-          {untracked.map((f) => (
-            <FileRow key={f.path} file={f} />
-          ))}
-        </div>
+        )}
+
+        {untracked.length > 0 && (
+          <div>
+            <div className="flex items-center justify-between border-t border-b border-border/40 px-2 pb-1 pt-2 bg-muted/20">
+              <span className="text-[10px] uppercase tracking-wider font-semibold text-muted-foreground">
+                Untracked Files
+              </span>
+              <span className="rounded-full bg-muted px-1.5 py-0.2 text-[10px] font-mono text-muted-foreground">
+                {untracked.length}
+              </span>
+            </div>
+            {untracked.map((f) => (
+              <FileRow key={f.path} file={f} onOpenFullDiff={handleOpenFullDiff} />
+            ))}
+          </div>
+        )}
+      </div>
+
+      {fullDiff && (
+        <VisualDiffViewer
+          open={Boolean(fullDiff)}
+          filePath={fullDiff.path}
+          rawDiff={fullDiff.diff}
+          onClose={() => setFullDiff(null)}
+        />
       )}
-    </div>
+    </>
   )
 }

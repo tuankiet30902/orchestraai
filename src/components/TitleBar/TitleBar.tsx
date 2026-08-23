@@ -1,5 +1,7 @@
 import { useEffect, useState, type ReactElement, type ReactNode } from 'react'
 import {
+  Activity,
+  Bookmark,
   Copy,
   Minus,
   PanelLeftOpen,
@@ -18,6 +20,8 @@ import { minimize, toggleMaximize, closeWindow, onMaximizedChanged } from '@/tau
 import { isMacPlatform } from '@/lib/platform'
 import { needsTrafficLightInset } from '@/lib/titlebar-chrome'
 import { HeaderRecentSearch } from './HeaderRecentSearch'
+import { SnapshotManagerModal } from '@/components/Snapshot/SnapshotManagerModal'
+import { MissionControlModal } from '@/components/MissionControl/MissionControlModal'
 
 // On macOS the OS draws native traffic lights over this header (titleBarStyle
 // Overlay — see tauri.macos.conf.json): hide the custom window buttons and
@@ -45,6 +49,8 @@ interface TitleBarProps {
  */
 export function TitleBar({ fullscreen, settingsOpen, onToggleSettings }: TitleBarProps): ReactElement {
   const [isMaximized, setIsMaximized] = useState(false)
+  const [snapshotModalOpen, setSnapshotModalOpen] = useState(false)
+  const [missionControlOpen, setMissionControlOpen] = useState(false)
   const visible = useNavbarVisibilityStore((s) => s.visible)
   const toggleNavbar = useNavbarVisibilityStore((s) => s.toggle)
   const rightPanelOpen = useGitStore((s) => s.panelOpen)
@@ -162,6 +168,30 @@ export function TitleBar({ fullscreen, settingsOpen, onToggleSettings }: TitleBa
           )}
         </div>
 
+        {/* Mission Control Timeline Toggle */}
+        <button
+          type="button"
+          data-tauri-drag-region="false"
+          aria-label="Mission Control Activity Timeline"
+          title="Mission Control & Activity Timeline"
+          onClick={() => setMissionControlOpen(true)}
+          className="flex h-7 w-7 items-center justify-center rounded-md transition-colors hover:bg-accent text-muted-foreground hover:text-foreground"
+        >
+          <Activity className="h-4 w-4 text-primary" />
+        </button>
+
+        {/* Snapshots / Checkpoints Toggle */}
+        <button
+          type="button"
+          data-tauri-drag-region="false"
+          aria-label="Workspace Snapshots"
+          title="Workspace Snapshots & Presets"
+          onClick={() => setSnapshotModalOpen(true)}
+          className="flex h-7 w-7 items-center justify-center rounded-md transition-colors hover:bg-accent text-muted-foreground hover:text-foreground"
+        >
+          <Bookmark className="h-4 w-4 text-amber-500/80" />
+        </button>
+
         {/* Settings Toggle */}
         {onToggleSettings && (
           <button
@@ -179,6 +209,16 @@ export function TitleBar({ fullscreen, settingsOpen, onToggleSettings }: TitleBa
             <Settings className="h-4 w-4" />
           </button>
         )}
+
+        <SnapshotManagerModal
+          open={snapshotModalOpen}
+          onClose={() => setSnapshotModalOpen(false)}
+        />
+
+        <MissionControlModal
+          open={missionControlOpen}
+          onClose={() => setMissionControlOpen(false)}
+        />
         {!isMac && (
           <>
             <TitleBarButton label="Minimize" onClick={() => minimize()}>
