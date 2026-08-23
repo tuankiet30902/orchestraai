@@ -68,10 +68,10 @@ export function ActivityBar({
   return (
     <aside
       aria-label="Activity Bar"
-      className="flex h-full w-12 flex-col items-center justify-between border-r border-border bg-canvas py-2 select-none shrink-0 z-30"
+      className="flex h-full w-12 flex-col items-center justify-between border-r border-border bg-canvas py-3 select-none shrink-0 z-30"
     >
       {/* Top Primary Navigation Items */}
-      <div className="flex w-full flex-col items-center gap-1.5">
+      <div className="flex w-full flex-col items-center gap-2">
         {items.map((item) => {
           const Icon = item.icon
           const isActive = sidebarOpen && activeTab === item.id
@@ -85,9 +85,9 @@ export function ActivityBar({
               aria-pressed={isActive}
               onClick={() => toggleTab(item.id)}
               className={cn(
-                'group relative flex h-9.5 w-9.5 items-center justify-center rounded-xl transition-all cursor-pointer',
+                'group relative flex h-9 w-9 items-center justify-center rounded-xl transition-all cursor-pointer',
                 isActive
-                  ? 'bg-primary/15 text-primary shadow-xs'
+                  ? 'bg-primary/15 text-primary shadow-2xs'
                   : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
               )}
             >
@@ -95,7 +95,7 @@ export function ActivityBar({
 
               {/* Counter Badge */}
               {item.badge !== undefined && (
-                <span className="absolute -bottom-0.5 -right-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[9px] font-bold font-mono text-primary-foreground shadow-xs">
+                <span className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[9px] font-bold font-mono text-primary-foreground shadow-2xs">
                   {item.badge}
                 </span>
               )}
@@ -105,14 +105,14 @@ export function ActivityBar({
       </div>
 
       {/* Bottom Modals & Settings Launcher Items */}
-      <div className="flex w-full flex-col items-center gap-1.5">
+      <div className="flex w-full flex-col items-center gap-2">
         {/* Mission Control Timeline */}
         <button
           type="button"
           title="Mission Control & Activity Timeline"
           aria-label="Mission Control"
           onClick={onOpenMissionControl}
-          className="flex h-9.5 w-9.5 items-center justify-center rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all cursor-pointer"
+          className="flex h-9 w-9 items-center justify-center rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all cursor-pointer"
         >
           <Activity className="h-5 w-5" />
         </button>
@@ -123,7 +123,7 @@ export function ActivityBar({
           title="Workspace Snapshots & Presets"
           aria-label="Snapshots"
           onClick={onOpenSnapshots}
-          className="flex h-9.5 w-9.5 items-center justify-center rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all cursor-pointer"
+          className="flex h-9 w-9 items-center justify-center rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all cursor-pointer"
         >
           <Archive className="h-5 w-5" />
         </button>
@@ -134,7 +134,7 @@ export function ActivityBar({
           title="Settings & Preferences (⌘,)"
           aria-label="Settings"
           onClick={onOpenSettings}
-          className="flex h-9.5 w-9.5 items-center justify-center rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all cursor-pointer"
+          className="flex h-9 w-9 items-center justify-center rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all cursor-pointer"
         >
           <Settings className="h-5 w-5" />
         </button>
