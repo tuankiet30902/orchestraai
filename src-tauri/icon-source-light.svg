@@ -1,20 +1,56 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
-  <rect width="1024" height="1024" rx="230.4" ry="230.4" fill="#ffffff"/>
-  <g stroke="#09090b" fill="none" stroke-linecap="round" stroke-linejoin="round">
-    <!-- Main Letter 'O' Ring -->
-    <circle cx="512" cy="512" r="320" stroke-width="70"/>
-    
-    <!-- Inner Concentric Orbit -->
-    <circle cx="512" cy="512" r="190" stroke-width="32" stroke-dasharray="75 50" stroke-opacity="0.65"/>
-    
-    <!-- Center Conductor Spark -->
-    <path d="M512 370 V654 M370 512 H654" stroke-width="32"/>
-    <circle cx="512" cy="512" r="56" fill="#09090b" stroke="none"/>
+  <defs>
+    <linearGradient id="srcl-fold-grad" x1="320" y1="250" x2="520" y2="400" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0f172a" />
+      <stop offset="0.6" stop-color="#334155" />
+      <stop offset="1" stop-color="#64748b" />
+    </linearGradient>
+    <linearGradient id="srcl-body-grad" x1="320" y1="350" x2="680" y2="750" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0f172a" />
+      <stop offset="0.45" stop-color="#1e293b" />
+      <stop offset="0.8" stop-color="#475569" />
+      <stop offset="1" stop-color="#0f172a" />
+    </linearGradient>
+    <linearGradient id="srcl-bottom-shadow" x1="400" y1="550" x2="580" y2="750" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#020617" stop-opacity="0.9" />
+      <stop offset="0.5" stop-color="#475569" stop-opacity="0.4" />
+      <stop offset="1" stop-color="#0f172a" stop-opacity="0" />
+    </linearGradient>
+  </defs>
 
-    <!-- Agent Nodes -->
-    <circle cx="512" cy="192" r="38" fill="#09090b" stroke="none"/>
-    <circle cx="832" cy="512" r="38" fill="#09090b" stroke="none"/>
-    <circle cx="512" cy="832" r="38" fill="#09090b" stroke="none"/>
-    <circle cx="192" cy="512" r="38" fill="#09090b" stroke="none"/>
+  <rect width="1024" height="1024" rx="230" ry="230" fill="#ffffff"/>
+
+  <g transform="scale(10.24)">
+    <!-- Main Right & Bottom Continuous Loop -->
+    <path
+      d="M41 38 C41 38 48 32.5 53 32.5 C60 32.5 61 40 61 50 C61 60 56 65.5 50 65.5 C43.5 65.5 39 58 39 52 L32 52 C32 63 39 74.5 50 74.5 C62 74.5 69 64 69 50 C69 36 61 25.5 49 25.5 C44 25.5 38.5 28 35 32 L41 38 Z"
+      fill="url(#srcl-body-grad)"
+    />
+
+    <!-- Top-Left Folding Ribbon Flap -->
+    <path
+      d="M32 42.5 L41.5 34 C43.5 32.2 46.5 30.5 50 30 C45 27 39 27.5 35 31 C32 34 31.5 38 32 42.5 Z"
+      fill="url(#srcl-fold-grad)"
+    />
+
+    <!-- Outer Left Stem to Top-Left Arch -->
+    <path
+      d="M32 42.5 C31.8 36.5 34 30.5 39 27 C44 23.5 51 24 56 26.5 C50 25.5 43 27 38.5 31 C34.5 34.5 32.5 38.5 32 42.5 Z"
+      fill="#0f172a"
+    />
+
+    <!-- Bottom Depth Crease Shadow -->
+    <path
+      d="M40 54 C40 62 45 66 50 66 C55 66 60 62 60 52 C60 62 55 72 49 72 C43 72 38 65 38 56 L40 54 Z"
+      fill="url(#srcl-bottom-shadow)"
+    />
+
+    <!-- Left Notch Cutout Line -->
+    <path
+      d="M31.5 43 L41.5 34"
+      stroke="#ffffff"
+      stroke-width="1.2"
+      stroke-linecap="round"
+    />
   </g>
 </svg>
