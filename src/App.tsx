@@ -40,7 +40,8 @@ import { resolvePaneTitle } from '@/lib/pane-title'
 import { DEFAULT_TEMPLATE_ID } from '@/lib/templates'
 import { FileDropListener } from '@/components/FileDropListener'
 import { RightPanel } from '@/components/RightPanel/RightPanel'
-import { Navbar } from '@/components/Navbar/Navbar'
+import { ActivityBar } from '@/components/ActivityBar/ActivityBar'
+import { PrimarySidebar } from '@/components/PrimarySidebar/PrimarySidebar'
 import { SettingsView } from '@/components/Settings/SettingsView'
 import { TitleBar } from '@/components/TitleBar/TitleBar'
 import { Workspace, PaneDragGhost } from '@/components/Workspace/Workspace'
@@ -48,6 +49,9 @@ import { Welcome } from '@/components/Welcome/Welcome'
 import { NewWorkspaceModal } from '@/components/Welcome/NewWorkspaceModal'
 import { WorkspaceTabs } from '@/components/WorkspaceTabs/WorkspaceTabs'
 import { TerminateConfirmModal } from '@/components/ConfirmModal/TerminateConfirmModal'
+import { SnapshotManagerModal } from '@/components/Snapshot/SnapshotManagerModal'
+import { MissionControlModal } from '@/components/MissionControl/MissionControlModal'
+import { useActivityBarStore } from '@/store/activity-bar-store'
 import { useBrowserStore } from '@/store/browser-store'
 import { useUpdaterStore } from '@/store/updater-store'
 import { PERIODIC_CHECK_INTERVAL_MS, STARTUP_CHECK_DELAY_MS } from '@/lib/updater-flow'
@@ -98,6 +102,8 @@ export default function App(): ReactElement {
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [settingsTab, setSettingsTab] = useState<CategoryId>('appearance')
   const [newWorkspaceModalOpen, setNewWorkspaceModalOpen] = useState(false)
+  const [snapshotModalOpen, setSnapshotModalOpen] = useState(false)
+  const [missionControlOpen, setMissionControlOpen] = useState(false)
 
   const handleNewWorkspace = (): void => {
     setNewWorkspaceModalOpen(true)
@@ -318,6 +324,7 @@ export default function App(): ReactElement {
       if (action === 'toggle-navbar') {
         e.preventDefault()
         useNavbarVisibilityStore.getState().toggle()
+        useActivityBarStore.getState().toggleSidebar()
         return
       }
       if (action === 'find-in-terminal') {
@@ -657,7 +664,18 @@ export default function App(): ReactElement {
       />
 
       <div className="relative flex min-h-0 flex-1">
-        <Navbar onNewWorkspace={handleNewWorkspace} />
+        {/* Modern IDE Studio Activity Bar */}
+        <ActivityBar
+          onOpenMissionControl={() => setMissionControlOpen(true)}
+          onOpenSnapshots={() => setSnapshotModalOpen(true)}
+          onOpenSettings={() => {
+            setSettingsTab('appearance')
+            setSettingsOpen(true)
+          }}
+        />
+
+        {/* Modern IDE Studio Primary Sidebar (Collapsible with Explorer, Files, Git, Pit) */}
+        <PrimarySidebar onNewWorkspace={handleNewWorkspace} />
 
         <main className="relative flex min-w-0 flex-1 flex-col">
           {/* Workspaces stay mounted and visible whether Settings is open or
@@ -736,6 +754,16 @@ export default function App(): ReactElement {
         <NewWorkspaceModal
           open={newWorkspaceModalOpen}
           onClose={() => setNewWorkspaceModalOpen(false)}
+        />
+
+        <SnapshotManagerModal
+          open={snapshotModalOpen}
+          onClose={() => setSnapshotModalOpen(false)}
+        />
+
+        <MissionControlModal
+          open={missionControlOpen}
+          onClose={() => setMissionControlOpen(false)}
         />
 
         <TerminateConfirmModal />

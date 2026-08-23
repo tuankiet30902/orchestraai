@@ -57,12 +57,14 @@ import { UpdateButton } from '@/components/Navbar/UpdateButton'
 interface NavbarProps {
   /** Open the setup wizard to create a new workspace. */
   onNewWorkspace: () => void
+  /** When embedded inside PrimarySidebar */
+  embedded?: boolean
 }
 
 /** Left navigation rail: Unified Hierarchical Workspace & Terminal Tree.
  * Each Workspace is a parent node with expandable child terminals.
  */
-export function Navbar({ onNewWorkspace }: NavbarProps): ReactElement {
+export function Navbar({ onNewWorkspace, embedded = false }: NavbarProps): ReactElement {
   const visible = useNavbarVisibilityStore((s) => s.visible)
   const width = useNavbarVisibilityStore((s) => s.width)
   const setWidth = useNavbarVisibilityStore((s) => s.setWidth)
@@ -127,39 +129,10 @@ export function Navbar({ onNewWorkspace }: NavbarProps): ReactElement {
     window.addEventListener('pointerup', onPointerUp)
   }
 
-  return (
-    <nav
-      ref={navRef}
-      aria-hidden={!visible}
-      inert={!visible}
-      data-focus-return
-      style={{ width: visible ? width : 0 }}
-      className={cn(
-        'relative h-full shrink-0 overflow-hidden border-r border-border bg-card',
-        isResizing
-          ? 'transition-none select-none'
-          : 'transition-[width] duration-200 ease-in-out motion-reduce:transition-none'
-      )}
-    >
-      <div className="flex h-full w-full min-w-0 flex-col">
-        {/* Header Title */}
-        <div className="flex shrink-0 items-center justify-between border-b border-border bg-muted/40 px-3 py-2">
-          <span className="text-[11px] font-semibold uppercase tracking-wider text-foreground/80">
-            Explorer & Trees
-          </span>
-          <button
-            type="button"
-            onClick={onNewWorkspace}
-            title="New workspace"
-            aria-label="New workspace"
-            className="flex h-5 w-5 items-center justify-center rounded text-muted-foreground hover:bg-accent hover:text-foreground"
-          >
-            <Plus className="h-3.5 w-3.5" />
-          </button>
-        </div>
-
-        {/* Tree Navigator */}
-        <div className="min-h-0 flex-1 overflow-y-auto p-2">
+  const content = (
+    <div className="flex h-full w-full min-w-0 flex-col overflow-hidden bg-card">
+      {/* Tree Navigator */}
+      <div className="min-h-0 flex-1 overflow-y-auto p-2">
           <DndContext
             sensors={sensors}
             collisionDetection={closestCenter}
@@ -243,6 +216,27 @@ export function Navbar({ onNewWorkspace }: NavbarProps): ReactElement {
           <UpdateButton />
         </div>
       </div>
+    )
+
+  if (embedded) {
+    return content
+  }
+
+  return (
+    <nav
+      ref={navRef}
+      aria-hidden={!visible}
+      inert={!visible}
+      data-focus-return
+      style={{ width: visible ? width : 0 }}
+      className={cn(
+        'relative h-full shrink-0 overflow-hidden border-r border-border bg-card',
+        isResizing
+          ? 'transition-none select-none'
+          : 'transition-[width] duration-200 ease-in-out motion-reduce:transition-none'
+      )}
+    >
+      {content}
 
       {/* Resizable drag handle */}
       {visible && (

@@ -1,20 +1,22 @@
-import { useEffect, useState, type ReactElement, type ReactNode } from 'react'
+// src/components/TitleBar/TitleBar.tsx
+import { useEffect, useState, type ReactElement } from 'react'
 import {
   Activity,
   Bookmark,
-  Copy,
   Minus,
-  PanelLeftOpen,
-  PanelRightOpen,
+  PanelLeft,
+  PanelRight,
   Radio,
   Settings,
   Square,
-  X
+  Copy,
+  X,
+  Search
 } from 'lucide-react'
 import { Logo } from '@/components/Logo'
 import { cn } from '@/lib/utils'
 import { useAppStore } from '@/store/app-store'
-import { useNavbarVisibilityStore } from '@/store/navbar-visibility-store'
+import { useActivityBarStore } from '@/store/activity-bar-store'
 import { useGitStore } from '@/store/git-store'
 import { minimize, toggleMaximize, closeWindow, onMaximizedChanged } from '@/tauri/window'
 import { isMacPlatform } from '@/lib/platform'
@@ -23,111 +25,103 @@ import { HeaderRecentSearch } from './HeaderRecentSearch'
 import { SnapshotManagerModal } from '@/components/Snapshot/SnapshotManagerModal'
 import { MissionControlModal } from '@/components/MissionControl/MissionControlModal'
 
-// On macOS the OS draws native traffic lights over this header (titleBarStyle
-// Overlay — see tauri.macos.conf.json): hide the custom window buttons and
-// inset the left cluster so it clears the lights. Platform never changes at
-// runtime, so a module-level constant is fine — but full screen does change at
-// runtime, and it takes the lights away with it (see lib/titlebar-chrome.ts).
 const isMac = isMacPlatform()
-// Tooltip hints must match the platform binding (mac convention: ⇧ before ⌘).
 const navbarHint = isMac ? '⌘B' : 'Ctrl+B'
 const broadcastHint = isMac ? '⇧⌘B' : 'Ctrl+Shift+B'
 
 interface TitleBarProps {
-  /** Native full screen, owned by App — it drives the system-chrome dodge too. */
   fullscreen: boolean
-  /** Whether the Settings modal is open. */
   settingsOpen?: boolean
-  /** Toggle settings modal open/closed. */
   onToggleSettings?: () => void
 }
 
-/**
- * Custom window title bar for the frameless window. Left cluster:
- * [sidebar toggle] [app icon] [app name]. Centre: a read-only pill showing the
- * active workspace's name. Right: Settings, Preview, Broadcast, and window controls.
- */
 export function TitleBar({ fullscreen, settingsOpen, onToggleSettings }: TitleBarProps): ReactElement {
   const [isMaximized, setIsMaximized] = useState(false)
   const [snapshotModalOpen, setSnapshotModalOpen] = useState(false)
   const [missionControlOpen, setMissionControlOpen] = useState(false)
-  const visible = useNavbarVisibilityStore((s) => s.visible)
-  const toggleNavbar = useNavbarVisibilityStore((s) => s.toggle)
+
+  const sidebarOpen = useActivityBarStore((s) => s.sidebarOpen)
+  const toggleSidebar = useActivityBarStore((s) => s.toggleSidebar)
+
   const rightPanelOpen = useGitStore((s) => s.panelOpen)
   const toggleRightPanel = useGitStore((s) => s.togglePanel)
-  const activeWorkspaceName = useAppStore((s) => {
-    const active = s.workspaces.find((w) => w.id === s.activeWorkspaceId)
-    return active?.name
-  })
-  // Home view = Welcome focused, or no workspaces yet (matches App's showWelcome).
+
+  const activeWorkspace = useAppStore((s) => s.workspaces.find((w) => w.id === s.activeWorkspaceId))
+  const activeWorkspaceName = activeWorkspace?.name
+
   const onHome = useAppStore((s) => s.welcomeFocused || s.workspaces.length === 0)
-  const broadcastActive = useAppStore((s) => {
-    const active = s.workspaces.find((w) => w.id === s.activeWorkspaceId)
-    return active?.broadcastActive ?? false
-  })
+  const broadcastActive = activeWorkspace?.broadcastActive ?? false
   const toggleBroadcast = useAppStore((s) => s.toggleBroadcast)
 
   useEffect(() => {
-    if (isMac) return // maximize icon swap only exists on the custom buttons
+    if (isMac) return
     let unlisten: (() => void) | undefined
     onMaximizedChanged(setIsMaximized).then((un) => (unlisten = un))
     return () => unlisten?.()
   }, [])
 
   return (
-    <div
+    <header
       data-tauri-drag-region
-      // Toggling a panel here must not strand the keyboard on the button that
-      // was clicked — App.tsx hands it back (lib/terminal-focus.ts). The recents
-      // search input is exempt automatically: it holds focus legitimately.
       data-focus-return
       className={cn(
-        'flex h-9 shrink-0 items-center justify-between border-b border-border bg-card pl-1.5',
+        'flex h-10 shrink-0 items-center justify-between border-b border-border bg-card px-2 select-none z-40',
         needsTrafficLightInset(isMac, fullscreen) && 'pl-20'
       )}
     >
-      <div className="flex items-center gap-2 pl-1 shrink-0">
-        <Logo className="h-5 w-5 shrink-0" />
-        <span className="hidden sm:inline text-xs font-semibold text-foreground tracking-tight">OrchestraAI</span>
+      {/* Left: Brand & Sidebar Toggle */}
+      <div className="flex items-center gap-2 shrink-0">
+        <button
+          type="button"
+          data-tauri-drag-region="false"
+          aria-label={sidebarOpen ? `Hide sidebar (${navbarHint})` : `Show sidebar (${navbarHint})`}
+          title={`Toggle Primary Sidebar (${navbarHint})`}
+          onClick={toggleSidebar}
+          className={cn(
+            'flex h-7 w-7 items-center justify-center rounded-md transition-colors',
+            sidebarOpen
+              ? 'bg-muted text-foreground'
+              : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+          )}
+        >
+          <PanelLeft className="h-4 w-4" />
+        </button>
+
+        <div className="flex items-center gap-2 pl-1">
+          <Logo className="h-4 w-4 shrink-0" />
+          <span className="hidden sm:inline text-xs font-bold text-foreground tracking-tight">
+            OrchestraAI
+          </span>
+        </div>
       </div>
 
+      {/* Center: Command Center & Quick Search Bar (Cursor/VSCode Studio style) */}
       <div
         data-tauri-drag-region
-        className="flex min-w-0 flex-1 items-center justify-center px-2 overflow-hidden"
+        className="flex min-w-0 flex-1 items-center justify-center px-4"
       >
         {onHome ? (
           <HeaderRecentSearch />
         ) : (
-          activeWorkspaceName !== undefined && (
-            <div className="inline-flex h-[22px] max-w-[320px] min-w-0 items-center rounded border border-border/80 bg-muted/60 px-3 text-xs text-foreground/80 font-medium overflow-hidden">
-              <span className="truncate">{activeWorkspaceName}</span>
+          <div className="flex items-center gap-2">
+            <div className="flex h-7 max-w-[340px] min-w-0 items-center gap-2 rounded-md border border-border bg-background/90 px-3 text-xs text-muted-foreground shadow-2xs hover:border-foreground/30 hover:text-foreground transition-all cursor-default">
+              <Search className="h-3.5 w-3.5 shrink-0 opacity-60" />
+              <span className="truncate font-medium text-foreground">
+                {activeWorkspaceName ?? 'Orchestra Workspace'}
+              </span>
+              <kbd className="hidden md:inline-flex items-center rounded border border-border bg-muted/60 px-1.5 font-mono text-[9px] text-muted-foreground font-semibold">
+                ⌘K
+              </kbd>
             </div>
-          )
+          </div>
         )}
       </div>
 
-      <div className="flex h-full items-center gap-1.5 pr-1.5 shrink-0">
-        {/* UNIFIED LAYOUT TRIAD CONTROLS (Monochrome & Sized) */}
+      {/* Right: Studio Layout Controls & Actions */}
+      <div className="flex h-full items-center gap-1 shrink-0">
+        {/* Layout Triad Controls */}
         <div className="flex items-center rounded-md border border-border bg-background/80 p-0.5 gap-0.5">
-          {/* Toggle Primary Sidebar (Workspaces Tree) */}
-          <button
-            type="button"
-            data-tauri-drag-region="false"
-            aria-label={visible ? `Hide sidebar (${navbarHint})` : `Show sidebar (${navbarHint})`}
-            aria-pressed={visible}
-            title={`Toggle Left Sidebar (${navbarHint})`}
-            onClick={toggleNavbar}
-            className={cn(
-              'flex h-7 w-7 items-center justify-center rounded transition-colors',
-              visible
-                ? 'bg-accent text-foreground shadow-xs'
-                : 'text-muted-foreground hover:bg-muted hover:text-foreground'
-            )}
-          >
-            <PanelLeftOpen className="h-4 w-4" />
-          </button>
-
-          {/* Toggle Multi-Terminal Broadcast (Conduct Mode) */}
+          {/* Multi-terminal Broadcast */}
           {!onHome && (
             <button
               type="button"
@@ -137,62 +131,62 @@ export function TitleBar({ fullscreen, settingsOpen, onToggleSettings }: TitleBa
               title={`Broadcast Input to Terminals (${broadcastHint})`}
               onClick={toggleBroadcast}
               className={cn(
-                'flex h-7 w-7 items-center justify-center rounded transition-colors',
+                'flex h-6.5 w-6.5 items-center justify-center rounded transition-colors',
                 broadcastActive
-                  ? 'bg-accent text-foreground shadow-xs'
+                  ? 'bg-foreground text-background shadow-xs font-semibold'
                   : 'text-muted-foreground hover:bg-muted hover:text-foreground'
               )}
             >
-              <Radio className="h-4 w-4" />
+              <Radio className="h-3.5 w-3.5" />
             </button>
           )}
 
-          {/* Toggle Auxiliary Sidebar (Files / Git / Team Pit) */}
+          {/* Auxiliary Right Panel Toggle */}
           {!onHome && (
             <button
               type="button"
               data-tauri-drag-region="false"
               aria-label="Toggle auxiliary right sidebar"
               aria-pressed={rightPanelOpen}
-              title="Toggle Right Sidebar (Files / Git / Team Pit)"
+              title="Toggle Right Preview / Git Panel"
               onClick={toggleRightPanel}
               className={cn(
-                'flex h-7 w-7 items-center justify-center rounded transition-colors',
+                'flex h-6.5 w-6.5 items-center justify-center rounded transition-colors',
                 rightPanelOpen
-                  ? 'bg-accent text-foreground shadow-xs'
+                  ? 'bg-muted text-foreground'
                   : 'text-muted-foreground hover:bg-muted hover:text-foreground'
               )}
             >
-              <PanelRightOpen className="h-4 w-4" />
+              <PanelRight className="h-3.5 w-3.5" />
             </button>
           )}
         </div>
 
-        {/* Mission Control Timeline Toggle */}
+        {/* Mission Control Timeline Modal */}
         <button
           type="button"
           data-tauri-drag-region="false"
           aria-label="Mission Control Activity Timeline"
           title="Mission Control & Activity Timeline"
           onClick={() => setMissionControlOpen(true)}
-          className="flex h-7 w-7 items-center justify-center rounded-md transition-colors hover:bg-accent text-muted-foreground hover:text-foreground"
+          className="flex h-7 w-7 items-center justify-center rounded-md transition-colors hover:bg-muted text-muted-foreground hover:text-foreground"
         >
           <Activity className="h-4 w-4" />
         </button>
 
-        {/* Snapshots / Checkpoints Toggle */}
+        {/* Snapshots / Checkpoints Modal */}
         <button
           type="button"
           data-tauri-drag-region="false"
           aria-label="Workspace Snapshots"
           title="Workspace Snapshots & Presets"
           onClick={() => setSnapshotModalOpen(true)}
-          className="flex h-7 w-7 items-center justify-center rounded-md transition-colors hover:bg-accent text-muted-foreground hover:text-foreground"
+          className="flex h-7 w-7 items-center justify-center rounded-md transition-colors hover:bg-muted text-muted-foreground hover:text-foreground"
         >
           <Bookmark className="h-4 w-4" />
         </button>
 
-        {/* Settings Toggle */}
+        {/* Settings Button */}
         {onToggleSettings && (
           <button
             type="button"
@@ -202,75 +196,54 @@ export function TitleBar({ fullscreen, settingsOpen, onToggleSettings }: TitleBa
             title="Settings (⌘,)"
             onClick={onToggleSettings}
             className={cn(
-              'flex h-7 w-7 items-center justify-center rounded-md transition-colors hover:bg-accent',
-              settingsOpen ? 'bg-accent text-foreground' : 'text-muted-foreground hover:text-foreground'
+              'flex h-7 w-7 items-center justify-center rounded-md transition-colors hover:bg-muted',
+              settingsOpen ? 'bg-muted text-foreground' : 'text-muted-foreground hover:text-foreground'
             )}
           >
             <Settings className="h-4 w-4" />
           </button>
         )}
 
-        <SnapshotManagerModal
-          open={snapshotModalOpen}
-          onClose={() => setSnapshotModalOpen(false)}
-        />
-
-        <MissionControlModal
-          open={missionControlOpen}
-          onClose={() => setMissionControlOpen(false)}
-        />
+        {/* Window controls on non-macOS */}
         {!isMac && (
-          <>
-            <TitleBarButton label="Minimize" onClick={() => minimize()}>
-              <Minus className="h-4 w-4" />
-            </TitleBarButton>
-            <TitleBarButton
-              label={isMaximized ? 'Restore' : 'Maximize'}
-              onClick={() => toggleMaximize()}
+          <div className="flex items-center pl-1 border-l border-border ml-1">
+            <button
+              type="button"
+              onClick={minimize}
+              title="Minimize"
+              className="flex h-7 w-7 items-center justify-center rounded hover:bg-muted text-muted-foreground hover:text-foreground"
+            >
+              <Minus className="h-3.5 w-3.5" />
+            </button>
+            <button
+              type="button"
+              onClick={toggleMaximize}
+              title={isMaximized ? 'Restore' : 'Maximize'}
+              className="flex h-7 w-7 items-center justify-center rounded hover:bg-muted text-muted-foreground hover:text-foreground"
             >
               {isMaximized ? <Copy className="h-3.5 w-3.5" /> : <Square className="h-3.5 w-3.5" />}
-            </TitleBarButton>
-            <TitleBarButton
-              label="Close"
-              onClick={() => closeWindow()}
-              className="hover:bg-destructive hover:text-destructive-foreground"
+            </button>
+            <button
+              type="button"
+              onClick={closeWindow}
+              title="Close"
+              className="flex h-7 w-7 items-center justify-center rounded hover:bg-destructive hover:text-destructive-foreground text-muted-foreground"
             >
-              <X className="h-4 w-4" />
-            </TitleBarButton>
-          </>
+              <X className="h-3.5 w-3.5" />
+            </button>
+          </div>
         )}
       </div>
-    </div>
-  )
-}
 
-interface TitleBarButtonProps {
-  label: string
-  onClick: () => void
-  className?: string
-  children: ReactNode
-}
+      <SnapshotManagerModal
+        open={snapshotModalOpen}
+        onClose={() => setSnapshotModalOpen(false)}
+      />
 
-/** A single window-control button: full-height, fixed width, hover-highlighted. */
-function TitleBarButton({
-  label,
-  onClick,
-  className,
-  children
-}: TitleBarButtonProps): ReactElement {
-  return (
-    <button
-      type="button"
-      data-tauri-drag-region="false"
-      aria-label={label}
-      title={label}
-      onClick={onClick}
-      className={cn(
-        'flex h-full w-11 items-center justify-center text-muted-foreground transition-colors hover:bg-accent hover:text-foreground',
-        className
-      )}
-    >
-      {children}
-    </button>
+      <MissionControlModal
+        open={missionControlOpen}
+        onClose={() => setMissionControlOpen(false)}
+      />
+    </header>
   )
 }

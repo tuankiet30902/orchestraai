@@ -46,8 +46,8 @@ const TAB_BASE =
 
 function tabStateClass(active: boolean): string {
   return active
-    ? 'bg-background text-foreground border-t-2 border-t-primary border-r-border/80 z-10'
-    : 'bg-card/30 text-muted-foreground hover:bg-card/70 hover:text-foreground border-t-2 border-t-transparent'
+    ? 'bg-background text-foreground border-t-2 border-t-foreground border-r-border/80 z-10 font-medium'
+    : 'bg-card/40 text-muted-foreground hover:bg-card/80 hover:text-foreground border-t-2 border-t-transparent'
 }
 
 /**

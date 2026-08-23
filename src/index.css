@@ -11,38 +11,38 @@
   .dark,
   [data-theme='orchestra-amber'],
   [data-theme='orchestra-dark'] {
-    --background: 240 5% 6%;          /* #0e0e11 - crisp neutral dark */
-    --canvas: 240 6% 4%;              /* #09090b - deepest clean black canvas */
+    --background: 240 6% 6%;          /* #0e0e11 - crisp obsidian dark */
+    --canvas: 240 7% 4%;              /* #09090b - deepest clean obsidian canvas */
     --foreground: 0 0% 98%;           /* #fafafa - crisp high contrast white text */
-    --card: 240 4% 9%;                /* #141417 - clean elevated card surface */
-    --card-foreground: 0 0% 95%;
-    --popover: 240 4% 12%;            /* #1c1c20 - elevated menus */
+    --card: 240 5% 9%;                /* #131317 - clean elevated card surface */
+    --card-foreground: 0 0% 98%;
+    --popover: 240 5% 12%;            /* #1b1b20 - elevated menus */
     --popover-foreground: 0 0% 98%;
-    --primary: 38 95% 53%;            /* #f59e0b - radiant amber */
-    --primary-foreground: 0 0% 100%;
+    --primary: 0 0% 98%;              /* #fafafa - clean slate high contrast primary */
+    --primary-foreground: 240 6% 6%;
     --secondary: 240 4% 14%;          /* #222226 */
     --secondary-foreground: 0 0% 90%;
-    --muted: 240 4% 12%;              /* #1c1c20 */
-    --muted-foreground: 240 4% 65%;   /* #a1a1aa - true neutral gray */
-    --accent: 240 4% 16%;             /* #27272b - neutral hover */
+    --muted: 240 5% 11%;              /* #18181c */
+    --muted-foreground: 240 4% 65%;   /* #a1a1aa - true neutral slate gray */
+    --accent: 240 5% 15%;             /* #242429 - clean neutral hover */
     --accent-foreground: 0 0% 98%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-    --border: 240 4% 15%;             /* #242428 - razor-clean border */
-    --pane-border: 240 4% 18%;        /* #2c2c31 */
-    --input: 240 4% 14%;
-    --ring: 38 95% 53%;
-    --conduct: 38 95% 53%;
-    --activity: 45 93% 47%;
-    --radius: 0.5rem;
+    --border: 240 4% 14%;             /* #222226 - razor-clean thin border */
+    --pane-border: 240 4% 16%;        /* #26262b */
+    --input: 240 4% 13%;
+    --ring: 0 0% 90%;
+    --conduct: 0 0% 98%;
+    --activity: 0 0% 90%;
+    --radius: 0.4rem;
 
     /* Scrollbar */
-    --sb-size: 8px;
-    --sb-radius: 6px;
+    --sb-size: 7px;
+    --sb-radius: 4px;
     --sb-thumb: 0 0% 100%;
     --sb-thumb-rest: 0;
     --sb-thumb-hover: 0.20;
-    --sb-thumb-active: 0.40;
+    --sb-thumb-active: 0.35;
   }
 
   /* VS Code Modern Dark (Electric Blue Accent) */
