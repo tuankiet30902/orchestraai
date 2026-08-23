@@ -16,8 +16,12 @@ describe('TEMPLATES catalog', () => {
       'codex',
       'opencode',
       'antigravity',
+      'gemini',
       'grok',
       'deepseek',
+      'copilot',
+      'qwen',
+      'amp',
       'terminal'
     ])
   })

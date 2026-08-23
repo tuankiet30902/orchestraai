@@ -9,6 +9,10 @@ import opencodeIcon from '@/assets/agents/opencode.svg'
 import antigravityIcon from '@/assets/agents/antigravity.svg'
 import grokIcon from '@/assets/agents/grok.svg'
 import deepseekIcon from '@/assets/agents/deepseek.svg'
+import geminiIcon from '@/assets/agents/gemini.svg'
+import copilotIcon from '@/assets/agents/copilot.svg'
+import qwenIcon from '@/assets/agents/qwen.svg'
+import ampIcon from '@/assets/agents/amp.svg'
 
 export interface WorkspaceTemplate {
   id: string
@@ -56,6 +60,14 @@ export const TEMPLATES: WorkspaceTemplate[] = [
     icon: antigravityIcon
   },
   {
+    id: 'gemini',
+    name: 'Gemini Code',
+    description: 'Google Gemini CLI agent.',
+    command: 'gemini',
+    executable: 'gemini',
+    icon: geminiIcon
+  },
+  {
     id: 'grok',
     name: 'Grok',
     description: 'xAI Grok coding assistant.',
@@ -70,6 +82,30 @@ export const TEMPLATES: WorkspaceTemplate[] = [
     command: 'deepseek',
     executable: 'deepseek',
     icon: deepseekIcon
+  },
+  {
+    id: 'copilot',
+    name: 'GitHub Copilot',
+    description: 'GitHub Copilot CLI.',
+    command: 'gh copilot suggest',
+    executable: 'gh',
+    icon: copilotIcon
+  },
+  {
+    id: 'qwen',
+    name: 'Qwen Coder',
+    description: 'Alibaba Qwen coding agent.',
+    command: 'qwen',
+    executable: 'qwen',
+    icon: qwenIcon
+  },
+  {
+    id: 'amp',
+    name: 'Amp',
+    description: 'Amp CLI assistant.',
+    command: 'amp',
+    executable: 'amp',
+    icon: ampIcon
   },
   {
     id: 'terminal',
