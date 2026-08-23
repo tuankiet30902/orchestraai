@@ -1,195 +1,317 @@
 <div align="center">
 
-# 🎻 OrchestraAI
+<img src="src-tauri/icons/128x128.png" alt="OrchestraAI Logo" width="80" height="80" style="border-radius: 18px;" />
 
-### **The Native AI Multi-Agent Collaborative Development Studio**
+# OrchestraAI
 
-*Conduct whole teams of autonomous AI coding agents — split terminals, isolated Git worktrees, live web previews, and an Orchestra Pit where agents collaborate in real time.*
+**The Native Multi-Agent Collaborative Development Studio**
 
-<br />
-
-[![License: GPL-3.0](https://img.shields.io/badge/License-GPL--3.0-amber.svg)](LICENSE)
-[![Platforms: macOS | Windows | Linux](https://img.shields.io/badge/Platforms-macOS%20%7C%20Windows%20%7C%20Linux-blue.svg)](#-download--installation)
-[![Tauri: 2.0](https://img.shields.io/badge/Tauri-2.0-orange.svg)](https://tauri.app)
-[![React: 19](https://img.shields.io/badge/React-19-cyan.svg)](https://react.dev)
-[![Rust: 1.80+](https://img.shields.io/badge/Rust-Backend-red.svg)](https://rust-lang.org)
-[![Tests: 839 Passed](https://img.shields.io/badge/Tests-839%20Passed-brightgreen.svg)]()
+A desktop engineering environment for conducting teams of autonomous AI coding agents — real split pseudo-terminals, isolated per-agent Git worktrees, embedded web browser with visual UI inspection, and an Orchestra Pit collaboration network powered by the Model Context Protocol (MCP).
 
 <br />
 
-<img src="docs/images/orchestraai-workspace-preview.png" alt="OrchestraAI Workspace with Live Web Preview and Multi-Agent Terminals" width="100%" style="border-radius: 12px; box-shadow: 0 16px 40px rgba(0,0,0,0.6);" />
+[![License](https://img.shields.io/badge/License-GPL--3.0-18181b.svg?style=flat-square)](LICENSE)
+[![Platforms](https://img.shields.io/badge/Platforms-macOS%20%7C%20Windows%20%7C%20Linux-18181b.svg?style=flat-square)](#download--installation)
+[![Tauri](https://img.shields.io/badge/Tauri-v2.0-18181b.svg?style=flat-square&logo=tauri)](https://tauri.app)
+[![React](https://img.shields.io/badge/React-v19.0-18181b.svg?style=flat-square&logo=react)](https://react.dev)
+[![Rust](https://img.shields.io/badge/Rust-v1.80+-18181b.svg?style=flat-square&logo=rust)](https://rust-lang.org)
+[![Tests](https://img.shields.io/badge/Unit%20Tests-839%20Passed-18181b.svg?style=flat-square)]()
+
+<br />
+
+<img src="docs/images/orchestraai-workspace-preview.png" alt="OrchestraAI Workspace with Live Web Preview and Split Agent Terminals" width="100%" style="border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);" />
 
 </div>
 
 ---
 
-## 💡 Why OrchestraAI?
+## Table of Contents
 
-Running **one** coding agent in your terminal works fine. Running **five** agents in parallel is where traditional workflows collapse:
-- **Terminal tab overload**: Background prompts, waiting approvals, and streaming outputs get lost behind tabs.
-- **Merge collisions & overwritten code**: Multiple agents writing to the same working directory concurrently step on each other's changes.
-- **Human bottleneck**: You spend your entire day copy-pasting specs, diffs, and context between agent windows.
-
-**OrchestraAI** solves this by turning your multi-agent workflow into an orchestrated development environment. Built with **Tauri 2**, **Rust (portable-pty)**, and **React 19**, OrchestraAI runs real native terminals with per-agent Git worktrees, live web previews, and an **Orchestra Pit** where agents communicate with each other autonomously.
+- [Overview](#overview)
+- [System Architecture](#system-architecture)
+- [Key Features](#key-features)
+  - [1. Real Split Terminals & Process Sniffing](#1-real-split-terminals--process-sniffing)
+  - [2. The Orchestra Pit (MCP Multi-Agent Collaboration)](#2-the-orchestra-pit-mcp-multi-agent-collaboration)
+  - [3. Live Web Browser & Visual UI Inspector](#3-live-web-browser--visual-ui-inspector)
+  - [4. Isolated Git Worktrees & Diff Inspector](#4-isolated-git-worktrees--diff-inspector)
+  - [5. Workspace Hierarchy & Inline Terminal Renaming](#5-workspace-hierarchy--inline-terminal-renaming)
+  - [6. Real-Time Token Tracking & Cost Estimation](#6-real-time-token-tracking--cost-estimation)
+  - [7. Conduct (Broadcast) Mode](#7-conduct-broadcast-mode)
+  - [8. Team Templates & Quick Starts](#8-team-templates--quick-starts)
+- [Supported AI Coding Agents](#supported-ai-coding-agents)
+- [Download & Installation](#download--installation)
+- [Building from Source](#building-from-source)
+- [Keyboard Shortcuts](#keyboard-shortcuts)
+- [Security & Privacy Model](#security--privacy-model)
+- [Contributing](#contributing)
+- [License](#license)
 
 ---
 
-## 🚀 Core Features
+## Overview
 
-### 🎻 1. See the Whole Orchestra
-- **Real Split Terminals**: Divide your workspace horizontally and vertically to monitor all active agents simultaneously without switching tabs.
-- **Dedicated Agent Badging**: Auto-detects and displays official logos for **Claude Code**, **Google Antigravity**, **OpenAI Codex**, **OpenCode**, **Gemini**, **DeepSeek**, **Grok**, **GitHub Copilot**, and standard shells.
-- **Inline Terminal Renaming**: Double-click any terminal title or click the pencil icon to give descriptive roles (e.g., *Frontend Architect*, *Backend API*, *QA Runner*).
-- **Live Output Pulsing & State Dots**: Real-time status indicators show which agents are actively generating code, thinking, waiting for human input, or idle.
-- **Conduct (Broadcast) Mode (`⇧⌘B`)**: Send a single instruction or directive simultaneously to all active panes with 1 keystroke.
+Modern agentic coding tools like **Claude Code**, **Google Antigravity**, **OpenAI Codex**, and **OpenCode** excel at executing autonomous development tasks. However, when orchestrating multiple agents simultaneously in traditional terminal tabs:
+
+1. **Context Fragmentation**: Streaming outputs, user prompts, and background approvals disappear behind tabs.
+2. **File System Collisions**: Two agents working in the same working directory inevitably overwrite each other's work and create race conditions.
+3. **The Conductor Bottleneck**: Developers spend excessive time manually copy-pasting API contracts, design documents, and diffs between separate terminal windows.
+
+**OrchestraAI** is an open-source, native desktop studio engineered to solve these architectural challenges. It unifies terminal multiplexing, Git worktree isolation, live application previews, and inter-agent communication protocols into a single, cohesive developer cockpit.
+
+---
+
+## System Architecture
+
+```mermaid
+flowchart TB
+    subgraph UI ["Frontend (React 19 + xterm.js)"]
+        SplitPanes["Split Terminal Panes"]
+        Pit["Orchestra Pit (Team Room)"]
+        Inspector["Live Web Browser & DOM Inspector"]
+        Sidebar["Workspace Tree & Git Panel"]
+    end
+
+    subgraph Core ["Tauri 2.0 Core (Rust)"]
+        PTY["PTY Manager (portable-pty)"]
+        MCP["MCP Server (JSON-RPC)"]
+        WorktreeMgr["Git Worktree Engine"]
+        ProcessDetector["Process & Title Sniffer"]
+    end
+
+    subgraph Agents ["AI Coding Agents & CLI"]
+        Claude["Claude Code"]
+        Antigravity["Antigravity CLI"]
+        Codex["OpenAI Codex"]
+        OpenCode["OpenCode / Other CLI"]
+    end
+
+    SplitPanes <--> PTY
+    PTY <--> Agents
+    Agents <--> MCP
+    MCP <--> Pit
+    WorktreeMgr <--> Sidebar
+    ProcessDetector --> SplitPanes
+    Inspector --> SplitPanes
+```
+
+- **Native Terminal Subsystem**: Built on `portable-pty` in Rust, managing raw pseudo-terminals with bidirectional ANSI stream rendering via `xterm.js`.
+- **Inter-Agent Communication (MCP)**: Every terminal pane is injected with `ORCHESTRAAI_MCP_URL` and `ORCHESTRAAI_SESSION` environment variables, enabling agents to query peers, exchange task updates, and broadcast status via JSON-RPC.
+- **Git Isolation Pipeline**: Automates `git worktree add` and `git worktree remove` workflows, ensuring every agent gets an independent branch without repository duplication.
+
+---
+
+## Key Features
+
+### 1. Real Split Terminals & Process Sniffing
+
+OrchestraAI lets you arrange terminal panes horizontally and vertically in any arbitrary nested configuration.
+
+- **Automatic Agent Recognition**: Sniffs foreground process executions and OSC window titles (`claude`, `agy`, `codex`, `gemini`, `opencode`, `grok`, `deepseek`) to automatically render official agent brand icons.
+- **Live Output Pulsing**: Terminal icons feature pulsing activity rings whenever an agent is generating code or running commands.
+- **State Rollup Dots**: Displays agent lifecycle states directly in headers and sidebar nodes:
+  - `Thinking / Generating`: Agent is actively analyzing or outputting code.
+  - `Waiting for Input`: Agent requires human permission or user feedback.
+  - `Idle / Ready`: Agent completed its current objective.
 
 <div align="center">
-  <img src="docs/images/orchestraai-multi-agent-split.png" alt="Split Terminals with Claude Code and Antigravity" width="90%" style="border-radius: 10px; margin: 15px 0; box-shadow: 0 10px 30px rgba(0,0,0,0.5);" />
+  <img src="docs/images/orchestraai-multi-agent-split.png" alt="Split Terminals with Claude Code and Antigravity" width="90%" style="border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);" />
+  <p><em>Figure 1: Multi-Agent split grid running Claude Code and Google Antigravity in parallel.</em></p>
 </div>
 
 ---
 
-### 🤝 2. The Orchestra Pit (Multi-Agent Team Collaboration)
-- **Autonomous Agent Communication**: Every terminal pane connects to OrchestraAI via the **Model Context Protocol (MCP)**.
-- **Real-Time Discussion Rooms**: Agents converse directly with each other to align on contracts, share design specs, report bugs, and signal task completion.
-- **Drag & Drop Team Roster**: Drag any terminal pane directly into the Orchestra Pit, or select them from the quick-add dropdown.
-- **Human Conductor Control**: Intervene in the discussion, broadcast conductor directives, or inspect execution transcripts at any time.
+### 2. The Orchestra Pit (MCP Multi-Agent Collaboration)
+
+The **Orchestra Pit** provides a unified chat and coordination room where agents collaborate autonomously rather than operating in silos.
+
+- **Autonomous Agent Conversations**: Agents use MCP tools (`list_peers`, `send_message`, `read_inbox`) to discuss API specifications, coordinate schema migrations, and request code reviews from peer agents.
+- **Visual Team Roster**: Inspect connected agents, active working directories, pending queues, and live execution statuses.
+- **1-Click / Drag-and-Drop Joining**: Drag terminal pane headers directly into the Orchestra Pit drop zone, or use the member picker dropdown to add agents instantly.
+- **Conductor Broadcast**: Intervene at any time to issue directives or inject global instructions across all participating agents.
 
 <div align="center">
-  <img src="docs/images/orchestraai-pit-collaboration.png" alt="Orchestra Pit Real-Time Collaboration Room" width="90%" style="border-radius: 10px; margin: 15px 0; box-shadow: 0 10px 30px rgba(0,0,0,0.5);" />
+  <img src="docs/images/orchestraai-pit-collaboration.png" alt="Orchestra Pit Collaboration Room" width="90%" style="border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);" />
+  <p><em>Figure 2: Real-time discussion room where Claude Code and Antigravity collaborate via MCP.</em></p>
 </div>
 
 ---
 
-### 🌐 3. Live Web Preview & Visual UI Inspector
-- **Embedded Browser Column**: View live development servers (`localhost:3000`, `localhost:5173`, etc.) directly beside your coding agents.
-- **Visual Element Picker**: Click any UI element on your web app to inspect its DOM selector (`#main-cta-button`).
-- **1-Click Prompt Annotation**: Type a UI request (e.g. *"Change button color to amber and add hover scale"*) and click **"Send to Agent"** to automatically pipe the annotated context into the active terminal.
+### 3. Live Web Browser & Visual UI Inspector
+
+An integrated web preview column sits alongside your terminal panes for frontend and full-stack development.
+
+- **Localhost Preview**: Automatically discovers and displays running development servers (e.g. `localhost:3000`, `localhost:5173`, Next.js, Vite, Astro, Remix).
+- **Interactive DOM Element Picker**: Click the target tool to hover and inspect any DOM node on the live webpage.
+- **1-Click Prompt Annotation**: Annotate UI elements with prompt requests (e.g., *"Make this banner responsive and add dark mode support"*). Clicking **Send to Agent** injects the annotated selector and context directly into the focused agent terminal.
 
 ---
 
-### 🌿 4. Isolated Git Worktrees & Diff Inspector
-- **Zero-Conflict Branching**: Each agent works inside its own isolated Git worktree on an independent branch (`orchestra/feature-branch`).
-- **Built-in Diff Inspector**: Review color-coded syntax diffs across all modified files before merging.
-- **Clean Commits & History**: Manage commits, stage files, and switch branches directly within the Source Control panel.
+### 4. Isolated Git Worktrees & Diff Inspector
+
+Developing with multiple agents on the same working tree causes continuous file conflicts and merge collisions.
+
+- **Zero-Conflict Branch Isolation**: Automatically creates isolated Git worktrees (`orchestra/<agent-role>`) on independent branches.
+- **Built-in Diff Inspector**: Review staged and unstaged code modifications across all files with syntax-highlighted side-by-side or unified diff views.
+- **Integrated Source Control Panel**: View branch lists, commit history timelines, and stage/commit changes without leaving OrchestraAI.
 
 <div align="center">
-  <img src="docs/images/orchestraai-git-worktrees.png" alt="Git Source Control and Worktree Inspector" width="90%" style="border-radius: 10px; margin: 15px 0; box-shadow: 0 10px 30px rgba(0,0,0,0.5);" />
+  <img src="docs/images/orchestraai-git-worktrees.png" alt="Git Source Control and Worktree Inspector" width="90%" style="border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);" />
+  <p><em>Figure 3: Built-in Source Control panel with color-coded syntax diffs and worktree management.</em></p>
 </div>
 
 ---
 
-### ⚡ 5. Progressive Welcome Hub & Team Presets
-- **Frictionless Quick Start**: Open any folder (`⌘O`) or launch a Quick Terminal (`⌘T`) instantly.
-- **Curated Multi-Agent Templates**:
-  - 🏗️ **Feature Factory** (Architect + Frontend + Backend + QA)
-  - 🐛 **Bug Hunt** (Investigator + Fixer)
-  - 🔄 **Refactor Sprint** (Analyzer + Refactorer + Test Coverage)
-  - 📖 **Docs Writer** (Code Reader + Doc Author)
-  - 🚀 **Full Stack Team** (Lead + Frontend + Backend + Database + DevOps + QA)
+### 5. Workspace Hierarchy & Inline Terminal Renaming
+
+- **Hierarchical Sidebar Tree**: Organizes multiple open project workspaces, active Git branches, and child terminal panes in a clean tree structure.
+- **Instant Search Filter**: Quickly find any workspace, agent, or terminal name using the search bar at the top of the sidebar.
+- **Inline Double-Click Renaming**: Double-click any terminal label or workspace name to customize its title (e.g., *"Lead Architect"*, *"Frontend UI"*, *"Unit Tests"*).
+- **Agent CLI Switching**: Use the terminal context menu (`...`) to reassign or switch the running agent CLI on the fly.
+
+---
+
+### 6. Real-Time Token Tracking & Cost Estimation
+
+OrchestraAI parses context window usage metrics directly from terminal outputs and agent status streams:
+
+- **Per-Terminal Token Usage**: Monitors input tokens, output tokens, and cache creation/read tokens.
+- **Real-Time Cost Calculations**: Accurately computes running costs for Claude 3.7 Sonnet, Claude 3.5 Sonnet, GPT-4o, Gemini 2.5 Pro, and DeepSeek V3 based on current pricing tables.
+- **Session Totals**: Aggregates total token consumption and expenses across all active workspaces.
+
+---
+
+### 7. Conduct (Broadcast) Mode
+
+- Press **`⇧⌘B`** (macOS) or **`Ctrl+Shift+B`** (Windows/Linux) to toggle Conduct Mode.
+- All keystrokes and submitted prompts are mirrored simultaneously to all active terminal panes.
+- Useful for running mass test suites, batch installing dependencies, or issuing identical instructions across a team of agents.
+
+---
+
+### 8. Team Templates & Quick Starts
+
+Get started immediately from the Welcome Hub without tedious manual configuration:
+
+- **Open Folder (`⌘O`)**: Instantly creates a workspace from any existing project directory.
+- **Quick Terminal (`⌘T`)**: Opens a standalone shell session in your home directory.
+- **Pre-Configured Team Presets (`⌘N`)**:
+  - **Feature Factory** (4 agents: Architect + Frontend + Backend + QA)
+  - **Bug Hunt** (2 agents: Root Cause Investigator + Fixer)
+  - **Refactor Sprint** (3 agents: Codebase Analyzer + Refactorer + Test Coverage)
+  - **Docs Writer** (2 agents: Code Reader + Technical Author)
+  - **Full Stack Team** (6 agents: Tech Lead + Frontend + Backend + Database + DevOps + QA)
 
 <div align="center">
-  <img src="docs/images/orchestraai-welcome-hub.png" alt="OrchestraAI Welcome Hub" width="90%" style="border-radius: 10px; margin: 15px 0; box-shadow: 0 10px 30px rgba(0,0,0,0.5);" />
+  <img src="docs/images/orchestraai-welcome-hub.png" alt="OrchestraAI Welcome Hub" width="90%" style="border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);" />
+  <p><em>Figure 4: The Welcome Hub with 1-click project launches and recent workspace history.</em></p>
 </div>
 
 ---
 
-### 📊 6. Real-Time Token & Cost Monitoring
-- Live tracking of input, output, and cached tokens per terminal.
-- Accurate real-time cost estimation across popular LLMs (Claude 3.7 Sonnet, Claude 3.5 Sonnet, GPT-4o, Gemini 2.5 Pro, DeepSeek V3).
+## Supported AI Coding Agents
+
+OrchestraAI works out of the box with any terminal-based agent or command-line utility:
+
+| Agent / Tool | Identifier | Default Command | Detection & MCP Support |
+| :--- | :--- | :--- | :--- |
+| **Claude Code** | `claude-code` | `claude --dangerously-skip-permissions` | Full MCP + Statusline + Tokens |
+| **Google Antigravity** | `antigravity` | `agy` | Full MCP + Command Detection |
+| **OpenAI Codex** | `codex` | `codex` | Full MCP + Command Detection |
+| **OpenCode** | `opencode` | `opencode` | Full MCP + Command Detection |
+| **Google Gemini CLI**| `gemini` | `gemini` | Command Detection |
+| **DeepSeek Coder** | `deepseek` | `deepseek` | Command Detection |
+| **xAI Grok** | `grok` | `grok` | Command Detection |
+| **GitHub Copilot** | `copilot` | `gh copilot suggest` | Command Detection |
+| **Standard Shells** | `terminal` | System default (`zsh`, `bash`, `fish`, `pwsh`) | Full PTY Support |
 
 ---
 
-## 📥 Download & Installation
+## Download & Installation
 
-Pre-built releases for **macOS**, **Windows**, and **Linux** are available on the [Releases](https://github.com/tuankiet30902/orchestraai/releases) page:
+Pre-compiled binary releases for **macOS**, **Windows**, and **Linux** are available on the [GitHub Releases](https://github.com/tuankiet30902/orchestraai/releases) page:
 
-| Operating System | Architecture / Package | Download Link |
+| Platform | Architecture | Installer Format |
 | :--- | :--- | :--- |
-| 🍏 **macOS** | Universal DMG *(Apple Silicon M1-M4 & Intel)* | [Download `.dmg`](https://github.com/tuankiet30902/orchestraai/releases) |
-| 🪟 **Windows** | 64-bit Installer / Portable EXE | [Download `.exe`](https://github.com/tuankiet30902/orchestraai/releases) |
-| 🐧 **Linux** | Debian (`.deb`) / AppImage | [Download `.deb` / `.AppImage`](https://github.com/tuankiet30902/orchestraai/releases) |
+| **macOS** | Universal *(Apple Silicon M1-M4 & Intel)* | `.dmg` (Signed Universal Binary) |
+| **Windows** | x64 / ARM64 | `.exe` (NSIS Installer) / `.msi` |
+| **Linux** | x86_64 | `.deb` (Debian/Ubuntu) / `.AppImage` |
 
 ---
 
-## 🛠️ Build from Source
+## Building from Source
 
 ### Prerequisites
-- **Node.js 18+** ([nodejs.org](https://nodejs.org))
+- **Node.js 18+** & `npm` ([nodejs.org](https://nodejs.org))
 - **Rust Toolchain (stable)** ([rustup.rs](https://rustup.rs))
 - **Git**
 
-### Build Instructions
+### Build Steps
 
 ```bash
 # 1. Clone the repository
 git clone https://github.com/tuankiet30902/orchestraai.git
 cd orchestraai
 
-# 2. Install dependencies
+# 2. Install frontend dependencies
 npm install
 
-# 3. Run in development mode (Live Reloading)
+# 3. Launch in development mode with HMR
 npm run tauri dev
 
-# 4. Run test suite (839 Vitest unit tests)
+# 4. Execute test suite (839 unit tests)
 npm test
 
-# 5. Build native release package
+# 5. Build optimized native distribution package
 npm run tauri build
 ```
 
 ---
 
-## 🤖 Supported Coding Agents
+## Keyboard Shortcuts
 
-OrchestraAI seamlessly supports all terminal-based AI coding agents:
-
-| Agent / CLI | Command | Description |
-| :--- | :--- | :--- |
-| **Claude Code** | `claude` | Anthropic's agentic CLI with deep tool usage |
-| **Antigravity** | `agy` | Google DeepMind's Advanced Coding Agent |
-| **OpenCode** | `opencode` | Open-source agentic coding assistant |
-| **Codex CLI** | `codex` | OpenAI CLI coding agent |
-| **Gemini CLI** | `gemini` | Google Gemini developer agent |
-| **DeepSeek** | `deepseek` | DeepSeek Coder CLI |
-| **Grok** | `grok` | xAI Grok coding assistant |
-| **GitHub Copilot** | `gh copilot` | GitHub Copilot CLI |
-| **Custom Shell** | `zsh` / `bash` / `fish` | Standard Unix & Windows shells |
-
----
-
-## ⌨️ Keyboard Shortcuts
-
-| Action | macOS | Windows / Linux |
+| Action | macOS Shortcut | Windows / Linux Shortcut |
 | :--- | :--- | :--- |
 | **Open Project Folder** | `⌘O` | `Ctrl+O` |
 | **Quick Terminal** | `⌘T` | `Ctrl+T` |
 | **New Team Workspace** | `⌘N` | `Ctrl+N` |
-| **Toggle Sidebar** | `⌘B` | `Ctrl+B` |
-| **Broadcast / Conduct Mode** | `⇧⌘B` | `Ctrl+Shift+B` |
+| **Toggle Primary Sidebar** | `⌘B` | `Ctrl+B` |
+| **Toggle Conduct (Broadcast) Mode** | `⇧⌘B` | `Ctrl+Shift+B` |
 | **Split Pane Horizontal** | `⌘D` | `Ctrl+D` |
 | **Split Pane Vertical** | `⇧⌘D` | `Ctrl+Shift+D` |
 | **Close Active Pane** | `⌘W` | `Ctrl+W` |
-| **Find in Terminal** | `⌘F` | `Ctrl+F` |
+| **Find / Search in Terminal** | `⌘F` | `Ctrl+F` |
 | **Open Settings** | `⌘,` | `Ctrl+,` |
+| **Next Workspace Tab** | `⌃Tab` | `Ctrl+Tab` |
+| **Previous Workspace Tab** | `⌃⇧Tab` | `Ctrl+Shift+Tab` |
 
 ---
 
-## 🔒 Security & Privacy
+## Security & Privacy Model
 
-- **100% Local & Private**: All PTY sessions and Git operations execute entirely on your local machine.
-- **Zero Telemetry**: No tracking, analytics, or background telemetry.
-- **Permission Guard**: Prompts confirmation before terminating busy agents with unsaved work.
+- **100% Local Execution**: Terminal sessions, PTY processes, MCP communication, and Git worktrees run entirely on your local machine.
+- **Zero Telemetry**: No user data, commands, keystrokes, or code snippets are collected or transmitted.
+- **Termination Guard**: Prevents accidental closure of terminal panes while an AI agent is actively executing tasks.
 
 ---
 
-## 📄 License
+## Contributing
 
-OrchestraAI is free software licensed under the **[GNU General Public License v3.0 (GPL-3.0)](LICENSE)**.
+Contributions, bug reports, and feature suggestions are welcome!
+
+1. Fork the repository on GitHub.
+2. Create your feature branch (`git checkout -b feature/amazing-feature`).
+3. Commit your changes (`git commit -m 'feat: add amazing feature'`).
+4. Push to the branch (`git push origin feature/amazing-feature`).
+5. Open a Pull Request.
+
+---
+
+## License
+
+OrchestraAI is free and open-source software licensed under the **[GNU General Public License v3.0 (GPL-3.0)](LICENSE)**.
 
 ---
 
 <div align="center">
-<sub>Crafted with ❤️ by <a href="https://github.com/tuankiet30902">Kiet Tran</a> · Built with <a href="https://tauri.app">Tauri 2</a>, <a href="https://react.dev">React 19</a>, <a href="https://xtermjs.org">xterm.js</a>, and <a href="https://github.com/wez/wezterm/tree/main/pty">portable-pty</a>.</sub>
+<sub>Crafted with precision by <a href="https://github.com/tuankiet30902">Kiet Tran</a> · Built with <a href="https://tauri.app">Tauri 2</a>, <a href="https://react.dev">React 19</a>, <a href="https://xtermjs.org">xterm.js</a>, and <a href="https://github.com/wez/wezterm/tree/main/pty">portable-pty</a>.</sub>
 </div>
