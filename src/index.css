@@ -18,7 +18,7 @@
     --card-foreground: 0 0% 98%;
     --popover: 240 5% 12%;            /* #1b1b20 - elevated menus */
     --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;              /* #fafafa - clean slate high contrast primary */
+    --primary: 38 95% 55%;            /* #f59e0b - Warm Amber */
     --primary-foreground: 240 6% 6%;
     --secondary: 240 4% 14%;          /* #222226 */
     --secondary-foreground: 0 0% 90%;
@@ -31,9 +31,9 @@
     --border: 240 4% 14%;             /* #222226 - razor-clean thin border */
     --pane-border: 240 4% 16%;        /* #26262b */
     --input: 240 4% 13%;
-    --ring: 0 0% 90%;
-    --conduct: 0 0% 98%;
-    --activity: 0 0% 90%;
+    --ring: 38 95% 55%;
+    --conduct: 38 95% 55%;
+    --activity: 45 93% 47%;
     --radius: 0.4rem;
 
     /* Scrollbar */

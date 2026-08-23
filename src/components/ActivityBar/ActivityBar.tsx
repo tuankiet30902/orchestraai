@@ -85,22 +85,17 @@ export function ActivityBar({
               aria-pressed={isActive}
               onClick={() => toggleTab(item.id)}
               className={cn(
-                'group relative flex h-10 w-10 items-center justify-center rounded-lg transition-all',
+                'group relative flex h-9.5 w-9.5 items-center justify-center rounded-xl transition-all cursor-pointer',
                 isActive
-                  ? 'text-foreground'
-                  : 'text-muted-foreground hover:text-foreground hover:bg-muted/30'
+                  ? 'bg-primary/15 text-primary shadow-xs'
+                  : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
               )}
             >
-              {/* Active Indicator Bar */}
-              {isActive && (
-                <div className="absolute left-0 top-2.5 bottom-2.5 w-[3px] rounded-r bg-amber-500 shadow-xs shadow-amber-500/50" />
-              )}
-
-              <Icon className={cn('h-5 w-5 transition-transform group-hover:scale-105', isActive && 'text-amber-400')} />
+              <Icon className={cn('h-5 w-5 transition-transform group-hover:scale-105', isActive ? 'text-primary' : 'text-muted-foreground group-hover:text-foreground')} />
 
               {/* Counter Badge */}
               {item.badge !== undefined && (
-                <span className="absolute bottom-1 right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-amber-500 px-1 text-[9.5px] font-bold font-mono text-zinc-950">
+                <span className="absolute -bottom-0.5 -right-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[9px] font-bold font-mono text-primary-foreground shadow-xs">
                   {item.badge}
                 </span>
               )}
@@ -117,7 +112,7 @@ export function ActivityBar({
           title="Mission Control & Activity Timeline"
           aria-label="Mission Control"
           onClick={onOpenMissionControl}
-          className="flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/30 transition-all"
+          className="flex h-9.5 w-9.5 items-center justify-center rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all cursor-pointer"
         >
           <Activity className="h-5 w-5" />
         </button>
@@ -128,7 +123,7 @@ export function ActivityBar({
           title="Workspace Snapshots & Presets"
           aria-label="Snapshots"
           onClick={onOpenSnapshots}
-          className="flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/30 transition-all"
+          className="flex h-9.5 w-9.5 items-center justify-center rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all cursor-pointer"
         >
           <Archive className="h-5 w-5" />
         </button>
@@ -139,7 +134,7 @@ export function ActivityBar({
           title="Settings & Preferences (⌘,)"
           aria-label="Settings"
           onClick={onOpenSettings}
-          className="flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/30 transition-all"
+          className="flex h-9.5 w-9.5 items-center justify-center rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all cursor-pointer"
         >
           <Settings className="h-5 w-5" />
         </button>
