@@ -21,6 +21,19 @@ A desktop engineering environment for conducting teams of autonomous AI coding a
 
 <img src="docs/images/orchestraai-workspace-preview.png" alt="OrchestraAI Workspace with Live Web Preview and Split Agent Terminals" width="100%" style="border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);" />
 
+<br />
+
+### ⚡ Quick Download & Install (v0.1.0)
+
+[![Download macOS](https://img.shields.io/badge/Download-macOS%20(Universal%20DMG)-white?style=for-the-badge&logo=apple&logoColor=black)](https://github.com/tuankiet30902/orchestraai/releases/download/v0.1.0/OrchestraAI_0.1.0_universal.dmg)
+[![Download Windows](https://img.shields.io/badge/Download-Windows%20(Setup%20EXE)-white?style=for-the-badge&logo=windows&logoColor=black)](https://github.com/tuankiet30902/orchestraai/releases/download/v0.1.0/OrchestraAI_0.1.0_x64-setup.exe)
+[![Download Linux](https://img.shields.io/badge/Download-Linux%20(AppImage%20%7C%20DEB)-white?style=for-the-badge&logo=linux&logoColor=black)](https://github.com/tuankiet30902/orchestraai/releases/download/v0.1.0/OrchestraAI_0.1.0_amd64.AppImage)
+
+```bash
+# macOS & Linux One-Line Install:
+curl -fsSL https://raw.githubusercontent.com/tuankiet30902/orchestraai/main/install.sh | bash
+```
+
 </div>
 
 ---
@@ -187,43 +200,54 @@ OrchestraAI works out of the box with any terminal-based agent or command-line u
 
 ## Download & Installation
 
-### One-Line Terminal Install
+Choose your operating system below to download the pre-compiled binary package or install with one terminal command:
 
-Install OrchestraAI instantly with a single command in your terminal:
+### 🍏 macOS (Apple Silicon M1-M4 & Intel)
 
-**macOS & Linux**:
-```bash
-curl -fsSL https://raw.githubusercontent.com/tuankiet30902/orchestraai/main/install.sh | bash
-```
-
-**Windows (PowerShell as Administrator)**:
-```powershell
-irm https://raw.githubusercontent.com/tuankiet30902/orchestraai/main/install.ps1 | iex
-```
-
----
-
-### Package Managers
-
-| Package Manager | Platform | Command |
-| :--- | :--- | :--- |
-| **Homebrew Cask** | macOS | `brew install --cask orchestraai` |
-| **WinGet** | Windows | `winget install OrchestraAI` |
+- **Direct Download**: [**`OrchestraAI_0.1.0_universal.dmg`** (18.2 MB)](https://github.com/tuankiet30902/orchestraai/releases/download/v0.1.0/OrchestraAI_0.1.0_universal.dmg)
+- **One-Line Terminal Install**:
+  ```bash
+  curl -fsSL https://raw.githubusercontent.com/tuankiet30902/orchestraai/main/install.sh | bash
+  ```
+- **How to launch**:
+  - Open `/Applications/OrchestraAI.app` from Finder or Spotlight.
+  - Or type `orchestraai` (or `orch`) in your terminal.
 
 ---
 
-### Direct Download Packages
+### 🪟 Windows (Windows 10 / 11 64-bit)
 
-Pre-compiled binary releases for **macOS**, **Windows**, and **Linux** are published on [GitHub Releases](https://github.com/tuankiet30902/orchestraai/releases):
+- **Direct Download**:
+  - [**`OrchestraAI_0.1.0_x64-setup.exe`** (Installer, 6.1 MB)](https://github.com/tuankiet30902/orchestraai/releases/download/v0.1.0/OrchestraAI_0.1.0_x64-setup.exe)
+  - [**`OrchestraAI_0.1.0_x64_en-US.msi`** (Enterprise MSI, 8.3 MB)](https://github.com/tuankiet30902/orchestraai/releases/download/v0.1.0/OrchestraAI_0.1.0_x64_en-US.msi)
+- **One-Line PowerShell Install**:
+  ```powershell
+  irm https://raw.githubusercontent.com/tuankiet30902/orchestraai/main/install.ps1 | iex
+  ```
+- **How to launch**:
+  - Launch `OrchestraAI` from the Start Menu or Desktop shortcut.
 
-| Operating System | Architecture | Package Format | Direct Download |
-| :--- | :--- | :--- | :--- |
-| 🍏 **macOS** | Universal *(Apple Silicon M1-M4 & Intel)* | `.dmg` | [Download `OrchestraAI_0.1.0_universal.dmg`](https://github.com/tuankiet30902/orchestraai/releases/download/v0.1.0/OrchestraAI_0.1.0_universal.dmg) |
-| 🪟 **Windows** | x64 / ARM64 | `.exe` (Installer) | [Download `OrchestraAI_0.1.0_x64-setup.exe`](https://github.com/tuankiet30902/orchestraai/releases/download/v0.1.0/OrchestraAI_0.1.0_x64-setup.exe) |
-| 🪟 **Windows** | x64 | `.msi` (Enterprise) | [Download `OrchestraAI_0.1.0_x64_en-US.msi`](https://github.com/tuankiet30902/orchestraai/releases/download/v0.1.0/OrchestraAI_0.1.0_x64_en-US.msi) |
-| 🐧 **Linux** | x86_64 | `.AppImage` (Standalone) | [Download `OrchestraAI_0.1.0_amd64.AppImage`](https://github.com/tuankiet30902/orchestraai/releases/download/v0.1.0/OrchestraAI_0.1.0_amd64.AppImage) |
-| 🐧 **Linux** | x86_64 | `.deb` (Debian / Ubuntu) | [Download `OrchestraAI_0.1.0_amd64.deb`](https://github.com/tuankiet30902/orchestraai/releases/download/v0.1.0/OrchestraAI_0.1.0_amd64.deb) |
-| 🐧 **Linux** | x86_64 | `.rpm` (Fedora / RHEL) | [Download `OrchestraAI-0.1.0-1.x86_64.rpm`](https://github.com/tuankiet30902/orchestraai/releases/download/v0.1.0/OrchestraAI-0.1.0-1.x86_64.rpm) |
+---
+
+### 🐧 Linux (Ubuntu, Debian, Fedora, Arch)
+
+- **Direct Download**:
+  - [**`OrchestraAI_0.1.0_amd64.AppImage`** (Standalone, 85.5 MB)](https://github.com/tuankiet30902/orchestraai/releases/download/v0.1.0/OrchestraAI_0.1.0_amd64.AppImage)
+  - [**`OrchestraAI_0.1.0_amd64.deb`** (Debian / Ubuntu, 6.7 MB)](https://github.com/tuankiet30902/orchestraai/releases/download/v0.1.0/OrchestraAI_0.1.0_amd64.deb)
+  - [**`OrchestraAI-0.1.0-1.x86_64.rpm`** (Fedora / RHEL, 7.8 MB)](https://github.com/tuankiet30902/orchestraai/releases/download/v0.1.0/OrchestraAI-0.1.0-1.x86_64.rpm)
+- **One-Line Terminal Install**:
+  ```bash
+  curl -fsSL https://raw.githubusercontent.com/tuankiet30902/orchestraai/main/install.sh | bash
+  ```
+- **How to launch**:
+  ```bash
+  # AppImage:
+  chmod +x OrchestraAI_0.1.0_amd64.AppImage
+  ./OrchestraAI_0.1.0_amd64.AppImage
+
+  # Debian / Ubuntu:
+  sudo dpkg -i OrchestraAI_0.1.0_amd64.deb
+  ```
 
 ---
 
