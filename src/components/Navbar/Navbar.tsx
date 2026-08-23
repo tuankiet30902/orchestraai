@@ -54,6 +54,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { cn } from '@/lib/utils'
 import { UpdateButton } from '@/components/Navbar/UpdateButton'
+import { TaskBoardModal } from '@/components/TaskBoard/TaskBoardModal'
 
 interface NavbarProps {
   /** Open the setup wizard to create a new workspace. */
@@ -69,6 +70,7 @@ export function Navbar({ onNewWorkspace }: NavbarProps): ReactElement {
   const setWidth = useNavbarVisibilityStore((s) => s.setWidth)
   const resetWidth = useNavbarVisibilityStore((s) => s.resetWidth)
   const [isResizing, setIsResizing] = useState(false)
+  const [taskModalOpen, setTaskModalOpen] = useState(false)
   const navRef = useRef<HTMLElement>(null)
 
   const workspaces = useAppStore((s) => s.workspaces)
@@ -243,8 +245,14 @@ export function Navbar({ onNewWorkspace }: NavbarProps): ReactElement {
               size="sm"
               className="w-full justify-start text-xs text-muted-foreground hover:text-foreground"
               onClick={() => {
-                useGitStore.getState().setMode('tasks')
-                useGitStore.getState().setPanelOpen(true)
+                const ws = useAppStore.getState().workspaces
+                if (ws.length > 0) {
+                  useGitStore.getState().setMode('tasks')
+                  useGitStore.getState().setPanelOpen(true)
+                  useAppStore.getState().closeWelcome()
+                } else {
+                  setTaskModalOpen(true)
+                }
               }}
             >
               <CheckSquare className="h-3.5 w-3.5 mr-1" />
@@ -258,6 +266,11 @@ export function Navbar({ onNewWorkspace }: NavbarProps): ReactElement {
           <UpdateButton />
         </div>
       </div>
+
+      <TaskBoardModal
+        open={taskModalOpen}
+        onClose={() => setTaskModalOpen(false)}
+      />
 
       {/* Resizable drag handle */}
       {visible && (
