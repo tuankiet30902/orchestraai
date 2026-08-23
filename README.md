@@ -218,10 +218,12 @@ Pre-compiled binary releases for **macOS**, **Windows**, and **Linux** are publi
 
 | Operating System | Architecture | Package Format | Direct Download |
 | :--- | :--- | :--- | :--- |
-| 🍏 **macOS** | Universal *(Apple Silicon M1-M4 & Intel)* | `.dmg` | [Download `OrchestraAI.dmg`](https://github.com/tuankiet30902/orchestraai/releases/latest/download/OrchestraAI.dmg) |
-| 🪟 **Windows** | x64 / ARM64 | `.exe` / `.msi` | [Download `OrchestraAI-setup.exe`](https://github.com/tuankiet30902/orchestraai/releases/latest/download/OrchestraAI-setup.exe) |
-| 🐧 **Linux** | x86_64 | `.AppImage` | [Download `OrchestraAI.AppImage`](https://github.com/tuankiet30902/orchestraai/releases/latest/download/OrchestraAI.AppImage) |
-| 🐧 **Linux** | x86_64 | `.deb` (Debian / Ubuntu) | [Download `OrchestraAI.deb`](https://github.com/tuankiet30902/orchestraai/releases/latest/download/OrchestraAI.deb) |
+| 🍏 **macOS** | Universal *(Apple Silicon M1-M4 & Intel)* | `.dmg` | [Download `OrchestraAI_0.1.0_universal.dmg`](https://github.com/tuankiet30902/orchestraai/releases/download/v0.1.0/OrchestraAI_0.1.0_universal.dmg) |
+| 🪟 **Windows** | x64 / ARM64 | `.exe` (Installer) | [Download `OrchestraAI_0.1.0_x64-setup.exe`](https://github.com/tuankiet30902/orchestraai/releases/download/v0.1.0/OrchestraAI_0.1.0_x64-setup.exe) |
+| 🪟 **Windows** | x64 | `.msi` (Enterprise) | [Download `OrchestraAI_0.1.0_x64_en-US.msi`](https://github.com/tuankiet30902/orchestraai/releases/download/v0.1.0/OrchestraAI_0.1.0_x64_en-US.msi) |
+| 🐧 **Linux** | x86_64 | `.AppImage` (Standalone) | [Download `OrchestraAI_0.1.0_amd64.AppImage`](https://github.com/tuankiet30902/orchestraai/releases/download/v0.1.0/OrchestraAI_0.1.0_amd64.AppImage) |
+| 🐧 **Linux** | x86_64 | `.deb` (Debian / Ubuntu) | [Download `OrchestraAI_0.1.0_amd64.deb`](https://github.com/tuankiet30902/orchestraai/releases/download/v0.1.0/OrchestraAI_0.1.0_amd64.deb) |
+| 🐧 **Linux** | x86_64 | `.rpm` (Fedora / RHEL) | [Download `OrchestraAI-0.1.0-1.x86_64.rpm`](https://github.com/tuankiet30902/orchestraai/releases/download/v0.1.0/OrchestraAI-0.1.0-1.x86_64.rpm) |
 
 ---
 
