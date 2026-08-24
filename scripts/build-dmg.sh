@@ -23,6 +23,9 @@ fi
 mkdir -p "$OUTPUT_DIR"
 rm -f "$OUTPUT_DMG" "$TEMP_DMG"
 
+echo "==> Ad-hoc signing app bundle..."
+codesign --force --deep --sign - "$APP_PATH" 2>/dev/null || true
+
 echo "==> Creating temporary disk staging folder..."
 STAGING_DIR="$(mktemp -d)"
 cp -R "$APP_PATH" "$STAGING_DIR/"
